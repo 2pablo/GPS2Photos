@@ -161,7 +161,7 @@ function gps2photos_get_azure_maps_api_key_callback() {
  *
  * Handles both standard WordPress Library attachments and NextGEN Gallery images.
  *
- * @since 1.0.1
+ * @since 1.0.0
  *
  * @param int    $image_id The ID of the attachment or NextGEN image (pid).
  * @param string $gallery_name The name of the gallery plugin (e.g., 'nextgen', 'envira').

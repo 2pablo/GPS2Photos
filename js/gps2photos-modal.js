@@ -55,6 +55,7 @@ jQuery(document).ready(function ($) {
 	// Handle click on our custom action link for NextGEN Gallery
 	$(document).on('click', '.gps2photos-add-gps', function (e) {
 		e.preventDefault();
+		var galleryName = $(this).data('gallery-name');
 		var pid = $(this).data('pid');
 		var imageUrl = $(this).data('image-url');
 		// For NextGEN, we use a generic modal but pass specific image data.
@@ -277,7 +278,7 @@ jQuery(document).ready(function ($) {
 		// Check if the image has original GPS data (the checkbox will exist)
 		if ($overrideCheckbox.length > 0) {
 			// If the override checkbox is NOT checked, ask for confirmation
-			if (!$overrideCheckbox.is(':checked')) {
+			if (!$overrideCheckbox.is(':checked') && originalLat !== '' && originalLat !== undefined && originalLon !== '' && originalLon !== undefined) {
 				if (!confirm(gps2photos_ajax.l10n.confirm_override)) {
 					return; // Stop if the user cancels
 				}

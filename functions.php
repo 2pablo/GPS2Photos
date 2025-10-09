@@ -55,11 +55,9 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 		$gps_data_button_text = esc_html__( 'Add/Amend GPS Coordinates', 'gps-2-photos' );
 		if ( $mime_type === 'image/jpeg' ) {
 
-			// Only read GPS data on page load if the option is enabled.
-			$gps_data = null;
-			if ( isset( $options['gps_media_library'] ) && $options['gps_media_library'] === 1 ) {
-				$gps_data = gps2photos_coordinates( $file_path );
-			}
+			// Only read GPS data on page load if the option is enabled. If not acquire using Ajax on modal open.
+			$gps_data = gps2photos_coordinates( $file_path ); // TODO: remove.
+
 
 			$geo2_options = get_option( 'plugin_geo2_maps_plus_options' );
 			if ( ( isset( $options['gps_media_library'] ) && $options['gps_media_library'] === 1 ) ||
@@ -72,6 +70,8 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 					'input' => 'html',
 					'html'  => '<div></div>',
 				);
+
+				$gps_data = gps2photos_coordinates( $file_path );
 
 				$gps_lat                     = $gps_data ? $gps_data['latitude_format'] : '';
 				$gps_lon                     = $gps_data ? $gps_data['longitude_format'] : '';
@@ -417,9 +417,19 @@ function gps2photos_coordinates( $picture_path ) {
 	// Sets error handler for potential errors in exif_read_data().
 	set_error_handler(
 		function ( $err_no, $err_str, $err_file, $err_line ) {
-			$error = 'Error no: ' . $err_no . '\\nError message: ' . $err_str . '\\nError file: ' . str_replace( '\\', '\\\\', $err_file ) . '\\nError line: ' . $err_line;
-			// Shows errors in the browser console.
-			echo esc_html( "<script>console.log('exif_read_data() error: \\n" . $error . "') );</script>" );
+			// For AJAX requests (like the Media Library grid view), log errors to the server
+			// to avoid corrupting the JSON response. For all other page loads, show the
+			// error in the browser console for easier debugging.
+			if ( wp_doing_ajax() ) {
+				error_log( "GPS 2 Photos (AJAX) - exif_read_data() error: $err_str in $err_file on line $err_line" );
+			} else {
+				$error = 'Error no: ' . $err_no . '\\nError message: ' . $err_str . '\\nError file: ' . str_replace( '\\', '\\\\', $err_file ) . '\\nError line: ' . $err_line;
+				// Shows errors in the browser console.
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo "<script>console.warn('exif_read_data() GPS data error: \\n" . esc_textarea( $error ) . "' );</script>";
+			}
+			// Return true to signify the error has been handled and prevent PHP's default handler.
+			return true;
 		}
 	);
 

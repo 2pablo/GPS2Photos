@@ -76,6 +76,46 @@ jQuery(document).ready(function ($) {
 	 * @param {string|null} [pid=null]        The picture ID from NextGEN Gallery.
 	 */
 	function openModal(imageId, imagePath, galleryName = false, pid = null) {
+		/**
+		 * Updates the map's camera and marker to a new position.
+		 *
+		 * @param {string} mapId   The ID of the map to update.
+		 * @param {string} lat     The latitude.
+		 * @param {string} lon     The longitude.
+		 */
+		function updateMapPosition(mapId, lat, lon) {
+			if (window.gps2photos_maps && window.gps2photos_maps[mapId]) {
+				var map = window.gps2photos_maps[mapId];
+				var marker = window.gps2photos_markers[mapId];
+				var zoomLevel = window.gps2photos_maps['zoom'] || map.getCamera().zoom;
+
+				if (lat && lon) {
+					var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));
+					marker.setOptions({
+						position: newPosition,
+						visible: true
+					});
+					map.setCamera({
+						center: newPosition,
+						zoom: zoomLevel,
+						type: 'fly'
+					});
+				} else {
+					// No GPS data, hide the marker and reset view
+					if (marker) {
+						marker.setOptions({ visible: false });
+					}
+					map.setCamera({
+						center: [0, 30],
+						zoom: 1,
+						type: 'fly'
+					});
+				}
+			} else {
+				console.log('Map not ready for position update.');
+			}
+		}
+
 		var modal = $('#gps2photos-modal-' + imageId);
 		var $saveBtn = modal.find('.gps2photos-save-coords-btn');
 		// For NextGEN, original-lat is not set, so it will be undefined.
@@ -101,6 +141,13 @@ jQuery(document).ready(function ($) {
 				} else {
 					console.log('Fetching Azure Maps API key...');
 					gps2photos_get_azure_api_key(window['gps2photos_init_map_' + imageId]);
+				}
+			}
+
+			// If the map is already initialized, update its position with the current coordinates from the inputs.
+			if (window.gps2photos_maps[imageId]) {
+				if (originalLat !== '' && originalLat !== undefined) {
+					updateMapPosition(imageId, $('#gps2photos-modal-lat-input-' + imageId).val(), $('#gps2photos-modal-lon-input-' + imageId).val());
 				}
 			}
 
@@ -136,34 +183,8 @@ jQuery(document).ready(function ($) {
 							}
 
 							// Update the map with the new coordinates
-							if (window.gps2photos_maps && window.gps2photos_maps[imageId]) {
-								var map = window.gps2photos_maps[imageId];
-								var marker = window.gps2photos_markers[imageId];
-								var zoomLevel = window.gps2photos_maps['zoom'] || map.getCamera().zoom;
-
-								if (lat && lon) {
-									var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));
-									marker.setOptions({
-										position: newPosition,
-										visible: true
-									});
-									map.setCamera({
-										center: newPosition,
-										zoom: zoomLevel,
-										type: 'fly'
-									});
-								} else {
-									// No GPS data, hide the marker and reset view
-									if (marker) {
-										marker.setOptions({ visible: false });
-									}
-									map.setCamera({
-										center: [0, 30],
-										zoom: 1,
-										type: 'fly'
-									});
-								}
-							} else {
+							updateMapPosition(imageId, lat, lon);
+							if (!window.gps2photos_maps[imageId]) {
 								function initMapWithKeyAndPosition(apiKey) {
 									window['gps2photos_init_map_' + imageId](apiKey, [lat, lon]);
 								}

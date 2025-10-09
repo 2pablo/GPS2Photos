@@ -59,7 +59,7 @@ jQuery(document).ready(function ($) {
 		var pid = $(this).data('pid');
 		var imageUrl = $(this).data('image-url');
 		// For NextGEN, we use a generic modal but pass specific image data.
-		openModal("1", imageUrl, true, pid);
+		openModal("0", imageUrl, galleryName, pid);
 	});
 
 	// ----------------------------------------------------------------------------------------------
@@ -72,26 +72,30 @@ jQuery(document).ready(function ($) {
 	 *
 	 * @param {string}      imageId   The attachment ID or a generic ID ('1') for NextGEN.
 	 * @param {string}      imagePath The URL of the image, used for NextGEN.
-	 * @param {boolean}     [isNextGen=false] Flag to indicate if the image is from NextGEN Gallery.
+	 * @param {boolean}     [galleryName=false] Flag to indicate if the image is from NextGEN Gallery.
 	 * @param {string|null} [pid=null]        The picture ID from NextGEN Gallery.
 	 */
-	function openModal(imageId, imagePath, isNextGen = false, pid = null) {
+	function openModal(imageId, imagePath, galleryName = false, pid = null) {
 		var modal = $('#gps2photos-modal-' + imageId);
 		var $saveBtn = modal.find('.gps2photos-save-coords-btn');
 		// For NextGEN, original-lat is not set, so it will be undefined.
 		var originalLat = $saveBtn.data('original-lat');
-
+		// Argument 'galleryName' is either false, "nextgen" "envira", "foo" or "modula".
+		var isNextGen = galleryName === 'nextgen' ? 1 : 0;
+		
 		if (modal.length) {
 			modal.css('display', 'flex');
 
-			// For NextGEN, we need to update the image-id and pid on the buttons
-			if (isNextGen) {
-				modal.find('.gps2photos-save-coords-btn').data('image-id', pid).data('is-nextgen', '1');
-				modal.find('.gps2photos-restore-coords-btn').data('image-id', pid).data('is-nextgen', '1');
+			// For NextGEN, Envira, Foo and Modula Gallery we need to update the image-id and pid on the buttons
+			if (galleryName) {
+				modal.find('.gps2photos-save-coords-btn').data('image-id', pid).data('gallery-name', '1');
+				modal.find('.gps2photos-restore-coords-btn').data('image-id', pid).data('gallery-name', '1');
 			}
 
-			// Initialize the map
-			if (!isNextGen) {
+			// Initialize the map for WP Media Library only if not already done.
+			// For NextGEN, we always initialize the map as imageId is always '0'.
+			// The actual image is determined by the data-image-id attribute on the buttons.
+			if (!galleryName) {
 				if (window.gps2photos_azure_api_key) {
 					window['gps2photos_init_map_' + imageId](window.gps2photos_azure_api_key);
 				} else {
@@ -109,10 +113,10 @@ jQuery(document).ready(function ($) {
 					data: {
 						action: 'gps2photos_get_coordinates',
 						nonce: gps2photos_ajax.get_gps_nonce,
-						// Use pid for NextGEN, attachmentId for Media Library
-						image_id: isNextGen ? pid : imageId,
+						// Use pid for NextGEN and other galleries, attachmentId for Media Library
+						image_id: galleryName ? pid : imageId,
 						imagePath: imagePath,
-						is_nextgen: isNextGen ? '1' : '0'
+						gallery_name: galleryName ? galleryName : '0'
 					},
 					success: function (response) {
 						if (response.success) {
@@ -120,13 +124,13 @@ jQuery(document).ready(function ($) {
 							var lon = response.data.longitude || '';
 							var filePath = response.data.file_path || '';
 							var backupExists = response.data.backup_exists || false;
-							var modalId = isNextGen ? '1' : imageId;
+							var modalId = galleryName ? '0' : imageId;
 
 							$('#gps2photos-modal-lat-input-' + modalId).val(lat);
 							$('#gps2photos-modal-lon-input-' + modalId).val(lon);
 
 							// Only update file-path & original-lat/lon for NextGEN, as it's pre-filled for Media Library.
-							if (isNextGen) {
+							if (galleryName) {
 								$saveBtn.data('original-lat', lat).data('original-lon', lon);
 								modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', filePath);
 							}
@@ -204,9 +208,9 @@ jQuery(document).ready(function ($) {
 		var originalText = $button.text();
 		var originalLat = $button.data('original-lat');
 		var originalLon = $button.data('original-lon');
-		var isNextGen = $(this).data('is-nextgen') === '1';
+		var galleryName = $(this).data('gallery-name') === '1';
 		// For NextGEN, the modal ID is always 1, but the attachmentId is the pid
-		var modalId = isNextGen ? '1' : attachmentId;
+		var modalId = galleryName ? '0' : attachmentId;
 		var latitude = $('#gps2photos-modal-lat-input-' + modalId).val().trim();
 		var longitude = $('#gps2photos-modal-lon-input-' + modalId).val().trim();
 		var $overrideCheckbox = $('#gps2photos-override-checkbox-' + modalId);
@@ -338,7 +342,7 @@ jQuery(document).ready(function ($) {
 					}
 
 					// If not NextGEN, update the attachment fields on the main page if they exist.
-					if (!isNextGen) {
+					if (!galleryName) {
 						// Selector for attachment details modal (grid view)
 						var latDMS = gps2photos_decimalToDMS(latitude, true);
 						var lonDMS = gps2photos_decimalToDMS(longitude, false);
@@ -372,9 +376,9 @@ jQuery(document).ready(function ($) {
 	$(document).on('click', '.gps2photos-restore-coords-btn', function () {
 		var $this = $(this);
 		var attachmentId = $this.data('image-id');
-		var isNextGen = $(this).data('is-nextgen') === '1';
+		var galleryName = $(this).data('gallery-name') === '1';
 		var filePath = $(this).data('file-path') || '';
-		var modalId = isNextGen ? '1' : attachmentId;
+		var modalId = galleryName ? '1' : attachmentId;
 		var $messageDiv = $('#gps2photos-modal-message-' + modalId).addClass('notice');
 		var $restoreBtn = $this;
 
@@ -424,7 +428,7 @@ jQuery(document).ready(function ($) {
 					$restoreBtn.hide();
 
 					// If not NextGEN, update the attachment fields on the main page if they exist.
-					if (!isNextGen) {
+					if (!galleryName) {
 						// Selector for attachment details modal (grid view)
 						var restoredLatDMS = gps2photos_decimalToDMS(restoredCoords.latitude, true);
 						var restoredLonDMS = gps2photos_decimalToDMS(restoredCoords.longitude, false);

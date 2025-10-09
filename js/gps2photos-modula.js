@@ -43,7 +43,7 @@ jQuery(document).ready(function ($) {
 							var buttonHtml = `
 								<label class="setting gps2photos-setting">
 									<span class="name">${gps2photos_modula.l10n.gps || 'GPS Coordinates'}</span>
-									<a href="#" class="button button-primary gps2photos-add-gps" data-pid="${attachmentId}" data-image-url="${imageUrl}">
+									<a href="#" class="button button-primary gps2photos-add-gps" data-gallery-name="modula" data-pid="${attachmentId}" data-image-url="${imageUrl}">
 										${gps2photos_modula.l10n.add_amend_gps || 'Add/Amend GPS'}
 									</a>
 								</label>`;

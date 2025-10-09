@@ -164,14 +164,26 @@ function gps2photos_get_azure_maps_api_key_callback() {
  * @since 1.0.1
  *
  * @param int    $image_id The ID of the attachment or NextGEN image (pid).
- * @param bool   $is_nextgen    Flag to indicate if it's a NextGEN image.
+ * @param string $gallery_name The name of the gallery plugin (e.g., 'nextgen', 'envira').
  * @param string $image_url     The URL of the image, used as a fallback for NextGEN.
  * @return string|null The absolute file path or null if not found.
  */
-function gps2photos_get_image_path( $image_id, $is_nextgen = false, $image_url = '' ) {
+function gps2photos_get_image_path( $image_id, $gallery_name = false, $image_url = '' ) {
 	$file_path = '';
 
-	if ( $is_nextgen ) {
+	if ( ! $gallery_name ) {
+		// For standard WordPress Media Library.
+		return get_attached_file( $image_id );
+	}
+
+	// For gallery plugins.
+	if ( in_array( $gallery_name, array( 'envira', 'foogallery', 'modula' ), true ) ) {
+		// These galleries use standard WP attachments, so get_attached_file is most reliable.
+		$file_path = get_attached_file( $image_id );
+		if ( $file_path && file_exists( $file_path ) ) {
+			return $file_path;
+		}
+	} elseif ( 'nextgen' === $gallery_name ) {
 		// Prioritize getting the path from the NextGEN object via its ID (pid).
 		if ( function_exists( 'nggdb' ) ) {
 			$image = nggdb::find_image( $image_id );
@@ -179,24 +191,12 @@ function gps2photos_get_image_path( $image_id, $is_nextgen = false, $image_url =
 				return $image->abspath;
 			}
 		}
-		// Fallback to converting URL to path if the above fails or nggdb is not available.
-		if ( ! empty( $image_url ) ) {
-			$upload_dir     = wp_upload_dir();
-			$upload_baseurl = trailingslashit( $upload_dir['baseurl'] );
-			$upload_basedir = trailingslashit( $upload_dir['basedir'] );
+	}
 
-			if ( strpos( $image_url, $upload_baseurl ) === 0 ) {
-				$file_path = str_replace( $upload_baseurl, $upload_basedir, $image_url );
-			} else {
-				// Generic fallback for non-standard URL structures.
-				$site_url  = trailingslashit( site_url() );
-				$file_path = str_replace( $site_url, ABSPATH, $image_url );
-			}
-			return file_exists( $file_path ) ? $file_path : null;
-		}
-	} else {
-		// For standard WordPress Media Library.
-		return get_attached_file( $image_id );
+	// Fallback for all galleries: convert URL to path.
+	if ( ! empty( $image_url ) ) {
+		$file_path = str_replace( content_url(), WP_CONTENT_DIR, $image_url );
+		return file_exists( $file_path ) ? $file_path : null;
 	}
 
 	return null;
@@ -211,14 +211,14 @@ function gps2photos_get_coordinates_callback() {
 	check_ajax_referer( 'gps2photos-get-gps-nonce', 'nonce' );
 
 	$image_id   = isset( $_POST['image_id'] ) ? intval( $_POST['image_id'] ) : 0;
-	$is_nextgen = isset( $_POST['is_nextgen'] ) && $_POST['is_nextgen'] === '1';
+	$gallery_name = isset( $_POST['gallery_name'] ) ? esc_attr( $_POST['gallery_name'] ) : false;
 	$image_url  = isset( $_POST['imagePath'] ) ? esc_url_raw( $_POST['imagePath'] ) : '';
 
 	if ( ! $image_id ) {
 		wp_send_json_error( 'Invalid image ID.' );
 	}
 
-	$file_path = gps2photos_get_image_path( $image_id, $is_nextgen, $image_url );
+	$file_path = gps2photos_get_image_path( $image_id, $gallery_name, $image_url );
 
 	if ( empty( $file_path ) || ! file_exists( $file_path ) ) {
 		wp_send_json_error( 'File not found.' );

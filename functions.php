@@ -164,7 +164,7 @@ function gps2photos_get_azure_maps_api_key_callback() {
  * @since 1.0.0
  *
  * @param int    $image_id The ID of the attachment or NextGEN image (pid).
- * @param string $gallery_name The name of the gallery plugin (e.g., 'nextgen', 'envira').
+ * @param string $gallery_name The name of the gallery plugin ('nextgen', 'envira', 'foo', 'modula').
  * @param string $image_url     The URL of the image, used as a fallback for NextGEN.
  * @return string|null The absolute file path or null if not found.
  */

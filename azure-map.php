@@ -1,6 +1,6 @@
 <?php
 /**
- * Azure Map functions for GPS 2 Photos.
+ * Azure Map function for GPS 2 Photos.
  *
  * @package    GPS 2 Photos Add-on
  * @subpackage Azure Map

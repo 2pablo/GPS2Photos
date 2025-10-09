@@ -39,7 +39,7 @@ jQuery(document).ready(function ($) {
 			dir = numDeg >= 0 ? 'E' : 'W';
 		}
 
-		// Replicate the format from PHP: N 40°43'46.08"
+		// Replicate the format from PHP: N 40°43'46.06"
 		// The HTML entities are decoded by jQuery's .val() method, so we use the characters directly.
 		return dir + ' ' + d + '°' + m + "'" + s + '"';
 	}

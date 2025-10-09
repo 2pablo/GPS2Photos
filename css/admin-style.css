@@ -1,0 +1,177 @@
+/**
+ * Styles for the GPS 2 Photo Add-on Admin Settings Page.
+ *
+ * This file contains the CSS rules for the plugin's administration and
+ * settings pages.
+ *
+ * @package    GPS 2 Photo Add-on
+ * @subpackage CSS
+ * @since      1.0.0
+ * @author     Pawel Block <pblock@op.pl>
+ */
+
+@charset "utf-8";
+
+.gps2photos_tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+.gps2photos_tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  border-right: 1px solid #ccc;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+}
+
+.gps2photos_tab button:hover {
+  background-color: #ddd;
+}
+
+.gps2photos_tab button.gps2photos_active {
+  background-color: #9dbd1b;
+  color: white;
+}
+
+.gps2photos_tab_content {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+.gps2photos_defaults {
+  margin: 12px;
+  padding: 0px 18px 16px 18px;
+  border: 2px solid #ccc;
+}
+
+.gps2photos_wrap {
+    margin-left: 20px;
+}
+
+.gps2photos_wrap h3,
+.gps2photos_wrap h2 {
+  font-family: Verdana, Geneva, sans-serif;
+}
+
+.gps2photos_wrap h3 {
+  margin: 0;
+}
+
+.gps2photos_wrap h4 {
+  margin-top: 30px;
+  margin-bottom: 8px;
+}
+
+.gps2photos_wrap span.gps2photos_key_not_activated {
+  color: red;
+  font-weight: bold;
+}
+
+.gps2photos_wrap span.gps2photos_key_activated {
+  color: #9dbd1b;
+  font-weight: bold;
+}
+
+.gps2photos_wrap span.description {
+  font-style: italic;
+}
+
+.gps2photos_margin_top {
+  margin-top: 6px;
+}
+
+.gps2photos_margin_bottom {
+  margin-bottom: 6px;
+}
+
+#general {
+  display: block;
+}
+
+input.code {
+  padding-top: 4px;
+}
+
+.gps2photos_float_save_button {
+  position: relative;
+  width: 20%;
+  min-width: 100px;
+  z-index: 10;
+  left: 0px;
+  top: -49px;
+  float: right;
+}
+
+p.gps2photos_submit_button {
+  text-align: left;
+  max-width: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+.gps2photos_save_button {
+  padding: 10px 20px !important;
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  width: 120px;
+  border-radius: 0px !important;
+  box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.15),
+    0px 3px 4px 0px rgba(0, 0, 0, 0.45) !important;
+}
+
+.wp-picker-container {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+
+.gps2photos_restore_defaults {
+  margin: 12px;
+  padding: 0px 18px 16px 18px;
+  border: 2px solid #ccc;
+}
+
+
+.gps2photos-tooltip-container {
+  position: relative;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.gps2photos-tooltip-trigger {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  cursor: help;
+  padding-bottom: 2px;
+}
+
+.gps2photos-tooltip-text {
+  visibility: hidden;
+  width: 250px;
+  background-color: #333;
+  color: #fff;
+  text-align: left;
+  padding: 10px;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  /* Position above the image */
+  left: 50%;
+  transform: translateX(-3%);
+  opacity: 0;
+  transition: opacity 0.3s;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.gps2photos-tooltip-container:hover .gps2photos-tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}

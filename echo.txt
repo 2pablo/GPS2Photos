@@ -1,0 +1,21 @@
+	// echo '<pre>';
+	// var_dump( $_POST );
+	// echo '</pre>';
+
+add_action(	'admin_notices', function () {
+		// Check if we can get a current screen.
+		// If not, we're not on an Envira screen so we can bail.
+		if ( ! function_exists( 'get_current_screen' ) ) {
+			return $strings;
+		}
+		// Get current screen object
+		$screen = get_current_screen();
+		// Get post ID from query
+		$post_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0;
+
+		global $hook_suffix;
+		echo '<div class="notice notice-info"><p>Current hook: ' . esc_html( get_post_type( $_GET['post'] ) ) . ' ' . esc_html( $post_id ) . ' ' . esc_html( $hook_suffix ) . ' ' . esc_html( $screen->post_type ) . '</p></div>';
+	}
+);
+
+

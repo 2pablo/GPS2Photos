@@ -117,6 +117,7 @@ jQuery(document).ready(function ($) {
 		var $saveBtn = modal.find('.gps2photos-save-coords-btn');
 		// For NextGEN, original-lat is not set, so it will be undefined.
 		var originalLat = $saveBtn.data('original-lat');
+		var originalLon = $saveBtn.data('original-lon');
 		// Argument 'galleryName' is either false, "nextgen" "envira", "foo" or "modula".
 		var isGallery = !!galleryName; // Convert to boolean.
 		
@@ -139,7 +140,7 @@ jQuery(document).ready(function ($) {
 			// The actual image is determined by the data-image-id attribute on the buttons.
 			if (!isGallery) {
 				if (window.gps2photos_maps.map) {
-					updateMapPosition(lat, lon);
+					updateMapPosition(originalLat, originalLon);
 				} else {
 					gps2photos_get_azure_api_key(window['gps2photos_init_map']);
 				}

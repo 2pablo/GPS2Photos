@@ -147,7 +147,11 @@ jQuery(document).ready(function ($) {
 			// If the map is already initialized, update its position with the current coordinates from the inputs.
 			if (window.gps2photos_maps[imageId]) {
 				if (originalLat !== '' && originalLat !== undefined) {
-					updateMapPosition(imageId, $('#gps2photos-modal-lat-input-' + imageId).val(), $('#gps2photos-modal-lon-input-' + imageId).val());
+					updateMapPosition(
+						imageId,
+						$saveBtn.data('original-lat'),
+						$saveBtn.data('original-lon')
+					);
 				}
 			}
 
@@ -175,20 +179,26 @@ jQuery(document).ready(function ($) {
 
 							$('#gps2photos-modal-lat-input-' + modalId).val(lat);
 							$('#gps2photos-modal-lon-input-' + modalId).val(lon);
-
-							// Only update file-path & original-lat/lon for NextGEN, as it's pre-filled for Media Library.
+							console.log('Fetched GPS data via AJAX:', lat, lon);
+							// Only update file-path & original-lat/lon for NextGEN and other galleries, as it's pre-filled for Media Library.
 							if (galleryName) {
 								$saveBtn.data('original-lat', lat).data('original-lon', lon);
 								modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', filePath);
 							}
 
-							// Update the map with the new coordinates
-							updateMapPosition(imageId, lat, lon);
+							// Initialize the map if not already done.)
 							if (!window.gps2photos_maps[imageId]) {
 								function initMapWithKeyAndPosition(apiKey) {
 									window['gps2photos_init_map_' + imageId](apiKey, [lat, lon]);
 								}
 								gps2photos_get_azure_api_key(initMapWithKeyAndPosition);
+							} else {
+								// Update map with the new coordinates.
+								updateMapPosition(
+									imageId,
+									lat,
+									lon
+								);
 							}
 
 							// Show/hide the restore button based on the AJAX response.

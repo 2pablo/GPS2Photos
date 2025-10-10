@@ -104,7 +104,6 @@ jQuery(document).ready(function ($) {
 				if (window.gps2photos_azure_api_key) {
 					window['gps2photos_init_map'](window.gps2photos_azure_api_key);
 				} else {
-					console.log('Fetching Azure Maps API key...');
 					gps2photos_get_azure_api_key(window['gps2photos_init_map']);
 				}
 			}
@@ -132,7 +131,7 @@ jQuery(document).ready(function ($) {
 
 							$('#gps2photos-modal-lat-input').val(lat);
 							$('#gps2photos-modal-lon-input').val(lon);
-							console.log('Fetched GPS data via AJAX:', lat, lon);
+
 							// Update data attributes for all cases to ensure consistency.
 							$saveBtn.data('original-lat', lat).data('original-lon', lon);
 							modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', filePath);

@@ -76,46 +76,6 @@ jQuery(document).ready(function ($) {
 	 * @param {string|null} [pid=null]        The picture ID from NextGEN Gallery.
 	 */
 	function openModal(imageId, imagePath, galleryName = false, pid = null) {
-		/**
-		 * Updates the map's camera and marker to a new position.
-		 *
-		 * @param {string} mapId   The ID of the map to update.
-		 * @param {string} lat     The latitude.
-		 * @param {string} lon     The longitude.
-		 */
-		function updateMapPosition(mapId, lat, lon) {
-			if (window.gps2photos_maps && window.gps2photos_maps[mapId]) {
-				var map = window.gps2photos_maps[mapId];
-				var marker = window.gps2photos_markers[mapId];
-				var zoomLevel = window.gps2photos_maps['zoom'] || map.getCamera().zoom;
-
-				if (lat && lon) {
-					var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));
-					marker.setOptions({
-						position: newPosition,
-						visible: true
-					});
-					map.setCamera({
-						center: newPosition,
-						zoom: zoomLevel,
-						type: 'fly'
-					});
-				} else {
-					// No GPS data, hide the marker and reset view
-					if (marker) {
-						marker.setOptions({ visible: false });
-					}
-					map.setCamera({
-						center: [0, 30],
-						zoom: 1,
-						type: 'fly'
-					});
-				}
-			} else {
-				console.log('Map not ready for position update.');
-			}
-		}
-
 		var modal = $('#gps2photos-modal-' + imageId);
 		var $saveBtn = modal.find('.gps2photos-save-coords-btn');
 		// For NextGEN, original-lat is not set, so it will be undefined.
@@ -130,9 +90,12 @@ jQuery(document).ready(function ($) {
 			if (isGallery) {
 				$saveBtn.data('image-id', pid).data('gallery-name', galleryName);
 				modal.find('.gps2photos-restore-coords-btn').data('image-id', pid).data('gallery-name', galleryName);
-
-				//modal.find('.gps2photos-save-coords-btn').data('image-id', pid).data('gallery-name', '1');
-				//modal.find('.gps2photos-restore-coords-btn').data('image-id', pid).data('gallery-name', '1');
+				// For galleries we are reusing the same modal.
+				// Only fetch if the pid is different from the one already on the button.
+				if ($saveBtn.data('image-id') !== pid) {
+					// Reset the originalLat to force an AJAX fetch.
+					originalLat = undefined;
+				}
 			}
 
 			// Initialize the map for WP Media Library only if not already done.
@@ -144,13 +107,6 @@ jQuery(document).ready(function ($) {
 				} else {
 					console.log('Fetching Azure Maps API key...');
 					gps2photos_get_azure_api_key(window['gps2photos_init_map_' + imageId]);
-				}
-			} else {
-				// For galleries we are reusing the same modal.
-				// Only fetch if the pid is different from the one already on the button.
-				if ($saveBtn.data('image-id') !== pid) {
-					// Reset the originalLat to force an AJAX fetch.
-					originalLat = undefined;
 				}
 			}
 
@@ -191,11 +147,32 @@ jQuery(document).ready(function ($) {
 								gps2photos_get_azure_api_key(initMapWithKeyAndPosition);
 							} else {
 								// Update map with the new coordinates.
-								updateMapPosition(
-									modalId,
-									lat,
-									lon
-								);
+								var map = window.gps2photos_maps[mapId];
+								var marker = window.gps2photos_markers[mapId];
+								var zoomLevel = window.gps2photos_maps['zoom'] || map.getCamera().zoom;
+
+								if (lat && lon) {
+									var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));
+									marker.setOptions({
+										position: newPosition,
+										visible: true
+									});
+									map.setCamera({
+										center: newPosition,
+										zoom: zoomLevel,
+										type: 'fly'
+									});
+								} else {
+									// No GPS data, hide the marker and reset view
+									if (marker) {
+										marker.setOptions({ visible: false });
+									}
+									map.setCamera({
+										center: [0, 30],
+										zoom: 1,
+										type: 'fly'
+									});
+								}
 							}
 
 							// Show/hide the restore button based on the AJAX response.
@@ -207,10 +184,6 @@ jQuery(document).ready(function ($) {
 						console.error('Ajax failed to fetch GPS coordinates.');
 					}
 				});
-			}
-			// If the map is already initialized, update its position with the current coordinates from the inputs.
-			else if (window.gps2photos_maps[imageId]) {
-				updateMapPosition(imageId, $saveBtn.data('original-lat'), $saveBtn.data('original-lon'));
 			}
 		}
 	}

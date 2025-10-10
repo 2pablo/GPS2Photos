@@ -29,7 +29,7 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
 	$idn = intval( $id_no );
 
 	$output  = '
-<div id="gps2photos-modal-' . $idn . '" class="gps2photos-modal">
+<div id="gps2photos-modal" class="gps2photos-modal">
 	<div class="gps2photos-modal-content" style="max-width: ' . $options['map_width'] . '; max-height: ' . $options['map_height'] . ';">
 		<span class="gps2photos-modal-close">&times;</span>
 		<h2>' . esc_html__( 'Add/Amend GPS Coordinates', 'gps-2-photos' ) . '
@@ -42,13 +42,13 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
 				</span>
 			</span>
 		</h2>
-		<div id="gps2photos-map-container-' . $idn . '" class="gps2photos-map-container"></div>
+		<div id="gps2photos-map-container" class="gps2photos-map-container"></div>
 		<div id="gps2photos-modal-inputs">
-			<p><label for="gps2photos-modal-lat-input-' . $idn . '">' . esc_html__( 'Latitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lat-input-' . $idn . '" value="' . esc_attr( $lat ) . '" style="width: 100%;" /></p>
-			<p><label for="gps2photos-modal-lon-input-' . $idn . '">' . esc_html__( 'Longitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lon-input-' . $idn . '" value="' . esc_attr( $lon ) . '" style="width: 100%;" /></p>';
+			<p><label for="gps2photos-modal-lat-input">' . esc_html__( 'Latitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lat-input" value="' . esc_attr( $lat ) . '" style="width: 100%;" /></p>
+			<p><label for="gps2photos-modal-lon-input">' . esc_html__( 'Longitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lon-input" value="' . esc_attr( $lon ) . '" style="width: 100%;" /></p>';
 	$checked = isset( $options['always_override_gps'] ) && $options['always_override_gps'] === 1 ? 'checked' : '';
 	$output .= '
-			<p><input type="checkbox" id="gps2photos-override-checkbox-' . $idn . '" ' . $checked . '>&ensp;<label for="gps2photos-override-checkbox-' . $idn . '">' . esc_html__( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ) . '</label></p>';
+			<p><input type="checkbox" id="gps2photos-override-checkbox" ' . $checked . '>&ensp;<label for="gps2photos-override-checkbox">' . esc_html__( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ) . '</label></p>';
 	// Check for backup coordinates to determine if the restore button should be visible.
 	$backup_coords     = gps2photos_get_backup_coordinates( $file_path );
 	$restore_btn_style = $backup_coords ? '' : ' style="display:none;"';
@@ -56,7 +56,7 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
 	$output           .= '
 			<div class="gps2photos-save-container">
 				<button type="button" class="button button-primary gps2photos-save-coords-btn" data-image-id="' . $idn . '" data-original-lat="' . esc_attr( $lat ) . '" data-original-lon="' . esc_attr( $lon ) . '" data-file-path="' . esc_attr( $file_path ) . '">' . esc_html__( 'Save Coordinates', 'gps-2-photos' ) . '</button>
-				<div id="gps2photos-modal-message-' . $idn . '" class="gps2photos-modal-message" style="display: none;"></div>
+				<div id="gps2photos-modal-message" class="gps2photos-modal-message" style="display: none;"></div>
 			</div>
 			<p><button type="button" class="button gps2photos-restore-coords-btn" data-image-id="' . $idn . '" data-file-path="' . esc_attr( $file_path ) . '" ' . $restore_btn_style . '>' . $restore_btn_text . '</button></p>
 		</div>
@@ -65,18 +65,16 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
 <script>
     // Store map and marker instances globally to be accessible.
     window.gps2photos_maps = window.gps2photos_maps || {};
-    window.gps2photos_markers = window.gps2photos_markers || {};
+    window.gps2photos_maps.marker = window.gps2photos_maps.marker || {};
 
-    function gps2photos_init_map_' . $idn . '(apiKey, position) {
+    function gps2photos_init_map(apiKey, position) {
         // Prevent re-initialization.
-        if (window.gps2photos_maps[' . $idn . ']) {
+        if (window.gps2photos_maps.map) {
             return;
         }
 
-        var idn = ' . $idn . ';
-
-		var latInput = document.getElementById("gps2photos-modal-lat-input-" + idn);
-		var lonInput = document.getElementById("gps2photos-modal-lon-input-" + idn);
+		var latInput = document.getElementById("gps2photos-modal-lat-input");
+		var lonInput = document.getElementById("gps2photos-modal-lon-input");
 
 		if (!position) {
         	var initialLat = parseFloat(latInput.value) || 30;
@@ -88,7 +86,7 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
 
         var hasInitialCoords = !!(latInput.value && lonInput.value);
 
-        var map = new atlas.Map("gps2photos-map-container-" + idn, {
+        var map = new atlas.Map("gps2photos-map-container", {
 			renderWorldCopies: false,
             authOptions: {
                 authType: "subscriptionKey",
@@ -106,8 +104,8 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
 
 	$output .= '
 
-        window.gps2photos_maps[idn] = map;
-		window.gps2photos_maps["zoom"] = ' . (int) $options['zoom'] . ';
+        window.gps2photos_maps.map = map;
+		window.gps2photos_maps.zoom = ' . (int) $options['zoom'] . ';
 
         map.events.add("ready", function () {
             var style = "auto"; // "auto", "light", "dark"
@@ -157,7 +155,7 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
 						visible: hasInitialCoords
                     });
                     map.markers.add(marker);
-                    window.gps2photos_markers[idn] = marker;
+                    window.gps2photos_maps.marker = marker;
 
                     // Update inputs when dragging ends.
                     map.events.add("dragend", marker, function () {

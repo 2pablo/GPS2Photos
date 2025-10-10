@@ -76,7 +76,7 @@ jQuery(document).ready(function ($) {
 	 * @param {string|null} [pid=null]        The picture ID from NextGEN Gallery.
 	 */
 	function openModal(imageId, imagePath, galleryName = false, pid = null) {
-		var modal = $('#gps2photos-modal-' + imageId);
+		var modal = $('#gps2photos-modal');
 		var $saveBtn = modal.find('.gps2photos-save-coords-btn');
 		// For NextGEN, original-lat is not set, so it will be undefined.
 		var originalLat = $saveBtn.data('original-lat');
@@ -129,26 +129,25 @@ jQuery(document).ready(function ($) {
 							var lon = response.data.longitude || '';
 							var filePath = response.data.file_path || '';
 							var backupExists = response.data.backup_exists || false;
-							var modalId = isGallery ? '0' : imageId;
 
-							$('#gps2photos-modal-lat-input-' + modalId).val(lat);
-							$('#gps2photos-modal-lon-input-' + modalId).val(lon);
+							$('#gps2photos-modal-lat-input').val(lat);
+							$('#gps2photos-modal-lon-input').val(lon);
 							console.log('Fetched GPS data via AJAX:', lat, lon);
 							// Update data attributes for all cases to ensure consistency.
 							$saveBtn.data('original-lat', lat).data('original-lon', lon);
 							modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', filePath);
 
 							// Initialize the map if not already done.)
-							if (!window.gps2photos_maps[imageId]) {
+							if (!window.gps2photos_maps.map) {
 								function initMapWithKeyAndPosition(apiKey) {
-									window['gps2photos_init_map_' + modalId](apiKey, [lat, lon]);
+									window['gps2photos_init_map'](apiKey, [lat, lon]);
 								}
 								gps2photos_get_azure_api_key(initMapWithKeyAndPosition);
 							} else {
 								// Update map with the new coordinates.
-								var map = window.gps2photos_maps[imageId];
-								var marker = window.gps2photos_markers[imageId];
-								var zoomLevel = window.gps2photos_maps['zoom'];
+								var map = window.gps2photos_maps.map;
+								var marker = window.gps2photos_maps.marker;
+								var zoomLevel = window.gps2photos_maps.zoom;
 
 								if (lat && lon) {
 									var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));
@@ -210,11 +209,10 @@ jQuery(document).ready(function ($) {
 		var originalLon = $button.data('original-lon');
 		var galleryName = $(this).data('gallery-name');
 		// For NextGEN, the modal ID is always 1, but the attachmentId is the pid
-		var modalId = galleryName ? '0' : attachmentId;
-		var latitude = $('#gps2photos-modal-lat-input-' + modalId).val().trim();
-		var longitude = $('#gps2photos-modal-lon-input-' + modalId).val().trim();
-		var $overrideCheckbox = $('#gps2photos-override-checkbox-' + modalId);
-		var $messageDiv = $('#gps2photos-modal-message-' + modalId).addClass('notice');
+		var latitude = $('#gps2photos-modal-lat-input').val().trim();
+		var longitude = $('#gps2photos-modal-lon-input').val().trim();
+		var $overrideCheckbox = $('#gps2photos-override-checkbox');
+		var $messageDiv = $('#gps2photos-modal-message').addClass('notice');
 		var latNum, lonNum;
 
 		// --- Validation ---
@@ -307,10 +305,10 @@ jQuery(document).ready(function ($) {
 					$button.data('original-lon', lonNum);
 
 					// Update the map marker position if map exists
-					if (window.gps2photos_maps && window.gps2photos_maps[modalId]) {
-						var map = window.gps2photos_maps[modalId];
-						var zoomLevel = window.gps2photos_maps['zoom']
-						var marker = window.gps2photos_markers[modalId];
+					if (window.gps2photos_maps.map) {
+						var map = window.gps2photos_maps.map;
+						var zoomLevel = window.gps2photos_maps.zoom;
+						var marker = window.gps2photos_maps.marker;
 
 						if (!latNum || !lonNum) {
 							// No GPS data, hide the marker and reset view
@@ -337,7 +335,7 @@ jQuery(document).ready(function ($) {
 					}
 					// If a backup was created, show the restore button.
 					if (response.data.backup_created) {
-						var modal = $('#gps2photos-modal-' + modalId);
+						var modal = $('#gps2photos-modal');
 						modal.find('.gps2photos-restore-coords-btn').show();
 					}
 
@@ -378,8 +376,7 @@ jQuery(document).ready(function ($) {
 		var attachmentId = $this.data('image-id');
 		var galleryName = $(this).data('gallery-name');
 		var filePath = $(this).data('file-path') || '';
-		var modalId = galleryName ? '0' : attachmentId;
-		var $messageDiv = $('#gps2photos-modal-message-' + modalId).addClass('notice');
+		var $messageDiv = $('#gps2photos-modal-message').addClass('notice');
 		var $restoreBtn = $this;
 
 		if (!confirm(gps2photos_ajax.l10n.confirm_restore)) {
@@ -403,15 +400,15 @@ jQuery(document).ready(function ($) {
 					$messageDiv.text(response.data.message).removeClass('error').addClass('notice-success').show();
 
 					// Update the input fields with the restored coordinates
-					$('#gps2photos-modal-lat-input-' + modalId).val(restoredCoords.latitude.toFixed(6));
-					$('#gps2photos-modal-lon-input-' + modalId).val(restoredCoords.longitude.toFixed(6));
+					$('#gps2photos-modal-lat-input').val(restoredCoords.latitude.toFixed(6));
+					$('#gps2photos-modal-lon-input').val(restoredCoords.longitude.toFixed(6));
 
 					// Update the map marker position if map exists
-					if (window.gps2photos_maps && window.gps2photos_maps[modalId]) {
-						var map = window.gps2photos_maps[modalId];
+					if (window.gps2photos_maps.map) {
+						var map = window.gps2photos_maps.map;
 						var newPosition = new atlas.data.Position(restoredCoords.longitude, restoredCoords.latitude);
-						var marker = window.gps2photos_markers[modalId];
-						var zoomLevel = window.gps2photos_maps['zoom'] || map.getCamera().zoom || 10;
+						var marker = window.gps2photos_maps.marker;
+						var zoomLevel = window.gps2photos_maps.zoom;
 
 						marker.setOptions({
 							position: newPosition,

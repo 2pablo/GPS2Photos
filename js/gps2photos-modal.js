@@ -255,7 +255,7 @@ jQuery(document).ready(function ($) {
 			$messageDiv.text(gps2photos_ajax.l10n.coords_not_changed).fadeIn();
 			setTimeout(function () {
 				$messageDiv.fadeOut(function () {
-					$(this).removeClass('error').removeClass('notice-success').text('');
+					$(this).removeClass('error').removeClass('notice-success').addClass('notice-warning').text('');
 				});
 			}, 3000);
 			return; // Stop execution.
@@ -263,7 +263,7 @@ jQuery(document).ready(function ($) {
 			$messageDiv.text(gps2photos_ajax.l10n.coords_already_empty).fadeIn();
 			setTimeout(function () {
 				$messageDiv.fadeOut(function () {
-					$(this).removeClass('error').removeClass('notice-success').text('');
+					$(this).removeClass('error').removeClass('notice-success').addClass('notice-warning').text('');
 				});
 			}, 3000);
 			return; // Stop execution.
@@ -298,7 +298,7 @@ jQuery(document).ready(function ($) {
 			data: ajaxData,
 			success: function (response) {
 				if (response.success) {
-					$messageDiv.text(response.data.message).removeClass('error').addClass('notice-success').show();
+					$messageDiv.text(response.data.message).removeClass('error').removeClass('notice-warning').addClass('notice-success').show();
 
 					// Update original data attributes to prevent re-saving without changes.
 					$button.data('original-lat', latNum);
@@ -355,11 +355,11 @@ jQuery(document).ready(function ($) {
 
 					setTimeout(function () { $messageDiv.fadeOut(); }, 5000);
 				} else {
-					$messageDiv.text(gps2photos_ajax.l10n.error_prefix + ' ' + response.data).removeClass('notice-success').addClass('error').show();
+					$messageDiv.text(gps2photos_ajax.l10n.error_prefix + ' ' + response.data).removeClass('notice-success').removeClass('notice-warning').addClass('error').show();
 				}
 			},
 			error: function () {
-				$messageDiv.text(gps2photos_ajax.l10n.error_saving).removeClass('notice-success').addClass('error').show();
+				$messageDiv.text(gps2photos_ajax.l10n.error_saving).removeClass('notice-success').removeClass('notice-warning').addClass('error').show();
 				setTimeout(function () { $messageDiv.fadeOut(); }, 5000);
 			},
 			complete: function () {

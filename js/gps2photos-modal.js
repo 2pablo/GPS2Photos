@@ -52,7 +52,7 @@ jQuery(document).ready(function ($) {
 		openModal(attachmentId);
 	});
 
-	// Handle click on our custom action link for NextGEN Gallery
+	// Handle click on our custom action link for NextGEN Gallery.
 	$(document).on('click', '.gps2photos-add-gps', function (e) {
 		e.preventDefault();
 		var galleryName = $(this).data('gallery-name');
@@ -81,11 +81,11 @@ jQuery(document).ready(function ($) {
 		// For NextGEN, original-lat is not set, so it will be undefined.
 		var originalLat = $saveBtn.data('original-lat');
 		// Argument 'galleryName' is either false, "nextgen" "envira", "foo" or "modula".
-		var isGallery = !!galleryName; // Convert to boolean
+		var isGallery = !!galleryName; // Convert to boolean.
 		
 		if (modal.length) {
 			modal.css('display', 'flex');
-			// For NextGEN, Envira, Foo and Modula Gallery we need to update the image-id and pid on the buttons
+			// For NextGEN, Envira, Foo and Modula Gallery we need to update the image-id and pid on the buttons.
 			if (isGallery) {
 				// For galleries we are reusing the same modal.
 				// Only fetch if the pid is different from the one already on the button.
@@ -102,10 +102,10 @@ jQuery(document).ready(function ($) {
 			// The actual image is determined by the data-image-id attribute on the buttons.
 			if (!isGallery) {
 				if (window.gps2photos_azure_api_key) {
-					window['gps2photos_init_map_' + imageId](window.gps2photos_azure_api_key);
+					window['gps2photos_init_map'](window.gps2photos_azure_api_key);
 				} else {
 					console.log('Fetching Azure Maps API key...');
-					gps2photos_get_azure_api_key(window['gps2photos_init_map_' + imageId]);
+					gps2photos_get_azure_api_key(window['gps2photos_init_map']);
 				}
 			}
 
@@ -118,7 +118,7 @@ jQuery(document).ready(function ($) {
 					data: {
 						action: 'gps2photos_get_coordinates',
 						nonce: gps2photos_ajax.get_gps_nonce,
-						// Use pid for NextGEN and other galleries, attachmentId for Media Library
+						// Use pid for NextGEN and other galleries, attachmentId for Media Library.
 						image_id: isGallery ? pid : imageId,
 						imagePath: imagePath,
 						gallery_name: galleryName || '0'
@@ -137,7 +137,7 @@ jQuery(document).ready(function ($) {
 							$saveBtn.data('original-lat', lat).data('original-lon', lon);
 							modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', filePath);
 
-							// Initialize the map if not already done.)
+							// Initialize the map if not already done.
 							if (!window.gps2photos_maps.map) {
 								function initMapWithKeyAndPosition(apiKey) {
 									window['gps2photos_init_map'](apiKey, [lat, lon]);
@@ -161,7 +161,7 @@ jQuery(document).ready(function ($) {
 										type: 'fly'
 									});
 								} else {
-									// No GPS data, hide the marker and reset view
+									// No GPS data, hide the marker.
 									if (marker) {
 										marker.setOptions({ visible: false });
 									}
@@ -187,12 +187,12 @@ jQuery(document).ready(function ($) {
 		}
 	}
 
-	// Handle closing the modal
+	// Handle closing the modal.
 	$(document).on('click', '.gps2photos-modal-close', function () {
 		$(this).closest('.gps2photos-modal').hide();
 	});
 
-	// Handle clicking outside the modal to close it
+	// Handle clicking outside the modal to close it.
 	$(window).on('click', function (event) {
 		if ($(event.target).is('.gps2photos-modal')) {
 			$(event.target).hide();
@@ -200,7 +200,7 @@ jQuery(document).ready(function ($) {
 	});
 
 	// ----------------------------------------------------------------------------------------------
-	// Handle saving the coordinates
+	// Handle saving the coordinates.
 	$(document).on('click', '.gps2photos-save-coords-btn', function () {
 		var attachmentId = $(this).data('image-id');
 		var filePath = $(this).data('file-path') || '';
@@ -209,7 +209,7 @@ jQuery(document).ready(function ($) {
 		var originalLat = $button.data('original-lat');
 		var originalLon = $button.data('original-lon');
 		var galleryName = $(this).data('gallery-name');
-		// For NextGEN, the modal ID is always 1, but the attachmentId is the pid
+		// For NextGEN, the modal ID is always 1, but the attachmentId is the pid.
 		var latitude = $('#gps2photos-modal-lat-input').val().trim();
 		var longitude = $('#gps2photos-modal-lon-input').val().trim();
 		var $overrideCheckbox = $('#gps2photos-override-checkbox');
@@ -251,7 +251,7 @@ jQuery(document).ready(function ($) {
 		}
 
 		// --- Check for changes ---
-		// Use a small tolerance for float comparison
+		// Use a small tolerance for float comparison.
 		if (latitude !== '' && longitude !== '' && Math.abs(latNum - originalLat) < 0.000001 && Math.abs(lonNum - originalLon) < 0.000001) {
 			$messageDiv.text(gps2photos_ajax.l10n.coords_not_changed).fadeIn();
 			setTimeout(function () {
@@ -259,7 +259,7 @@ jQuery(document).ready(function ($) {
 					$(this).removeClass('error').removeClass('notice-success').text('');
 				});
 			}, 3000);
-			return; // Stop execution
+			return; // Stop execution.
 		} else if (latitude === '' && longitude === '' && (originalLat === '' || originalLat === undefined) && (originalLon === '' || originalLon === undefined)) {
 			$messageDiv.text(gps2photos_ajax.l10n.coords_already_empty).fadeIn();
 			setTimeout(function () {
@@ -267,7 +267,7 @@ jQuery(document).ready(function ($) {
 					$(this).removeClass('error').removeClass('notice-success').text('');
 				});
 			}, 3000);
-			return; // Stop execution
+			return; // Stop execution.
 		}
 
 		var ajaxData = {
@@ -278,15 +278,15 @@ jQuery(document).ready(function ($) {
 			file_path: filePath
 		};
 
-		// Check if the image has original GPS data (the checkbox will exist)
+		// Check if the image has original GPS data (the checkbox will exist).
 		if ($overrideCheckbox.length > 0) {
-			// If the override checkbox is NOT checked, ask for confirmation
+			// If the override checkbox is NOT checked, ask for confirmation.
 			if (!$overrideCheckbox.is(':checked') && originalLat !== '' && originalLat !== undefined && originalLon !== '' && originalLon !== undefined) {
 				if (!confirm(gps2photos_ajax.l10n.confirm_override)) {
-					return; // Stop if the user cancels
+					return; // Stop if the user cancels.
 				}
 			}
-			// Include the state of the checkbox to update the global setting
+			// Include the state of the checkbox to update the global setting.
 			ajaxData.override_setting = $overrideCheckbox.is(':checked') ? 1 : 0;
 		}
 
@@ -301,18 +301,18 @@ jQuery(document).ready(function ($) {
 				if (response.success) {
 					$messageDiv.text(response.data.message).removeClass('error').addClass('notice-success').show();
 
-					// Update original data attributes to prevent re-saving without changes
+					// Update original data attributes to prevent re-saving without changes.
 					$button.data('original-lat', latNum);
 					$button.data('original-lon', lonNum);
 
-					// Update the map marker position if map exists
+					// Update the map marker position if map exists.
 					if (window.gps2photos_maps.map) {
 						var map = window.gps2photos_maps.map;
 						var zoomLevel = window.gps2photos_maps.zoom;
 						var marker = window.gps2photos_maps.marker;
 
 						if (!latNum || !lonNum) {
-							// No GPS data, hide the marker and reset view
+							// No GPS data, hide the marker and reset view.
 							marker.setOptions({ visible: false });
 							map.setCamera({
 								center: [0, 30],
@@ -342,14 +342,14 @@ jQuery(document).ready(function ($) {
 
 					// If not NextGEN, update the attachment fields on the main page if they exist.
 					if (!galleryName) {
-						// Selector for attachment details modal (grid view)
+						// Selector for attachment details modal (grid view).
 						var latDMS = gps2photos_decimalToDMS(latitude, true);
 						var lonDMS = gps2photos_decimalToDMS(longitude, false);
 
 						$('input[name="attachments[' + attachmentId + '][gps_latitude]"]').val(latDMS);
 						$('input[name="attachments[' + attachmentId + '][gps_longitude]"]').val(lonDMS);
 
-						// Selector for attachment edit page (list view)
+						// Selector for attachment edit page (list view).
 						$('#gps_latitude').val(latDMS);
 						$('#gps_longitude').val(lonDMS);
 					}
@@ -371,7 +371,7 @@ jQuery(document).ready(function ($) {
 	});
 
 	// ----------------------------------------------------------------------------------------------
-	// Restore Coordinates button click handler
+	// Restore Coordinates button click handler.
 	$(document).on('click', '.gps2photos-restore-coords-btn', function () {
 		var $this = $(this);
 		var attachmentId = $this.data('image-id');
@@ -400,11 +400,11 @@ jQuery(document).ready(function ($) {
 					var restoredCoords = response.data.coords;
 					$messageDiv.text(response.data.message).removeClass('error').addClass('notice-success').show();
 
-					// Update the input fields with the restored coordinates
+					// Update the input fields with the restored coordinates.
 					$('#gps2photos-modal-lat-input').val(restoredCoords.latitude.toFixed(6));
 					$('#gps2photos-modal-lon-input').val(restoredCoords.longitude.toFixed(6));
 
-					// Update the map marker position if map exists
+					// Update the map marker position if map exists.
 					if (window.gps2photos_maps.map) {
 						var map = window.gps2photos_maps.map;
 						var newPosition = new atlas.data.Position(restoredCoords.longitude, restoredCoords.latitude);
@@ -422,19 +422,19 @@ jQuery(document).ready(function ($) {
 						});
 					}
 
-					// Hide the restore button as the backup is now gone
+					// Hide the restore button as the backup is now gone.
 					$restoreBtn.hide();
 
 					// If not NextGEN, update the attachment fields on the main page if they exist.
 					if (!galleryName) {
-						// Selector for attachment details modal (grid view)
+						// Selector for attachment details modal (grid view).
 						var restoredLatDMS = gps2photos_decimalToDMS(restoredCoords.latitude, true);
 						var restoredLonDMS = gps2photos_decimalToDMS(restoredCoords.longitude, false);
 
 						$('input[name="attachments[' + attachmentId + '][gps_latitude]"]').val(restoredLatDMS);
 						$('input[name="attachments[' + attachmentId + '][gps_longitude]"]').val(restoredLonDMS);
 
-						// Selector for attachment edit page (list view)
+						// Selector for attachment edit page (list view).
 						$('#gps_latitude').val(restoredLatDMS);
 						$('#gps_longitude').val(restoredLonDMS);
 					}

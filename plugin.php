@@ -103,10 +103,10 @@ function gps2photos_defaults_array() {
 		'geo_azure_key'               => null,
 		'geo_azure_auth_status'       => 0,     // 0 - not activated, 1 - activated
 		'zoom'                        => '16',
-		'map_height'                  => '300px',
-		'map_width'                   => '100%',
+		'map_height'                  => '80%',
+		'map_width'                   => '80%',
 		'map_fullscreen'              => 0, // This option shows Azure Maps button to open not in a full browser window but on the full physical screen.
-		'map'                         => 'road', // road/satellite/satellite_road_labels/grayscale_light/grayscale_dark/night/road_shaded_relief(high_contrast_dark/high_contrast_light-only in the Plus version).
+		'map'                         => 'satellite_road_labels', // road/satellite/satellite_road_labels/grayscale_light/grayscale_dark/night/road_shaded_relief(high_contrast_dark/high_contrast_light-only in the Plus version).
 		'gps_media_library'           => 1, // Add GPS info to  WP Media Library.
 		'gps_coordinates_preview'     => 1, // Show GPS coordinates preview in the WP Media Library.
 		'always_override_gps'         => 0, // Do not ask again and always override existing GPS coordinates in a Photo.

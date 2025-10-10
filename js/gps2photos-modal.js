@@ -85,17 +85,16 @@ jQuery(document).ready(function ($) {
 		
 		if (modal.length) {
 			modal.css('display', 'flex');
-
 			// For NextGEN, Envira, Foo and Modula Gallery we need to update the image-id and pid on the buttons
 			if (isGallery) {
-				$saveBtn.data('image-id', pid).data('gallery-name', galleryName);
-				modal.find('.gps2photos-restore-coords-btn').data('image-id', pid).data('gallery-name', galleryName);
 				// For galleries we are reusing the same modal.
 				// Only fetch if the pid is different from the one already on the button.
 				if ($saveBtn.data('image-id') !== pid) {
 					// Reset the originalLat to force an AJAX fetch.
 					originalLat = undefined;
 				}
+				$saveBtn.data('image-id', pid).data('gallery-name', galleryName);
+				modal.find('.gps2photos-restore-coords-btn').data('image-id', pid).data('gallery-name', galleryName);	
 			}
 
 			// Initialize the map for WP Media Library only if not already done.
@@ -147,8 +146,8 @@ jQuery(document).ready(function ($) {
 								gps2photos_get_azure_api_key(initMapWithKeyAndPosition);
 							} else {
 								// Update map with the new coordinates.
-								var map = window.gps2photos_maps[mapId];
-								var marker = window.gps2photos_markers[mapId];
+								var map = window.gps2photos_maps[imageId];
+								var marker = window.gps2photos_markers[imageId];
 								var zoomLevel = window.gps2photos_maps['zoom'] || map.getCamera().zoom;
 
 								if (lat && lon) {

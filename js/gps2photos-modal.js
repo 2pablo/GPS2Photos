@@ -165,9 +165,10 @@ jQuery(document).ready(function ($) {
 									if (marker) {
 										marker.setOptions({ visible: false });
 									}
+									var newZoom = map.getCamera().zoom > zoomLevel ? map.getCamera().zoom : zoomLevel;
 									map.setCamera({
 										//center: [0, 30],
-										zoom: zoomLevel,
+										zoom: newZoom,
 										type: 'fly'
 									});
 								}

@@ -44,6 +44,43 @@ jQuery(document).ready(function ($) {
 		return dir + ' ' + d + '°' + m + "'" + s + '"';
 	}
 
+	/**
+	 * Updates the map's camera and marker to a new position.
+	 *
+	 * @param {string} mapId   The ID of the map to update.
+	 * @param {string} lat     The latitude.
+	 * @param {string} lon     The longitude.
+	 */
+	function updateMapPosition(lat, lon) {
+		// Update map with the new coordinates.
+		var map = window.gps2photos_maps.map;
+		var marker = window.gps2photos_maps.marker;
+		var zoomLevel = window.gps2photos_maps.zoom;
+
+		if (lat && lon) {
+			var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));
+			marker.setOptions({
+				position: newPosition,
+				visible: true
+			});
+			map.setCamera({
+				center: newPosition,
+				zoom: zoomLevel,
+				type: 'fly'
+			});
+		} else {
+			// No GPS data, hide the marker.
+			if (marker) {
+				marker.setOptions({ visible: false });
+			}
+			var newZoom = map.getCamera().zoom < zoomLevel ? map.getCamera().zoom : zoomLevel;
+			map.setCamera({
+				//center: [0, 30],
+				zoom: newZoom,
+				type: 'fly'
+			});
+		}
+	}
 	// ----------------------------------------------------------------------------------------------
 
 	// Use event delegation for buttons that might be added dynamically.
@@ -101,8 +138,8 @@ jQuery(document).ready(function ($) {
 			// For NextGEN, we always initialize the map as imageId is always '0'.
 			// The actual image is determined by the data-image-id attribute on the buttons.
 			if (!isGallery) {
-				if (window.gps2photos_azure_api_key) {
-					window['gps2photos_init_map'](window.gps2photos_azure_api_key);
+				if (window.gps2photos_maps.map) {
+					updateMapPosition(lat, lon);
 				} else {
 					gps2photos_get_azure_api_key(window['gps2photos_init_map']);
 				}
@@ -144,33 +181,7 @@ jQuery(document).ready(function ($) {
 								gps2photos_get_azure_api_key(initMapWithKeyAndPosition);
 							} else {
 								// Update map with the new coordinates.
-								var map = window.gps2photos_maps.map;
-								var marker = window.gps2photos_maps.marker;
-								var zoomLevel = window.gps2photos_maps.zoom;
-
-								if (lat && lon) {
-									var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));
-									marker.setOptions({
-										position: newPosition,
-										visible: true
-									});
-									map.setCamera({
-										center: newPosition,
-										zoom: zoomLevel,
-										type: 'fly'
-									});
-								} else {
-									// No GPS data, hide the marker.
-									if (marker) {
-										marker.setOptions({ visible: false });
-									}
-									var newZoom = map.getCamera().zoom < zoomLevel ? map.getCamera().zoom : zoomLevel;
-									map.setCamera({
-										//center: [0, 30],
-										zoom: newZoom,
-										type: 'fly'
-									});
-								}
+								updateMapPosition(lat, lon);
 							}
 
 							// Show/hide the restore button based on the AJAX response.

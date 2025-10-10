@@ -129,9 +129,9 @@ jQuery(document).ready(function ($) {
 			var originalLat = $saveBtn.data('original-lat');
 			var originalLon = $saveBtn.data('original-lon');
 		} else {
-			if (buttonData('data-lat')) {
-				var originalLat = buttonData('data-lat');
-				var originalLon = buttonData('data-lon');
+			if (buttonData.lat) {
+				var originalLat = buttonData.lat;
+				var originalLon = buttonData.lon;
 			} else {
 				var originalLat = $saveBtn.data('original-lat');
 				var originalLon = $saveBtn.data('original-lon');
@@ -152,7 +152,7 @@ jQuery(document).ready(function ($) {
 			// Initialize the map for WP Media Library only if not already done.
 			// For NextGEN, we always initialize the map as imageId is always '0'.
 			// The actual image is determined by the data-image-id attribute on the buttons.
-			if (!isGallery && buttonData('data-lat')) {
+			if (!isGallery && buttonData.lat) {
 				initOrUpdateMap(originalLat, originalLon);
 			}
 

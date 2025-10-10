@@ -68,7 +68,7 @@ add_action( 'admin_footer-nextgen-gallery5_page_nggallery-manage-gallery', 'gps2
 function gps2photos_add_hidden_modal() {
 	$options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
 	// Add the modal HTML directly, but hidden.
-	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gps2photos_get_map_for_modal is escaping its output.
 	echo gps2photos_get_map_for_modal( $options, '0', null, array() );
 }
 
@@ -257,7 +257,7 @@ function gps2photos_render_gps_action_link( $id, $picture ) {
 	return sprintf(
 		'<a href="#" class="gps2photos-add-gps" data-gallery-name="nextgen" data-pid="%d" data-image-url="%s">%s</a>',
 		esc_attr( $picture->pid ),
-		esc_url( $picture->imageURL ),
+		esc_url( $picture->imageURL ), // imageURL is the absolute URL to the image.
 		esc_html__( 'Add/Amend GPS', 'gps-2-photos' )
 	);
 }

@@ -89,6 +89,7 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
         var hasInitialCoords = !!(latInput.value && lonInput.value);
 
         var map = new atlas.Map("gps2photos-map-container-" + idn, {
+			renderWorldCopies: false,
             authOptions: {
                 authType: "subscriptionKey",
                 subscriptionKey: apiKey

@@ -55,10 +55,6 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 		$gps_data_button_text = esc_html__( 'Add/Amend GPS Coordinates', 'gps-2-photos' );
 		if ( $mime_type === 'image/jpeg' ) {
 
-			// Only read GPS data on page load if the option is enabled. If not acquire using Ajax on modal open.
-			$gps_data = gps2photos_coordinates( $file_path ); // TODO: remove.
-
-
 			$geo2_options = get_option( 'plugin_geo2_maps_plus_options' );
 			if ( ( isset( $options['gps_media_library'] ) && $options['gps_media_library'] === 1 ) ||
 				( ! is_plugin_active( 'ngg-geo2-maps-plus/plugin.php' ) &&
@@ -73,19 +69,21 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 
 				$gps_data = gps2photos_coordinates( $file_path );
 
-				$gps_lat                     = $gps_data ? $gps_data['latitude_format'] : '';
-				$gps_lon                     = $gps_data ? $gps_data['longitude_format'] : '';
+				$gps_lat_dms                 = $gps_data ? $gps_data['latitude_format'] : '';
+				$gps_lon_dms                 = $gps_data ? $gps_data['longitude_format'] : '';
+				$gps_lat_dec                 = $gps_data ? $gps_data['latitude'] : '';
+				$gps_lon_dec                 = $gps_data ? $gps_data['longitude'] : '';
 				$form_fields['GPSLatitude']  = array(
-					'value' => $gps_lat,
+					'value' => $gps_lat_dms,
 					'label' => esc_html__( 'GPS Lat.', 'gps-2-photos' ),
 					'input' => 'html',
-					'html'  => "<input type='text' class='text' readonly='readonly' name='attachments[$post->ID][gps_latitude]' value='" . esc_attr( $gps_lat ) . "' /><br />",
+					'html'  => "<input type='text' class='text' readonly='readonly' name='attachments[$post->ID][gps_latitude]' value='" . esc_attr( $gps_lat_dms ) . "' /><br />",
 				);
 				$form_fields['GPSLongitude'] = array(
-					'value' => $gps_lon,
+					'value' => $gps_lon_dms,
 					'label' => esc_html__( 'GPS Long.', 'gps-2-photos' ),
 					'input' => 'html',
-					'html'  => "<input type='text' class='text' readonly='readonly' name='attachments[$post->ID][gps_longitude]' value='" . esc_attr( $gps_lon ) . "' /><br />",
+					'html'  => "<input type='text' class='text' readonly='readonly' name='attachments[$post->ID][gps_longitude]' value='" . esc_attr( $gps_lon_dms ) . "' /><br />",
 				);
 
 				if ( $gps_data ) {
@@ -113,7 +111,7 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 			);
 
 			// Add the modal HTML directly, but hidden.
-			$modal_html = gps2photos_get_map_for_modal( $options, $post->ID, $file_path, $gps_data );
+			$modal_html = gps2photos_get_map_for_modal( $options, $post->ID, $file_path, array( 'latitude' => $gps_lat_dec, 'longitude' => $gps_lon_dec ) );
 
 			$form_fields['gps_modal'] = array(
 				'input' => 'html',
@@ -277,7 +275,7 @@ function gps2photos_save_coordinates_callback() {
 	$original_gps  = gps2photos_coordinates( $file_path );
 	$backup_exists = gps2photos_get_backup_coordinates( $file_path ) !== false;
 
-	$result = gps2photos_save_gps_to_jpeg( $file_path, $lat_val, $lon_val, false, $original_gps );
+	$result = gps2photos_save_gps_to_jpeg( $file_path, $lat_val, $lon_val, false, $original_gps, $backup_exists );
 
 	if ( $result ) {
 		// If coordinates were removed, send a specific success message.
@@ -530,9 +528,10 @@ if ( ! $wp_filesystem ) {
  * @param float  $longitude Longitude in decimal degrees.
  * @param bool   $restore Whether this is a restore operation.
  * @param array  $original_gps Original GPS coordinates for backup (if any).
+ * @param bool   $backup_exists If a backup already exists.
  * @return bool True on success, false on failure.
  */
-function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restore = false, $original_gps = array() ) {
+function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restore = false, $original_gps = array(), $backup_exists = false ) {
 	try {
 		$options    = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
 		$backup_opt = isset( $options['backup_existing_coordinates'] ) ? $options['backup_existing_coordinates'] : 0;
@@ -556,7 +555,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 		}
 
 		// --- Backup/Restore Logic ---
-		if ( ( $backup_opt === 1 && $original_gps ) || $restore ) {
+		if ( ( 1 === $backup_opt && $original_gps && ! $backup_exists ) || $restore ) {
 			$exif_ifd = $ifd0->getSubIfd( PelIfd::EXIF );
 			if ( ! $exif_ifd ) {
 				$exif_ifd = new PelIfd( PelIfd::EXIF );
@@ -577,7 +576,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 				} elseif ( $user_comment_entry ) {
 					$exif_ifd->addEntry( new PelEntryUserComment( $new_comment ) ); // setValue().
 				}
-			} elseif ( $backup_opt === 1 && $original_gps ) {
+			} elseif ( 1 === $backup_opt && $original_gps && ! $backup_exists ) {
 				// On save (not restore), add the backup string if it doesn't exist.
 				$backup_signature = 'Original GPS coordinates:';
 				$backup_string    = sprintf(

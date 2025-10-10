@@ -139,7 +139,7 @@ jQuery(document).ready(function ($) {
 							modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', filePath);
 
 							// Initialize the map if not already done.)
-							if (!window.gps2photos_maps && !window.gps2photos_maps[imageId]) {
+							if (!window.gps2photos_maps[imageId]) {
 								function initMapWithKeyAndPosition(apiKey) {
 									window['gps2photos_init_map_' + modalId](apiKey, [lat, lon]);
 								}
@@ -148,7 +148,7 @@ jQuery(document).ready(function ($) {
 								// Update map with the new coordinates.
 								var map = window.gps2photos_maps[imageId];
 								var marker = window.gps2photos_markers[imageId];
-								var zoomLevel = window.gps2photos_maps['zoom'] || map.getCamera().zoom;
+								var zoomLevel = window.gps2photos_maps['zoom'];
 
 								if (lat && lon) {
 									var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));

@@ -105,17 +105,15 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 			}
 
 			$form_fields['add_gps_button'] = array(
-				'label' => '<button type="button" class="button" style="color: #d30000; border-color: #d30000;" id="gps2photos-open-map-btn-' . $post->ID . '">' . $gps_data_button_text . '</button>',
+				'label' => '<button type="button" id="gps2photos-open-map-btn" class="button gps2photos-open-map-btn" style="color: #d30000; border-color: #d30000;" ' .
+							'data-image-id="' . esc_attr( $post->ID ) . '" ' .
+							'data-file-path="' . esc_attr( $file_path ) . '" ' .
+							'data-lat="' . esc_attr( $gps_lat_dec ) . '" ' .
+							'data-lon="' . esc_attr( $gps_lon_dec ) . '">' .
+							esc_html( $gps_data_button_text ) .
+							'</button>',
 				'input' => 'html',
 				'html'  => '<div></div>',
-			);
-
-			// Add the modal HTML directly, but hidden.
-			$modal_html = gps2photos_get_map_for_modal( $options, $post->ID, $file_path, array( 'latitude' => $gps_lat_dec, 'longitude' => $gps_lon_dec ) );
-
-			$form_fields['gps_modal'] = array(
-				'input' => 'html',
-				'html'  => $modal_html,
 			);
 		}
 	}

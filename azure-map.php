@@ -16,21 +16,13 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Get the content for the modal window.
  *
  * @param array  $options The plugin options.
- * @param int    $id_no The attachment ID.
- * @param string $file_path The attachment (image) path.
- * @param array  $gps_data The GPS coordinates.
  * @return string The HTML for the modal content.
  */
-function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps_data ) {
-	// If gps_data is not pre-loaded, the inputs will be empty.
-	// JS will fetch the data on-demand.
-	$lat = ( is_array( $gps_data ) && isset( $gps_data['latitude'] ) ) ? $gps_data['latitude'] : '';
-	$lon = ( is_array( $gps_data ) && isset( $gps_data['longitude'] ) ) ? $gps_data['longitude'] : '';
-	$idn = intval( $id_no );
+function gps2photos_get_map_for_modal( $options ) {
 
 	$output  = '
 <div id="gps2photos-modal" class="gps2photos-modal">
-	<div class="gps2photos-modal-content" style="max-width: ' . $options['map_width'] . '; max-height: ' . $options['map_height'] . ';">
+	<div class="gps2photos-modal-content" style="max-width: ' . esc_attr($options['map_width']) . '; max-height: ' . esc_attr($options['map_height']) . ';">
 		<span class="gps2photos-modal-close">&times;</span>
 		<h2>' . esc_html__( 'Add/Amend GPS Coordinates', 'gps-2-photos' ) . '
 			<span class="gps2photos-tooltip-container">
@@ -44,21 +36,18 @@ function gps2photos_get_map_for_modal( $options, $id_no, $file_path = null, $gps
 		</h2>
 		<div id="gps2photos-map-container" class="gps2photos-map-container"></div>
 		<div id="gps2photos-modal-inputs">
-			<p><label for="gps2photos-modal-lat-input">' . esc_html__( 'Latitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lat-input" value="' . esc_attr( $lat ) . '" style="width: 100%;" /></p>
-			<p><label for="gps2photos-modal-lon-input">' . esc_html__( 'Longitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lon-input" value="' . esc_attr( $lon ) . '" style="width: 100%;" /></p>';
+			<p><label for="gps2photos-modal-lat-input">' . esc_html__( 'Latitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lat-input" value="" style="width: 100%;" /></p>
+			<p><label for="gps2photos-modal-lon-input">' . esc_html__( 'Longitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lon-input" value="" style="width: 100%;" /></p>';
 	$checked = isset( $options['always_override_gps'] ) && $options['always_override_gps'] === 1 ? 'checked' : '';
 	$output .= '
 			<p><input type="checkbox" id="gps2photos-override-checkbox" ' . $checked . '>&ensp;<label for="gps2photos-override-checkbox">' . esc_html__( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ) . '</label></p>';
-	// Check for backup coordinates to determine if the restore button should be visible.
-	$backup_coords     = gps2photos_get_backup_coordinates( $file_path );
-	$restore_btn_style = $backup_coords ? '' : ' style="display:none;"';
 	$restore_btn_text  = esc_html__( 'Restore Original Coordinates', 'gps-2-photos' );
 	$output           .= '
 			<div class="gps2photos-save-container">
-				<button type="button" class="button button-primary gps2photos-save-coords-btn" data-image-id="' . $idn . '" data-original-lat="' . esc_attr( $lat ) . '" data-original-lon="' . esc_attr( $lon ) . '" data-file-path="' . esc_attr( $file_path ) . '">' . esc_html__( 'Save Coordinates', 'gps-2-photos' ) . '</button>
+				<button type="button" class="button button-primary gps2photos-save-coords-btn" data-image-id="" data-original-lat="" data-original-lon="" data-file-path="">' . esc_html__( 'Save Coordinates', 'gps-2-photos' ) . '</button>
 				<div id="gps2photos-modal-message" class="gps2photos-modal-message" style="display: none;"></div>
 			</div>
-			<p><button type="button" class="button gps2photos-restore-coords-btn" data-image-id="' . $idn . '" data-file-path="' . esc_attr( $file_path ) . '" ' . $restore_btn_style . '>' . $restore_btn_text . '</button></p>
+			<p><button type="button" class="button gps2photos-restore-coords-btn" data-image-id="" data-file-path="" style="display:none;>' . $restore_btn_text . '</button></p>
 		</div>
 	</div>
 </div>

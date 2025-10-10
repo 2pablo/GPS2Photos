@@ -58,7 +58,7 @@ function gps2photos_options_init() {
 	add_action( 'wp_ajax_gps2photos_get_coordinates', 'gps2photos_get_coordinates_callback' );
 }
 
-add_action( 'admin_footer-nextgen-gallery5_page_nggallery-manage-gallery', 'gps2photos_add_hidden_modal' );
+//add_action( 'admin_footer-nextgen-gallery5_page_nggallery-manage-gallery', 'gps2photos_add_hidden_modal' );
 
 /**
  * Outputs the hidden modal HTML for the GPS 2 Photos plugin in the admin footer.
@@ -69,7 +69,7 @@ function gps2photos_add_hidden_modal() {
 	$options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
 	// Add the modal HTML directly, but hidden.
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gps2photos_get_map_for_modal is escaping its output.
-	echo gps2photos_get_map_for_modal( $options, '0', null, array() );
+	echo gps2photos_get_map_for_modal( $options );
 }
 
 add_action( 'admin_enqueue_scripts', 'gps2photos_plugin_admin_scripts' );
@@ -100,6 +100,12 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'envira' && $post_id !== 0 ) ||
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'foogallery' && $post_id !== 0 ) ||
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'modula-gallery' && $post_id !== 0 ) ) {
+
+		// Add the single hidden modal to the footer on all relevant pages.
+		// The check inside the function prevents it from being added multiple times.
+		if ( ! has_action( 'admin_footer', 'gps2photos_add_hidden_modal' ) ) {
+			add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
+		}
 
 		// --- Register and Enqueue Modal Scripts ---
 		if ( ! wp_script_is( 'gps2photos-modal', 'registered' ) ) {
@@ -182,9 +188,6 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			wp_enqueue_script( 'gps2photos-envira' );
 			// Pass the data to the script.
 			wp_localize_script( 'gps2photos-envira', 'gps2photos_envira', $localized_data );
-
-			// Also add the hidden modal to the footer on this page.
-			add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
 		}
 
 		// Enqueue for Foo Gallery edit screen.
@@ -195,8 +198,6 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			wp_localize_script( 'gps2photos-foo', 'gps2photos_foo', $localized_data );
 
 			wp_enqueue_script( 'gps2photos-foo' );
-			// Also add the hidden modal to the footer on this page.
-			add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
 		}
 
 		// Enqueue for Modula Gallery edit screen.
@@ -207,8 +208,6 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			wp_localize_script( 'gps2photos-modula', 'gps2photos_modula', $localized_data );
 
 			wp_enqueue_script( 'gps2photos-modula' );
-			// Also add the hidden modal to the footer on this page.
-			add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
 		}
 	}
 

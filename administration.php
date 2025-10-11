@@ -99,12 +99,6 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'foogallery' && $post_id !== 0 ) ||
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'modula-gallery' && $post_id !== 0 ) ) {
 
-		// Add the single hidden modal to the footer on all relevant pages.
-		// The check inside the function prevents it from being added multiple times.
-		if ( ! has_action( 'admin_footer', 'gps2photos_add_hidden_modal' ) ) {
-			add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
-		}
-
 		// --- Register and Enqueue Modal Scripts ---
 		if ( ! wp_script_is( 'gps2photos-modal', 'registered' ) ) {
 			wp_register_script( 'gps2photos-modal', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-modal.js', array( 'jquery' ), '1.0.0', true );
@@ -208,6 +202,13 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			wp_enqueue_script( 'gps2photos-modula' );
 		}
 	}
+
+		// Add the single hidden modal to the footer on all relevant pages.
+	// The check inside the function prevents it from being added multiple times.
+	if ( ! has_action( 'admin_footer', 'gps2photos_add_hidden_modal' ) ) {
+		add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
+	}
+
 
 	// Only load the settings page scripts on our plugin's admin page.
 	if ( $hook === 'toplevel_page_gps-2-photos' ) {

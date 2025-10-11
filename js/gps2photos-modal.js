@@ -51,9 +51,9 @@ jQuery(document).ready(function ($) {
 	 * @param {string} lon     The longitude.
 	 */
 	function initOrUpdateMap(lat, lon) {
-		if (typeof window['gps2photos_init_map_' + imageId] === 'function' && !window.gps2photos_maps.map) {
+		if (!(typeof window['gps2photos_init_map_' + imageId] === 'function') && !window.gps2photos_maps.map) {
 			function initMapWithKeyAndPosition(apiKey) {
-				window['gps2photos_init_map'](apiKey, [lat, lon]);
+				window['gps2photos_init_maps.map'](apiKey, [lat, lon]);
 			}
 			gps2photos_get_azure_api_key(initMapWithKeyAndPosition);
 		} else {

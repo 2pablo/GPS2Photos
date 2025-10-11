@@ -58,8 +58,6 @@ function gps2photos_options_init() {
 	add_action( 'wp_ajax_gps2photos_get_coordinates', 'gps2photos_get_coordinates_callback' );
 }
 
-add_action( 'admin_footer-nextgen-gallery5_page_nggallery-manage-gallery', 'gps2photos_add_hidden_modal' );
-
 /**
  * Outputs the hidden modal HTML for the GPS 2 Photos plugin in the admin footer.
  *

@@ -53,7 +53,7 @@ jQuery(document).ready(function ($) {
 	function initOrUpdateMap(lat, lon) {
 		if (!window.gps2photos_maps || !window.gps2photos_maps.map) {
 			function initMapWithKeyAndPosition(apiKey) {
-				windows['gps2photos_init_maps'](apiKey, [lat, lon]);
+				window['gps2photos_init_map'](apiKey, [lat, lon]);
 			}
 			gps2photos_get_azure_api_key(initMapWithKeyAndPosition);
 		} else {

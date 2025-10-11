@@ -56,7 +56,7 @@ function gps2photos_get_map_for_modal( $options ) {
     window.gps2photos_maps = window.gps2photos_maps || {};
     window.gps2photos_maps.marker = window.gps2photos_maps.marker || {};
 
-    function gps2photos_init_map(apiKey, position) {
+    window.gps2photos_init_map = function(apiKey, position) {
         // Prevent re-initialization.
         if (window.gps2photos_maps.map) {
             return;

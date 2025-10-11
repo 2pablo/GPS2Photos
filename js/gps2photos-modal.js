@@ -51,7 +51,7 @@ jQuery(document).ready(function ($) {
 	 * @param {string} lon     The longitude.
 	 */
 	function initOrUpdateMap(lat, lon) {
-		if (!window.gps2photos_maps && !window.gps2photos_maps.map) {
+		if (typeof window['gps2photos_init_map_' + imageId] === 'function' && !window.gps2photos_maps.map) {
 			function initMapWithKeyAndPosition(apiKey) {
 				window['gps2photos_init_map'](apiKey, [lat, lon]);
 			}

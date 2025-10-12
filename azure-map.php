@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 function gps2photos_get_map_for_modal() {
     $options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
-	$output  = '
+	$html_output  = '
 <div id="gps2photos-modal" class="gps2photos-modal">
 	<div class="gps2photos-modal-content" style="max-width: ' . esc_attr($options['map_width']) . '; max-height: ' . esc_attr($options['map_height']) . ';">
 		<span class="gps2photos-modal-close">&times;</span>
@@ -39,10 +39,10 @@ function gps2photos_get_map_for_modal() {
 			<p><label for="gps2photos-modal-lat-input">' . esc_html__( 'Latitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lat-input" value="" style="width: 100%;" /></p>
 			<p><label for="gps2photos-modal-lon-input">' . esc_html__( 'Longitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lon-input" value="" style="width: 100%;" /></p>';
 	$checked = isset( $options['always_override_gps'] ) && $options['always_override_gps'] === 1 ? 'checked' : '';
-	$output .= '
+	$html_output .= '
 			<p><input type="checkbox" id="gps2photos-override-checkbox" ' . $checked . '>&ensp;<label for="gps2photos-override-checkbox">' . esc_html__( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ) . '</label></p>';
 	$restore_btn_text  = esc_html__( 'Restore Original Coordinates', 'gps-2-photos' );
-	$output           .= '
+	$html_output           .= '
 			<div class="gps2photos-save-container">
 				<button type="button" class="button button-primary gps2photos-save-coords-btn" data-image-id="" data-original-lat="" data-original-lon="" data-file-path="">' . esc_html__( 'Save Coordinates', 'gps-2-photos' ) . '</button>
 				<div id="gps2photos-modal-message" class="gps2photos-modal-message" style="display: none;"></div>
@@ -52,12 +52,8 @@ function gps2photos_get_map_for_modal() {
 	</div>
 </div>';
 
-    return $output;
-}
-
-function gps2photos_azure_map_script() {
-    $options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
-    $output  = '
+    $map_output  = '
+// GPS 2 PHOTOS Azure Map
 // Store map and marker instances globally to be accessible.
 window.gps2photos_maps = window.gps2photos_maps || {};
 window.gps2photos_maps.marker = window.gps2photos_maps.marker || {};
@@ -97,7 +93,7 @@ window.gps2photos_init_map = function(apiKey, position) {
 	// About the "view" parameter: By default, the View parameter is set to Unified, even if you haven't defined it in the request. Determine the location of your users. Then, set the View parameter correctly for that location. Alternatively, you can set 'View=Auto', which returns the map data based on the IP address of the request. The View parameter in Azure Maps must be used in compliance with applicable laws, including those laws about mapping of the country/region where maps, images, and other data and third-party content that you're authorized to access via Azure Maps is made available.
 	// https://learn.microsoft.com/en-us/azure/azure-maps/supported-languages#azure-maps-supported-views.
 
-	$output .= '
+	$map_output .= '
 
     window.gps2photos_maps.map = map;
     window.gps2photos_maps.zoom = ' . (int) $options['zoom'] . ';
@@ -207,6 +203,6 @@ window.gps2photos_init_map = function(apiKey, position) {
         lonInput.addEventListener("input", updateMarkerFromInputs);
     });
 }';
-
-	return $output;
+    wp_add_inline_script( 'gps2photos-map-js', $map_output );
+	return $html_output;
 }

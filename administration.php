@@ -165,8 +165,9 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		}
 
 		add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
-
-    	wp_add_inline_script( 'gps2photos_azure_map_script', 'gps2photos_azure_map_script' );
+		
+		wp_register_script('gps2photos-map-js', '', [], false, true);
+		wp_enqueue_script('gps2photos-map-js');
 	}
 
 	// Enqueue for Envira Gallery edit screen.

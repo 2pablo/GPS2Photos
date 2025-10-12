@@ -18,8 +18,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param array  $options The plugin options.
  * @return string The HTML for the modal content.
  */
-function gps2photos_get_map_for_modal( $options ) {
-
+function gps2photos_get_map_for_modal() {
+    $options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
 	$output  = '
 <div id="gps2photos-modal" class="gps2photos-modal">
 	<div class="gps2photos-modal-content" style="max-width: ' . esc_attr($options['map_width']) . '; max-height: ' . esc_attr($options['map_height']) . ';">
@@ -50,158 +50,163 @@ function gps2photos_get_map_for_modal( $options ) {
 			<p><button type="button" class="button gps2photos-restore-coords-btn" data-image-id="" data-file-path="" style="display:none;>' . $restore_btn_text . '</button></p>
 		</div>
 	</div>
-</div>
-<script>
-    // Store map and marker instances globally to be accessible.
-    window.gps2photos_maps = window.gps2photos_maps || {};
-    window.gps2photos_maps.marker = window.gps2photos_maps.marker || {};
+</div>';
 
-    window.gps2photos_init_map = function(apiKey, position) {
-        // Prevent re-initialization.
-        if (window.gps2photos_maps.map) {
-            return;
-        }
+    return $output;
+}
 
-		var latInput = document.getElementById("gps2photos-modal-lat-input");
-		var lonInput = document.getElementById("gps2photos-modal-lon-input");
+function gps2photos_azure_map_script() {
+    $options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+    $output  = '
+// Store map and marker instances globally to be accessible.
+window.gps2photos_maps = window.gps2photos_maps || {};
+window.gps2photos_maps.marker = window.gps2photos_maps.marker || {};
 
-		if (!position) {
-        	var initialLat = parseFloat(latInput.value) || 30;
-       		var initialLon = parseFloat(lonInput.value) || 0;
-		} else {
-			var initialLat = position[0];
-			var initialLon = position[1];
-		}
+window.gps2photos_init_map = function(apiKey, position) {
+    // Prevent re-initialization.
+    if (window.gps2photos_maps.map) {
+        return;
+    }
 
-        var hasInitialCoords = !!(latInput.value && lonInput.value);
+    var latInput = document.getElementById("gps2photos-modal-lat-input");
+    var lonInput = document.getElementById("gps2photos-modal-lon-input");
 
-        var map = new atlas.Map("gps2photos-map-container", {
-			renderWorldCopies: false,
-            authOptions: {
-                authType: "subscriptionKey",
-                subscriptionKey: apiKey
-            },
-            center: [initialLon, initialLat],
-            zoom: hasInitialCoords ? ' . (int) $options['zoom'] . ' : 1,
-            style: "' . esc_js( $options['map'] ) . '",
-            showLogo: ' . ( $options['logo'] ? 'true' : 'false' ) . ',
-            showFeedbackLink: false,
-            view: "Auto"
-        });';
+    if (!position) {
+        var initialLat = parseFloat(latInput.value) || 30;
+        var initialLon = parseFloat(lonInput.value) || 0;
+    } else {
+        var initialLat = position[0];
+        var initialLon = position[1];
+    }
+
+    var hasInitialCoords = !!(latInput.value && lonInput.value);
+
+    var map = new atlas.Map("gps2photos-map-container", {
+        renderWorldCopies: false,
+        authOptions: {
+            authType: "subscriptionKey",
+            subscriptionKey: apiKey
+        },
+        center: [initialLon, initialLat],
+        zoom: hasInitialCoords ? ' . (int) $options['zoom'] . ' : 1,
+        style: "' . esc_js( $options['map'] ) . '",
+        showLogo: ' . ( $options['logo'] ? 'true' : 'false' ) . ',
+        showFeedbackLink: false,
+        view: "Auto"
+    });';
 	// About the "view" parameter: By default, the View parameter is set to Unified, even if you haven't defined it in the request. Determine the location of your users. Then, set the View parameter correctly for that location. Alternatively, you can set 'View=Auto', which returns the map data based on the IP address of the request. The View parameter in Azure Maps must be used in compliance with applicable laws, including those laws about mapping of the country/region where maps, images, and other data and third-party content that you're authorized to access via Azure Maps is made available.
 	// https://learn.microsoft.com/en-us/azure/azure-maps/supported-languages#azure-maps-supported-views.
 
 	$output .= '
 
-        window.gps2photos_maps.map = map;
-		window.gps2photos_maps.zoom = ' . (int) $options['zoom'] . ';
+    window.gps2photos_maps.map = map;
+    window.gps2photos_maps.zoom = ' . (int) $options['zoom'] . ';
 
-        map.events.add("ready", function () {
-            var style = "auto"; // "auto", "light", "dark"
-            if (' . ( $options['dashboard'] ? 'true' : 'false' ) . ') {
-                map.controls.add([
-                        new atlas.control.StyleControl({
-                            style: style,
-                            mapStyles: ["road", "satellite", "satellite_road_labels", "grayscale_light", "grayscale_dark", "night", "road_shaded_relief"] // "all" (shows some blank styles)
-                        }),
-                        new atlas.control.ZoomControl({style: style}),
-                        new atlas.control.CompassControl({style: style}),
-                        new atlas.control.PitchControl({style: style}),' . ( $options['scalebar'] ? '
-                        new atlas.control.ScaleControl({
-                            maxWidth: 100,
-                            units: "metric" // or "imperial", "nautical"
-                        }),' : '' ) . ( $options['locate_me_button'] ? '
-                        new atlas.control.GeolocationControl({
-                            style: style,
-                            showUserLocation: true,
-                        })' : '' ) . '
-                    ], {
-                        position: "top-right" // Options: "top-left", "top-right", "bottom-left", "bottom-right", "non-fixed"
-                });
-            }
+    map.events.add("ready", function () {
+        var style = "auto"; // "auto", "light", "dark"
+        if (' . ( $options['dashboard'] ? 'true' : 'false' ) . ') {
             map.controls.add([
-                        new atlas.control.FullscreenControl({style: style})
-                    ], {
-                        position: "top-left" // Options: "top-left", "top-right", "bottom-left", "bottom-right", "non-fixed"
-                });
-            var marker;
-
-			function createMarker(position) {
-                if (!marker) {
-                    // Create a custom SVG icon based on plugin settings.
-                    var pinColor = "' . esc_js( $options['pin_color'] ) . '";
-                    var secondaryColor = "' . esc_js( $options['pin_secondary_color'] ) . '";
-                    var iconType = "' . esc_js( $options['pin_icon_type'] ) . '";
-
-                    var svgIcon = atlas.getImageTemplate(iconType)
-                        .replace(/{color}/g, pinColor)
-                        .replace(/{secondaryColor}/g, secondaryColor);
-
-                    marker = new atlas.HtmlMarker({
-                        position: position,
-                        draggable: true,
-                        htmlContent: svgIcon,
-						visible: hasInitialCoords
-                    });
-                    map.markers.add(marker);
-                    window.gps2photos_maps.marker = marker;
-
-                    // Update inputs when dragging ends.
-                    map.events.add("dragend", marker, function () {
-                        var pos = marker.getOptions().position;
-                        latInput.value = pos[1].toFixed(6);
-                        lonInput.value = pos[0].toFixed(6);
-                    });
-					return marker;
-                }
-            }
-	
-            function addMarker(position) {
-                if (marker) {
-                    marker.setOptions({ 
-						position: position,
-						visible: true
-					});
-                } else {
-                    createMarker(position);
-                }
-                latInput.value = position[1].toFixed(6);
-                lonInput.value = position[0].toFixed(6);
-            }
-
-            // If coordinates exist, add the marker right away.
-            if (hasInitialCoords) {
-                addMarker([initialLon, initialLat]);
-            } else {
-				createMarker([0, 30]); // Default position if no initial coordinates.
-			}
-
-            // Add a marker on map click if one doesn\'t exist.
-            map.events.add("click", function (e) {
-                addMarker(e.position);
+                    new atlas.control.StyleControl({
+                        style: style,
+                        mapStyles: ["road", "satellite", "satellite_road_labels", "grayscale_light", "grayscale_dark", "night", "road_shaded_relief"] // "all" (shows some blank styles)
+                    }),
+                    new atlas.control.ZoomControl({style: style}),
+                    new atlas.control.CompassControl({style: style}),
+                    new atlas.control.PitchControl({style: style}),' . ( $options['scalebar'] ? '
+                    new atlas.control.ScaleControl({
+                        maxWidth: 100,
+                        units: "metric" // or "imperial", "nautical"
+                    }),' : '' ) . ( $options['locate_me_button'] ? '
+                    new atlas.control.GeolocationControl({
+                        style: style,
+                        showUserLocation: true,
+                    })' : '' ) . '
+                ], {
+                    position: "top-right" // Options: "top-left", "top-right", "bottom-left", "bottom-right", "non-fixed"
             });
+        }
+        map.controls.add([
+                    new atlas.control.FullscreenControl({style: style})
+                ], {
+                    position: "top-left" // Options: "top-left", "top-right", "bottom-left", "bottom-right", "non-fixed"
+            });
+        var marker;
 
-            // Function to update marker from input fields.
-            function updateMarkerFromInputs() {
-                var lat = parseFloat(latInput.value);
-                var lon = parseFloat(lonInput.value);
+        function createMarker(position) {
+            if (!marker) {
+                // Create a custom SVG icon based on plugin settings.
+                var pinColor = "' . esc_js( $options['pin_color'] ) . '";
+                var secondaryColor = "' . esc_js( $options['pin_secondary_color'] ) . '";
+                var iconType = "' . esc_js( $options['pin_icon_type'] ) . '";
 
-                // Validate that both are numbers and within valid ranges.
-                if (!isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
-                    var newPosition = [lon, lat];
-                    addMarker(newPosition);
-                    map.setCamera({
-                        center: newPosition
-                    });
-                }
+                var svgIcon = atlas.getImageTemplate(iconType)
+                    .replace(/{color}/g, pinColor)
+                    .replace(/{secondaryColor}/g, secondaryColor);
+
+                marker = new atlas.HtmlMarker({
+                    position: position,
+                    draggable: true,
+                    htmlContent: svgIcon,
+                    visible: hasInitialCoords
+                });
+                map.markers.add(marker);
+                window.gps2photos_maps.marker = marker;
+
+                // Update inputs when dragging ends.
+                map.events.add("dragend", marker, function () {
+                    var pos = marker.getOptions().position;
+                    latInput.value = pos[1].toFixed(6);
+                    lonInput.value = pos[0].toFixed(6);
+                });
+                return marker;
             }
+        }
 
-            // Add event listeners to the input fields to update the marker.
-            latInput.addEventListener("input", updateMarkerFromInputs);
-            lonInput.addEventListener("input", updateMarkerFromInputs);
+        function addMarker(position) {
+            if (marker) {
+                marker.setOptions({ 
+                    position: position,
+                    visible: true
+                });
+            } else {
+                createMarker(position);
+            }
+            latInput.value = position[1].toFixed(6);
+            lonInput.value = position[0].toFixed(6);
+        }
+
+        // If coordinates exist, add the marker right away.
+        if (hasInitialCoords) {
+            addMarker([initialLon, initialLat]);
+        } else {
+            createMarker([0, 30]); // Default position if no initial coordinates.
+        }
+
+        // Add a marker on map click if one doesn\'t exist.
+        map.events.add("click", function (e) {
+            addMarker(e.position);
         });
-    }
-</script>';
+
+        // Function to update marker from input fields.
+        function updateMarkerFromInputs() {
+            var lat = parseFloat(latInput.value);
+            var lon = parseFloat(lonInput.value);
+
+            // Validate that both are numbers and within valid ranges.
+            if (!isNaN(lat) && !isNaN(lon) && lat >= -90 && lat <= 90 && lon >= -180 && lon <= 180) {
+                var newPosition = [lon, lat];
+                addMarker(newPosition);
+                map.setCamera({
+                    center: newPosition
+                });
+            }
+        }
+
+        // Add event listeners to the input fields to update the marker.
+        latInput.addEventListener("input", updateMarkerFromInputs);
+        lonInput.addEventListener("input", updateMarkerFromInputs);
+    });
+}';
 
 	return $output;
 }

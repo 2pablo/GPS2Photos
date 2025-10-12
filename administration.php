@@ -58,7 +58,6 @@ function gps2photos_options_init() {
 	add_action( 'wp_ajax_gps2photos_get_coordinates', 'gps2photos_get_coordinates_callback' );
 }
 
-add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
 //add_action( 'admin_footer-nextgen-gallery5_page_nggallery-manage-gallery', 'gps2photos_add_hidden_modal' );
 
 /**
@@ -67,10 +66,9 @@ add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
  * @since 1.0.0
  */
 function gps2photos_add_hidden_modal() {
-	$options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
 	// Add the modal HTML directly, but hidden.
 	// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- gps2photos_get_map_for_modal is escaping its output.
-	echo gps2photos_get_map_for_modal( $options );
+	echo gps2photos_get_map_for_modal();
 }
 
 add_action( 'admin_enqueue_scripts', 'gps2photos_plugin_admin_scripts' );
@@ -165,6 +163,10 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		if ( ! wp_script_is( 'azure-maps-fullscreen-js', 'enqueued' ) ) {
 			wp_enqueue_script( 'azure-maps-fullscreen-js', GPS_2_PHOTOS_DIR_URL . '/js/fullscreen-module/azure-maps-fullscreen-control.min.js', array( 'azure-maps-js' ), '1.0.0', false );
 		}
+
+		add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
+
+    	wp_add_inline_script( 'gps2photos_azure_map_script', 'gps2photos_azure_map_script' );
 	}
 
 	// Enqueue for Envira Gallery edit screen.

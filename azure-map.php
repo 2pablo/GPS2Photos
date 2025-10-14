@@ -47,7 +47,7 @@ function gps2photos_get_map_for_modal() {
 				<button type="button" class="button button-primary gps2photos-save-coords-btn" data-image-id="" data-original-lat="" data-original-lon="" data-file-path="">' . esc_html__( 'Save Coordinates', 'gps-2-photos' ) . '</button>
 				<div id="gps2photos-modal-message" class="gps2photos-modal-message" style="display: none;"></div>
 			</div>
-			<p><button type="button" class="button gps2photos-restore-coords-btn" data-image-id="" data-file-path="" style="display:none;>' . $restore_btn_text . '</button></p>
+			<p><button type="button" class="button gps2photos-restore-coords-btn" data-image-id="" data-file-path="" style="display:none;">' . $restore_btn_text . '</button></p>
 		</div>
 	</div>
 </div>';

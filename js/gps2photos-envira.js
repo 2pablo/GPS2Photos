@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
 								var buttonHtml = `
 									<label class="setting gps2photos-setting">
 										<span class="name">${gps2photos_envira.l10n.gps || 'GPS Coordinates'}</span>
-										<a href="#" class="button button-primary gps2photos-add-gps" data-gallery-name="envira" data-pid="${attachmentId}" data-image-url="${imageUrl}">
+										<a href="#" class="envira-gallery-meta-submit button media-button button-large button-primary media-button-insert gps2photos-add-gps" data-gallery-name="envira" data-pid="${attachmentId}" data-image-url="${imageUrl}">
 											${gps2photos_envira.l10n.add_amend_gps || 'Add/Amend GPS'}
 										</a>
 									</label>

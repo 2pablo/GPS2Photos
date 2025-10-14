@@ -156,7 +156,15 @@
 	align-items: center;
 	gap: 15px;
 	/* Space between button and message */
-	margin: 1em 0 0 0;
+	margin: 13px 0 0 0;
+}
+
+.gps2photos-save-container button {
+	margin: 0;
+}
+
+.gps2photos-restore-coords-btn {
+	margin-top: 13px;
 }
 
 .gps2photos-modal-message {

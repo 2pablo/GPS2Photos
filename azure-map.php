@@ -36,8 +36,9 @@ function gps2photos_get_map_for_modal() {
 		</h2>
 		<div id="gps2photos-map-container" class="gps2photos-map-container"></div>
 		<div id="gps2photos-modal-inputs">
-			<p><label for="gps2photos-modal-lat-input">' . esc_html__( 'Latitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lat-input" value="" style="width: 100%;" /></p>
-			<p><label for="gps2photos-modal-lon-input">' . esc_html__( 'Longitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lon-input" value="" style="width: 100%;" /></p>';
+			<p>
+                <label for="gps2photos-modal-lat-input">' . esc_html__( 'Latitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lat-input" value="" style="width: 100%;" />
+                <label for="gps2photos-modal-lon-input">' . esc_html__( 'Longitude', 'gps-2-photos' ) . '</label><br/><input type="text" id="gps2photos-modal-lon-input" value="" style="width: 100%;" /></p>';
 	$checked = isset( $options['always_override_gps'] ) && $options['always_override_gps'] === 1 ? 'checked' : '';
 	$html_output .= '
 			<p><input type="checkbox" id="gps2photos-override-checkbox" ' . $checked . '>&ensp;<label for="gps2photos-override-checkbox">' . esc_html__( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ) . '</label></p>';

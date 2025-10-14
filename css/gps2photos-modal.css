@@ -69,7 +69,6 @@
 
 .gps2photos-map-container {
 	width: 100%;
-	margin-bottom: 15px;
 	/* Allow the map to grow and fill available space */
 	flex-grow: 1;
 	position: relative;
@@ -128,6 +127,13 @@
 	opacity: 1;
 }
 
+.gps2photos-modal-content .gps2photos-modal-lat-input,
+.gps2photos-modal-content .gps2photos-modal-lon-input
+ {
+	margin-top: 0px;
+}
+
+
 .gps2photos-modal-message.notice {
 	padding: 4px;
 	margin: 0;
@@ -153,7 +159,7 @@
 	align-items: center;
 	gap: 15px;
 	/* Space between button and message */
-	margin: 1em 0;
+	margin: 1em 0 0 0;
 }
 
 .gps2photos-modal-message {

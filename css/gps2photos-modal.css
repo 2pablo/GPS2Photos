@@ -11,8 +11,9 @@
  */
 
 .gps2photos-modal {
-	display: none;
-	/* Initially hidden, will be changed to 'flex' by JS */
+	display: flex;
+	visibility: hidden;
+	/* Initially hidden, will be changed to 'visible' by JS */
 	position: fixed;
 	z-index: 160001;
 	/* Higher than WP media modal z-index (160000) */
@@ -22,14 +23,13 @@
 	height: 100%;
 	overflow: auto;
 	background-color: rgba(0, 0, 0, 0.5);
-	/* Flexbox for centering */
 	align-items: center;
 	justify-content: center;
 }
 
 .gps2photos-modal-content {
 	background-color: #fefefe;
-	padding: 20px;
+	padding: 18px;
 	border: 1px solid #888;
 	width: 100%;
 	/* Use a percentage for better responsiveness */
@@ -38,7 +38,6 @@
 	position: relative;
 	/* For close button positioning */
 	box-shadow: 0 5px 15px rgba(0, 0, 0, .5);
-	/* Make this a flex container */
 	display: flex;
 	flex-direction: column;
 }
@@ -46,9 +45,9 @@
 .gps2photos-modal-close {
 	color: #aaa;
 	position: absolute;
-	top: 5px;
-	right: 10px;
-	font-size: 28px;
+	top: 18px;
+	right: 18px;
+	font-size: 34px;
 	font-weight: bold;
 }
 
@@ -59,12 +58,27 @@
 	cursor: pointer;
 }
 
+.gps2photos-modal-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+}
+
+.gps2photos-modal-header h2 {
+	margin-top: 0;
+}
+
 /* Azure Maps Overview Map button hover to correct Athena Theme */
 .atlas-map .azmaps-overviewMapBtn:hover {
 	background-position-x: center;
 	background-position-y: center;
 	background-repeat: no-repeat;
 	background-size: 12px
+}
+
+.atlas-map .azure-maps-control-container .atlas-control-search-input-container {
+	width: 250px;
+	/* Increase width of the search bar */
 }
 
 .gps2photos-map-container {
@@ -77,10 +91,38 @@
 	/* Required for Azure Maps rendering */
 }
 
+#gps2photos-search-container {
+	position: absolute;
+	top: 7px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 10;
+	background-color: white;
+	padding: 7px;
+	border-radius: 8px;
+	display: flex;
+	gap: 5px;
+	flex-wrap: wrap;
+}
+
+#gps2photos-search-container input[type="text"] {
+	flex-grow: 1;
+	line-height: 1.5;
+	text-align: center;
+	min-height: 20px;
+}
+
+#gps2photos-search-container .button {
+	line-height: 1.5;
+	text-align: center;
+	min-height: 20px;
+}
+
 /* Styles for the tooltip inside the modal's h2 */
 .gps2photos-modal-content h2 {
 	display: flex;
 	align-items: center;
+	margin-top: 0;
 }
 
 .gps2photos-modal-content .gps2photos-tooltip-container {
@@ -128,7 +170,8 @@
 }
 
 .gps2photos-modal-content #gps2photos-modal-inputs p:first-of-type {
-  margin-top: 5px; /* or whatever margin you want */
+	margin-top: 5px;
+	/* or whatever margin you want */
 }
 
 .gps2photos-modal-message.notice {
@@ -159,12 +202,12 @@
 	margin: 13px 0 0 0;
 }
 
-.gps2photos-save-container .gps2photos-save-coords-btn{
+.gps2photos-save-container .gps2photos-save-coords-btn {
 	margin: 0;
 	padding: 0 13px;
 }
 
-.gps2photos-restore-coords-btn {
+#gps2photos-modal-inputs .gps2photos-restore-coords-btn {
 	margin-top: 13px;
 }
 

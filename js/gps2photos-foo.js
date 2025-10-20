@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
 
 					// The image div is a sibling to the meta div.
 					var $imageDiv = $metaDiv.siblings('.foogallery-image-edit-main');
-					var imageUrl = $imageDiv.find('img').attr('src');
+					var imageUrl = $metaDiv.find('#attachments-foogallery-file-url').val();
 
 					if (attachmentId && imageUrl) {
 						// Create and append the button.

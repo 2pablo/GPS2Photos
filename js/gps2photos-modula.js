@@ -41,12 +41,14 @@ jQuery(document).ready(function ($) {
 						} else {
 							// Button doesn't exist, so create and append it before the save button
 							var buttonHtml = `
-								<label class="setting gps2photos-setting">
-									<span class="name">${gps2photos_modula.l10n.gps || 'GPS Coordinates'}</span>
-									<a href="#" class="button button-primary gps2photos-add-gps" data-gallery-name="modula" data-pid="${attachmentId}" data-image-url="${imageUrl}">
-										${gps2photos_modula.l10n.add_amend_gps || 'Add/Amend GPS'}
-									</a>
-								</label>`;
+								<div class="settings">
+									<label class="settings setting gps2photos-setting">
+										<span class="name">${gps2photos_modula.l10n.gps || 'GPS Coordinates'}</span>
+										<a href="#" class="button button-primary gps2photos-add-gps" data-gallery-name="modula" data-pid="${attachmentId}" data-image-url="${imageUrl}">
+											${gps2photos_modula.l10n.add_amend_gps || 'Add/Amend GPS'}
+										</a>
+									</label>
+								</div>`;
 							// The 'actions' div is a sibling of the 'settings' div.
 							// We will add our button just before the 'actions' div.
 							$settingsDiv.siblings('.actions').before(buttonHtml);

@@ -49,8 +49,9 @@ jQuery(document).ready(function ($) {
 	 *
 	 * @param {string} lat     The latitude.
 	 * @param {string} lon     The longitude.
+	 * @param {number} zoom    The Zoom level.
 	 */
-	function initOrUpdateMap(lat, lon) {
+	function initOrUpdateMap(lat, lon, zoom = undefined) {
 		if (!window.gps2photos_maps || !window.gps2photos_maps.map) {
 			function initMapWithKeyAndPosition(apiKey) {
 				window['gps2photos_init_map'](apiKey, [lat, lon]);
@@ -60,24 +61,26 @@ jQuery(document).ready(function ($) {
 			// Update map with the new coordinates.
 			var map = window.gps2photos_maps.map;
 			var marker = window.gps2photos_maps.marker;
-			var zoomLevel = window.gps2photos_maps.zoom;
+			var zoomLevel = zoom ?? window.gps2photos_maps.zoom;
 
 			if (lat && lon) {
-				var newPosition = new atlas.data.Position(parseFloat(lon), parseFloat(lat));
+				var newPosition = new atlas.data.Position(lon, lat);
 				marker.setOptions({
-					position: newPosition,
+					position: newPosition, // [longitude, latitude]
 					visible: true
 				});
 				map.setCamera({
-					center: newPosition,
+					center: [lon, lat],
 					zoom: zoomLevel,
-					type: 'fly'
+					duration: 2000,
+					type: 'fly' // "jump" | "ease"
 				});
 			} else {
-				// No GPS data, hide the marker.
+				// if GPS data is erased or no GPS data, hide the marker.
 				if (marker) {
 					marker.setOptions({ visible: false });
 				}
+				// When current zoom closer then the default zoom - zoom out, else leave as it is.
 				var newZoom = map.getCamera().zoom < zoomLevel ? map.getCamera().zoom : zoomLevel;
 				map.setCamera({
 					//center: [0, 30],
@@ -92,7 +95,7 @@ jQuery(document).ready(function ($) {
 	// Use event delegation for buttons that might be added dynamically.
 	$(document).on('click', '.gps2photos-open-map-btn', function () {
 		var attachmentId = $(this).data('image-id');
-		openModal(attachmentId, $(this).data('data-file-path'), false, $(this).data());
+		openModal(attachmentId, $(this).data('file-path'), false, $(this).data());
 	});
 
 	// Handle click on our custom action link for NextGEN Gallery.
@@ -137,24 +140,37 @@ jQuery(document).ready(function ($) {
 				var originalLon = $saveBtn.data('original-lon');
 			}
 		}
-		
-		if (modal.length) {
-			modal.css('display', 'flex');
-			// For galleries we are reusing the same modal.
-			// Only fetch if the imageId is different from the one already on the button.
-			if ($saveBtn.data('image-id') !== imageId) {
-				// Reset the originalLat to force an AJAX fetch.
-				originalLat = undefined;
-			}
-			$saveBtn.data('image-id', imageId).data('gallery-name', galleryName);
-			modal.find('.gps2photos-restore-coords-btn').data('image-id', imageId).data('gallery-name', galleryName);	
 
-			// Initialize the map for WP Media Library only if not already done.
-			// For NextGEN, we always initialize the map as imageId is always '0'.
-			// The actual image is determined by the data-image-id attribute on the buttons.
+		if (modal.length) {
+			modal.css('visibility', 'visible');
+
+			// Initialize the map for WP Media Library only if lat (and lon) are already provided.
+			// Position is provided if preview of coordinates is enabled. 
+			// For NextGEN and other galleries we always initialize the map because the coordinates are unknown.
 			if (!isGallery && buttonData.lat) {
 				initOrUpdateMap(originalLat, originalLon);
+				// Update jQuery internal cache data attributes.
+				$saveBtn.data('original-lat', originalLat).data('original-lon', originalLon);
+				modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', imagePath);
+				// Show/hide the restore button based on data-backup-exists value.
+				if (buttonData.backupExists === true) {
+					console.log(buttonData.backupExists)
+					modal.find('.gps2photos-restore-coords-btn').show();
+				} else {
+					modal.find('.gps2photos-restore-coords-btn').hide();
+				}
 			}
+
+			// For galleries we are reusing the same modal.
+			// Only fetch if the imageId is different from the one already on the button.
+			if (isGallery && $saveBtn.data('image-id') !== imageId) {
+				// Reset the originalLat to force an AJAX fetch.
+				originalLat = undefined;
+			} else {
+				initOrUpdateMap(originalLat, originalLon);
+			}
+			$saveBtn.data('image-id', imageId).data('gallery-name', galleryName);
+			modal.find('.gps2photos-restore-coords-btn').data('image-id', imageId).data('gallery-name', galleryName);
 
 			// If originalLat is empty, it could mean either the image has no GPS, or the data wasn't pre-loaded.
 			// Ths happens for NextGEN Gallery. In either case, we fetch the data on-demand to be sure.
@@ -170,6 +186,7 @@ jQuery(document).ready(function ($) {
 						gallery_name: galleryName || '0'
 					},
 					success: function (response) {
+						console.log(response);
 						if (response.success) {
 							var lat = response.data.latitude || '';
 							var lon = response.data.longitude || '';
@@ -179,7 +196,7 @@ jQuery(document).ready(function ($) {
 							$('#gps2photos-modal-lat-input').val(lat);
 							$('#gps2photos-modal-lon-input').val(lon);
 
-							// Update data attributes for all cases to ensure consistency.
+							// Update jQuery internal cache data attributes.
 							$saveBtn.data('original-lat', lat).data('original-lon', lon);
 							modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', filePath);
 
@@ -202,19 +219,20 @@ jQuery(document).ready(function ($) {
 
 	// Handle closing the modal.
 	$(document).on('click', '.gps2photos-modal-close', function () {
-		$(this).closest('.gps2photos-modal').hide();
+		$(this).closest('.gps2photos-modal').css('visibility', 'hidden');
 	});
 
 	// Handle clicking outside the modal to close it.
 	$(window).on('click', function (event) {
 		if ($(event.target).is('.gps2photos-modal')) {
-			$(event.target).hide();
+			$(event.target).css('visibility', 'hidden');
 		}
 	});
 
 	// ----------------------------------------------------------------------------------------------
 	// Handle saving the coordinates.
 	$(document).on('click', '.gps2photos-save-coords-btn', function () {
+		// Retrieve data from jQuery’s internal data cache for the clicked button.
 		var attachmentId = $(this).data('image-id');
 		var filePath = $(this).data('file-path') || '';
 		var $button = $(this);
@@ -318,34 +336,9 @@ jQuery(document).ready(function ($) {
 					$button.data('original-lon', lonNum);
 
 					// Update the map marker position if map exists.
-					if (window.gps2photos_maps.map) {
-						var map = window.gps2photos_maps.map;
-						var zoomLevel = window.gps2photos_maps.zoom;
-						var marker = window.gps2photos_maps.marker;
+					var currentZoom = window.gps2photos_maps.map.getCamera().zoom;
+					initOrUpdateMap(latNum, lonNum, currentZoom);
 
-						if (!latNum || !lonNum) {
-							// No GPS data, hide the marker and reset view.
-							marker.setOptions({ visible: false });
-							map.setCamera({
-								center: [0, 30],
-								zoom: 1,
-								type: 'fly'
-							});
-						} else {
-							zoomLevel = map.getCamera().zoom || zoomLevel;
-							var newPosition = new atlas.data.Position(lonNum, latNum);
-
-							marker.setOptions({
-								position: newPosition,
-								visible: true
-							});
-							map.setCamera({
-								center: newPosition,
-								zoom: zoomLevel,
-								type: 'fly'
-							});
-						}
-					}
 					// If a backup was created, show the restore button.
 					if (response.data.backup_created) {
 						var modal = $('#gps2photos-modal');
@@ -413,26 +406,14 @@ jQuery(document).ready(function ($) {
 					$messageDiv.text(response.data.message).removeClass('error').addClass('notice-success').show();
 
 					// Update the input fields with the restored coordinates.
-					$('#gps2photos-modal-lat-input').val(restoredCoords.latitude.toFixed(6));
-					$('#gps2photos-modal-lon-input').val(restoredCoords.longitude.toFixed(6));
+					$('#gps2photos-modal-lat-input').val(restoredCoords.latitude.toFixed(7));
+					$('#gps2photos-modal-lon-input').val(restoredCoords.longitude.toFixed(7));
+
+					var latNum = parseFloat(restoredCoords.latitude);
+					var lonNum = parseFloat(restoredCoords.longitude);
 
 					// Update the map marker position if map exists.
-					if (window.gps2photos_maps.map) {
-						var map = window.gps2photos_maps.map;
-						var newPosition = new atlas.data.Position(restoredCoords.longitude, restoredCoords.latitude);
-						var marker = window.gps2photos_maps.marker;
-						var zoomLevel = window.gps2photos_maps.zoom;
-
-						marker.setOptions({
-							position: newPosition,
-							visible: true
-						});
-						map.setCamera({
-							center: newPosition,
-							zoom: zoomLevel,
-							type: 'fly'
-						});
-					}
+					initOrUpdateMap(latNum, lonNum);
 
 					// Hide the restore button as the backup is now gone.
 					$restoreBtn.hide();

@@ -54,6 +54,8 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 		// Only for JPEG images.
 		$gps_data_button_text = esc_html__( 'Add/Amend GPS Coordinates', 'gps-2-photos' );
 		if ( $mime_type === 'image/jpeg' ) {
+			$gps_lat_dec = '';
+			$gps_lon_dec = '';
 
 			$geo2_options = get_option( 'plugin_geo2_maps_plus_options' );
 			if ( ( isset( $options['gps_media_library'] ) && $options['gps_media_library'] === 1 ) ||
@@ -62,28 +64,29 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 					&& $geo2_options['exif_viewer'] === 1 )
 			) {
 				$form_fields['header'] = array(
-					'label' => '<h2><b>' . esc_html__( 'GPS 2 Photos - GPS Coordinates', 'gps-2-photos' ) . '</b></h2>',
+					'label' => '<b>' . esc_html__( 'GPS 2 Photos - GPS Coordinates', 'gps-2-photos' ) . '</b>',
 					'input' => 'html',
 					'html'  => '<div></div>',
 				);
 
-				$gps_data = gps2photos_coordinates( $file_path );
+				$gps_data = gps2photos_coordinates( $file_path, $options );
 
-				$gps_lat_dms                 = $gps_data ? $gps_data['latitude_format'] : '';
-				$gps_lon_dms                 = $gps_data ? $gps_data['longitude_format'] : '';
-				$gps_lat_dec                 = $gps_data ? $gps_data['latitude'] : '';
-				$gps_lon_dec                 = $gps_data ? $gps_data['longitude'] : '';
-				$form_fields['GPSLatitude']  = array(
+				$gps_lat_dms = $gps_data ? $gps_data['latitude_format'] : '';
+				$gps_lon_dms = $gps_data ? $gps_data['longitude_format'] : '';
+				$gps_lat_dec = $gps_data ? $gps_data['latitude'] : '';
+				$gps_lon_dec = $gps_data ? $gps_data['longitude'] : '';
+
+				$form_fields['gps_latitude']  = array(
 					'value' => $gps_lat_dms,
 					'label' => esc_html__( 'GPS Lat.', 'gps-2-photos' ),
 					'input' => 'html',
-					'html'  => "<input type='text' class='text' readonly='readonly' name='attachments[$post->ID][gps_latitude]' value='" . esc_attr( $gps_lat_dms ) . "' /><br />",
+					'html'  => "<input type='text' class='text' readonly='readonly' id='attachments-" . $post->ID . "-gps_latitude' name='attachments[$post->ID][gps_latitude]' value='" . esc_attr( $gps_lat_dms ) . "' /><br />",
 				);
-				$form_fields['GPSLongitude'] = array(
+				$form_fields['gps_longitude'] = array(
 					'value' => $gps_lon_dms,
 					'label' => esc_html__( 'GPS Long.', 'gps-2-photos' ),
 					'input' => 'html',
-					'html'  => "<input type='text' class='text' readonly='readonly' name='attachments[$post->ID][gps_longitude]' value='" . esc_attr( $gps_lon_dms ) . "' /><br />",
+					'html'  => "<input type='text' class='text' readonly='readonly' id='attachments-" . $post->ID . "-gps_longitude' name='attachments[$post->ID][gps_longitude]' value='" . esc_attr( $gps_lon_dms ) . "' /><br />",
 				);
 
 				if ( $gps_data ) {
@@ -96,20 +99,15 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 				}
 			}
 
-			if ( isset( $options['gps_coordinates_preview'] ) && $options['gps_coordinates_preview'] == 1 ) {
-				$form_fields['gps_coordinates_preview'] = array(
-					'label' => __( 'GPS Coordinates Preview', 'gps-2-photos' ),
-					'input' => 'html',
-					'html'  => '<div id="gps2photos-map-preview-' . $post->ID . '" style="width: 100%; height: 300px;"></div>',
-				);
-			}
+			$backup_exists = gps2photos_get_backup_coordinates( $file_path );
 
-			$form_fields['add_gps_button'] = array(
-				'label' => '<button type="button" id="gps2photos-open-map-btn" class="button gps2photos-open-map-btn" style="color: #d30000; border-color: #d30000;" ' .
+			$form_fields['gps2photos-open-map-btn'] = array(
+				'label' => '<button type="button" id="attachments-' . $post->ID . '-gps2photos-open-map-btn" class="button gps2photos-open-map-btn" style="color: #d30000; border-color: #d30000;" ' .
 							'data-image-id="' . esc_attr( $post->ID ) . '" ' .
 							'data-file-path="' . esc_attr( $file_path ) . '" ' .
 							'data-lat="' . esc_attr( $gps_lat_dec ) . '" ' .
-							'data-lon="' . esc_attr( $gps_lon_dec ) . '">' .
+							'data-lon="' . esc_attr( $gps_lon_dec ) . '"' .
+							'data-backup-exists="' . ( $backup_exists ? 'true' : 'false' ) . '">' .
 							esc_html( $gps_data_button_text ) .
 							'</button>',
 				'input' => 'html',
@@ -179,22 +177,27 @@ function gps2photos_get_image_path( $image_id, $gallery_name = false, $image_url
 		if ( $file_path && file_exists( $file_path ) ) {
 			return $file_path;
 		}
-	} elseif ( 'nextgen' === $gallery_name ) {
+	} elseif ( $gallery_name === 'nextgen' ) {
 		// Prioritize getting the path from the NextGEN object via its ID (pid).
-		if ( function_exists( 'nggdb' ) ) {
+		if ( class_exists( 'nggdb' ) ) {
 			$image = nggdb::find_image( $image_id );
-			if ( $image && isset( $image->abspath ) ) {
-				return $image->abspath;
+			if ( $image && isset( $image->imagePath ) ) {
+				return $image->imagePath;
 			}
 		}
 	}
 
 	// Fallback for all galleries: convert URL to path.
 	if ( ! empty( $image_url ) ) {
-		$file_path = str_replace( content_url(), WP_CONTENT_DIR, $image_url );
-		return file_exists( $file_path ) ? $file_path : null;
+		if ( strpos( $image_url, 'wp-content' ) !== false ) {
+			$file_path = str_replace( content_url(), WP_CONTENT_DIR, $image_url );
+			return file_exists( $file_path ) ? $file_path : null;
+		} else {
+			// Fallback for paths outside wp-content (e.g., custom NextGEN directory).
+			$file_path = str_replace( site_url( '/' ), ABSPATH, $image_url );
+			return file_exists( $file_path ) ? $file_path : null;
+		}
 	}
-
 	return null;
 }
 
@@ -206,9 +209,9 @@ function gps2photos_get_image_path( $image_id, $gallery_name = false, $image_url
 function gps2photos_get_coordinates_callback() {
 	check_ajax_referer( 'gps2photos-get-gps-nonce', 'nonce' );
 
-	$image_id   = isset( $_POST['image_id'] ) ? intval( $_POST['image_id'] ) : 0;
+	$image_id     = isset( $_POST['image_id'] ) ? intval( $_POST['image_id'] ) : 0;
 	$gallery_name = isset( $_POST['gallery_name'] ) ? esc_attr( $_POST['gallery_name'] ) : false;
-	$image_url  = isset( $_POST['imagePath'] ) ? esc_url_raw( $_POST['imagePath'] ) : '';
+	$image_url    = isset( $_POST['imagePath'] ) ? esc_url_raw( $_POST['imagePath'] ) : '';
 
 	if ( ! $image_id ) {
 		wp_send_json_error( 'Invalid image ID.' );
@@ -220,7 +223,8 @@ function gps2photos_get_coordinates_callback() {
 		wp_send_json_error( 'File not found.' );
 	}
 
-	$gps_data      = gps2photos_coordinates( $file_path );
+	$options       = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+	$gps_data      = gps2photos_coordinates( $file_path, $options );
 	$backup_exists = gps2photos_get_backup_coordinates( $file_path ) !== false;
 
 	if ( $gps_data ) {
@@ -256,12 +260,16 @@ function gps2photos_save_coordinates_callback() {
 	$file_path        = isset( $_POST['file_path'] ) ? sanitize_text_field( wp_unslash( $_POST['file_path'] ) ) : '';
 
 	if ( empty( $file_path ) || ! file_exists( $file_path ) ) {
+		if ( strlen( $file_path ) > 0 ) {
+			$file_path = 'empty.';
+		}
 		wp_send_json_error( 'Invalid file path for saving. Path: ' . $file_path );
 	}
 
+	$options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+
 	// Update the 'always_override_gps' option if the checkbox was present and checked.
 	if ( isset( $_POST['override_setting'] ) ) {
-		$options                        = get_option( 'plugin_gps2photos_options' );
 		$options['always_override_gps'] = $override_setting;
 		update_option( 'plugin_gps2photos_options', $options );
 	}
@@ -270,14 +278,13 @@ function gps2photos_save_coordinates_callback() {
 	$lat_val = ( $latitude !== '' ) ? floatval( $latitude ) : '';
 	$lon_val = ( $longitude !== '' ) ? floatval( $longitude ) : '';
 
-	$original_gps  = gps2photos_coordinates( $file_path );
+	$original_gps  = gps2photos_coordinates( $file_path, $options );
 	$backup_exists = gps2photos_get_backup_coordinates( $file_path ) !== false;
 
 	$result = gps2photos_save_gps_to_jpeg( $file_path, $lat_val, $lon_val, false, $original_gps, $backup_exists );
 
 	if ( $result ) {
 		// If coordinates were removed, send a specific success message.
-		$options    = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
 		$backup_opt = $options['backup_existing_coordinates'];
 
 		// Determine the backup message based on whether a backup was created or already exists.
@@ -286,11 +293,11 @@ function gps2photos_save_coordinates_callback() {
 		} elseif ( $backup_opt === 1 && $original_gps && $backup_exists ) {
 			$backup_text = __( 'A backup of the original coordinates already exists in the Exif field User Comment.', 'gps-2-photos' );
 		} elseif ( $backup_opt === 1 && ! $original_gps && $backup_exists ) {
-			$backup_text = __( 'Nothing to backup but a backup of the original coordinates already exists in the Exif field User Comment.', 'gps-2-photos' );
+			$backup_text = __( 'Nothing to backup, but a backup of the original coordinates already exists in the Exif field User Comment.', 'gps-2-photos' );
 		} elseif ( ! $backup_opt === 1 && ! $original_gps && $backup_exists ) {
 			$backup_text = __( 'Backup was not requested but a backup of the original coordinates exists in the Exif field User Comment.', 'gps-2-photos' );
 		} elseif ( ! $backup_opt === 1 && $original_gps && ! $backup_exists ) {
-			$backup_text = __( 'Backup was not requested. Original coordinates cannot be recovered', 'gps-2-photos' );
+			$backup_text = __( 'Backup was not requested. Original coordinates cannot be recovered.', 'gps-2-photos' );
 		} else {
 			$backup_text = '';
 		}
@@ -407,33 +414,39 @@ function gps2photos_restore_from_backup_callback() {
  * @since  1.0.0
  *
  * @param  string $picture_path A path to a picture.
+ * @param  array  $options      Plugin options array.
  * @return string[]|bool  $geo Latitude and longitude coordinates
  */
-function gps2photos_coordinates( $picture_path ) {
-	// Sets error handler for potential errors in exif_read_data().
-	set_error_handler(
-		function ( $err_no, $err_str, $err_file, $err_line ) {
-			// For AJAX requests (like the Media Library grid view), log errors to the server
-			// to avoid corrupting the JSON response. For all other page loads, show the
-			// error in the browser console for easier debugging.
-			if ( wp_doing_ajax() ) {
-				error_log( "GPS 2 Photos (AJAX) - exif_read_data() error: $err_str in $err_file on line $err_line" );
-			} else {
-				$error = 'Error no: ' . $err_no . '\\nError message: ' . $err_str . '\\nError file: ' . str_replace( '\\', '\\\\', $err_file ) . '\\nError line: ' . $err_line;
-				// Shows errors in the browser console.
-				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo "<script>console.warn('exif_read_data() GPS data error: \\n" . esc_textarea( $error ) . "' );</script>";
+function gps2photos_coordinates( $picture_path, $options ) {
+	// Exif read error handler.
+	if ( $options['exif_error_handler'] === 1 ) {
+		// Sets error handler for potential errors in exif_read_data().
+		set_error_handler(
+			function ( $err_no, $err_str, $err_file, $err_line ) {
+				// For AJAX requests (like the Media Library grid view), log errors to the server
+				// to avoid long opening time. For all other page loads, show the
+				// error in the browser console for easier debugging.
+				$error = 'GPS 2 Photos (AJAX) - exif_read_data() error:\\nError no: ' . $err_no . '\\nError message: ' . $err_str . '\\nError file: ' . str_replace( '\\', '\\\\', $err_file ) . '\\nError line: ' . $err_line;
+				if ( wp_doing_ajax() ) {
+					error_log( $error );
+				} else {
+					// Shows errors in the browser console.
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo "<script>console.warn('" . esc_textarea( $error ) . "' );</script>";
+				}
+				// Return true to signify the error has been handled and prevent PHP's default handler.
+				return true;
 			}
-			// Return true to signify the error has been handled and prevent PHP's default handler.
-			return true;
-		}
-	);
+		);
+	}
 
 	// Gets Exif data.
 	$exif = exif_read_data( $picture_path, 'GPS', false );
 
-	// Restores error handler to stop errors from being displayed.
-	restore_error_handler();
+	if ( $options['exif_error_handler'] === 1 ) {
+		// Restores error handler to stop errors from being displayed.
+		restore_error_handler();
+	}
 
 	if ( $exif !== false ) {
 		// Any coordinates available?
@@ -553,7 +566,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 		}
 
 		// --- Backup/Restore Logic ---
-		if ( ( 1 === $backup_opt && $original_gps && ! $backup_exists ) || $restore ) {
+		if ( ( $backup_opt === 1 && $original_gps && ! $backup_exists ) || $restore ) {
 			$exif_ifd = $ifd0->getSubIfd( PelIfd::EXIF );
 			if ( ! $exif_ifd ) {
 				$exif_ifd = new PelIfd( PelIfd::EXIF );
@@ -574,7 +587,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 				} elseif ( $user_comment_entry ) {
 					$exif_ifd->addEntry( new PelEntryUserComment( $new_comment ) ); // setValue().
 				}
-			} elseif ( 1 === $backup_opt && $original_gps && ! $backup_exists ) {
+			} elseif ( $backup_opt === 1 && $original_gps && ! $backup_exists ) {
 				// On save (not restore), add the backup string if it doesn't exist.
 				$backup_signature = 'Original GPS coordinates:';
 				$backup_string    = sprintf(

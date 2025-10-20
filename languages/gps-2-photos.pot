@@ -1,0 +1,525 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: GPS 2 Photos\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-10-19 21:52+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.8.0; wp-6.7.1; php-8.0.22\n"
+"X-Domain: gps-2-photos"
+
+#: functions.php:308
+msgid " GPS data erased successfully."
+msgstr ""
+
+#: plugin.php:210
+msgid " is not a valid color code. Please enter a correct hex or RGB(A) color!"
+msgstr ""
+
+#: plugin.php:190
+msgid " is not a valid hex color. Please enter i.e. #000 or #9900ff!"
+msgstr ""
+
+#: plugin.php:202
+msgid " Please enter a valid RGB(A) color!"
+msgstr ""
+
+#: functions.php:294
+msgid ""
+"A backup of the original coordinates already exists in the Exif field User "
+"Comment."
+msgstr ""
+
+#: functions.php:292
+msgid ""
+"A backup of the original coordinates has been saved in the Exif field User "
+"Comment."
+msgstr ""
+
+#: administration.php:400
+msgid "ACTIVATED"
+msgstr ""
+
+#: functions.php:97
+msgid "Add GPS Coordinates"
+msgstr ""
+
+#: administration.php:442
+msgid "Add GPS info to WP Media Library"
+msgstr ""
+
+#: administration.php:437
+msgid ""
+"Add your website domain to the CORS Allowed Origins field in your Azure "
+"account."
+msgstr ""
+
+#. imageURL is the absolute URL to the image.
+#: administration.php:182 administration.php:261
+msgid "Add/Amend GPS"
+msgstr ""
+
+#: azure-map.php:26 functions.php:55 functions.php:98
+msgid "Add/Amend GPS Coordinates"
+msgstr ""
+
+#: administration.php:466 azure-map.php:55
+msgid "Always override existing GPS coordinates without asking"
+msgstr ""
+
+#: functions.php:93
+msgid "Amend GPS Coordinates"
+msgstr ""
+
+#: administration.php:281
+msgid "An error occurred when saving!"
+msgstr ""
+
+#: administration.php:121
+msgid "An error occurred while saving."
+msgstr ""
+
+#: administration.php:127
+msgid "An unknown error occurred during restore."
+msgstr ""
+
+#: plugin.php:321
+msgid ""
+"API key validation request failed when trying to decode Azure Maps server "
+"response!"
+msgstr ""
+
+#: administration.php:122
+msgid "Are you sure you want to erase the GPS coordinates?"
+msgstr ""
+
+#: administration.php:124
+msgid "Are you sure you want to restore the original coordinates?"
+msgstr ""
+
+#: plugin.php:328
+msgid "Azure API key validation unsuccessful!"
+msgstr ""
+
+#: administration.php:516
+msgid "Azure logo"
+msgstr ""
+
+#: administration.php:404
+msgid "Azure Maps API Key"
+msgstr ""
+
+#: plugin.php:332
+msgid ""
+"Azure Maps API key validation successful! You can start using GPS 2 Photos!"
+msgstr ""
+
+#. 1: HTML link opening tag. 2: HTML link closing tag. 3: HTML link opening tag. 4: HTML link closing tag. 5: HTML link opening tag. 6: HTML link closing tag.
+#: administration.php:411
+#, php-format
+msgid ""
+"Azure Maps API platform is free to use up to a certain limit. For more "
+"information refer to: %1$sLicensing Use Rights%2$s, %3$sFAQ%4$s, "
+"%5$sPricing%6$s."
+msgstr ""
+
+#: administration.php:450
+msgid "Backup Existing Coordinates\t"
+msgstr ""
+
+#: functions.php:298
+msgid ""
+"Backup was not requested but a backup of the original coordinates exists in "
+"the Exif field User Comment."
+msgstr ""
+
+#: functions.php:300
+msgid "Backup was not requested. Original coordinates cannot be recovered."
+msgstr ""
+
+#: administration.php:115
+msgid ""
+"Both Latitude and Longitude must be provided, or both must be empty to erase "
+"coordinates."
+msgstr ""
+
+#: azure-map.php:45
+msgid "Clear"
+msgstr ""
+
+#: functions.php:403
+msgid "Coordinates restored successfully."
+msgstr ""
+
+#: administration.php:512
+msgid "Dashboard with map navigation controls"
+msgstr ""
+
+#: administration.php:501
+msgid "Enable fullscreen mode"
+msgstr ""
+
+#: administration.php:472
+msgid ""
+"Enable only if you want to restore default settings on "
+"deactivation/activation of this plugin."
+msgstr ""
+
+#: administration.php:120
+msgid "Error:"
+msgstr ""
+
+#: administration.php:458
+msgid "EXIF error handler"
+msgstr ""
+
+#: azure-map.php:30
+msgid ""
+"For manual entry for Latitude please enter a value between -90 and 90. For "
+"Longitude please enter a value between -180 and 180. Both Latitude and "
+"Longitude must be provided. If both fields will be left empty this will "
+"erase coordinates."
+msgstr ""
+
+#: administration.php:366
+msgid "General"
+msgstr ""
+
+#: administration.php:368
+msgid "Geo2Maps Add-on"
+msgstr ""
+
+#. 1: HTML link opening tag. 2: HTML link closing tag. 3: HTML link opening tag. 4: HTML link closing tag.
+#: administration.php:393
+#, php-format
+msgid ""
+"Get the Azure Maps Key by following the instruction in %1$shere%2$s or go "
+"directly to: %3$sAzure Maps Dev Center%4$s."
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"GPS 2 Photo Add-on for NextGEN Gallery is a flexible plugin which allows to "
+"add GPS coordinates to the photo EXIF data by selecting a location on a map."
+msgstr ""
+
+#. Name of the plugin
+#: administration.php:297 administration.php:298
+msgid "GPS 2 Photos"
+msgstr ""
+
+#: functions.php:67
+msgid "GPS 2 Photos - GPS Coordinates"
+msgstr ""
+
+#: administration.php:362
+msgid "GPS 2 Photos Settings"
+msgstr ""
+
+#: administration.php:181
+msgid "GPS Coordinates"
+msgstr ""
+
+#: administration.php:117
+msgid "GPS coordinates are already empty."
+msgstr ""
+
+#: administration.php:116
+msgid "GPS coordinates were not changed."
+msgstr ""
+
+#: administration.php:454
+msgid ""
+"GPS coordinates will be added to the User Comment Exif field as \"Original "
+"GPS coordinates:Latitude:...,Longitude:...\" if not already there. If "
+"present they can be restored."
+msgstr ""
+
+#: functions.php:315
+msgid "GPS data saved successfully."
+msgstr ""
+
+#: functions.php:81
+msgid "GPS Lat."
+msgstr ""
+
+#: functions.php:87
+msgid "GPS Long."
+msgstr ""
+
+#: administration.php:508
+msgid "Grayscale Dark"
+msgstr ""
+
+#: administration.php:507
+msgid "Grayscale Light"
+msgstr ""
+
+#. 1: HTML link opening tag. 2: HTML link closing tag.
+#: administration.php:425
+#, php-format
+msgid "Here you can create the %1$sAzure Free Account%2$s."
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://geo2maps.pasart.net"
+msgstr ""
+
+#. URI of the plugin
+msgid "https://wordpress.org/plugins/gps-2-photo/"
+msgstr ""
+
+#: administration.php:506
+msgid "Hybrid (satellite_road_labels)"
+msgstr ""
+
+#: administration.php:433
+msgid "Important: "
+msgstr ""
+
+#: administration.php:113
+msgid "Invalid Latitude. Please enter a value between -90 and 90."
+msgstr ""
+
+#: administration.php:114
+msgid "Invalid Longitude. Please enter a value between -180 and 180."
+msgstr ""
+
+#: azure-map.php:51
+msgid "Latitude"
+msgstr ""
+
+#: administration.php:513
+msgid "Locate Me button (dependent on Dashboard visibility)"
+msgstr ""
+
+#: azure-map.php:52
+msgid "Longitude"
+msgstr ""
+
+#: administration.php:530
+msgid "Main Coordinates Pushpin Options"
+msgstr ""
+
+#: administration.php:367
+msgid "Map"
+msgstr ""
+
+#: administration.php:485
+msgid "Map Container Height"
+msgstr ""
+
+#: administration.php:487
+msgid "Map Container Width"
+msgstr ""
+
+#: administration.php:478
+msgid "Map Options"
+msgstr ""
+
+#: administration.php:383
+msgid "Map Service Provider"
+msgstr ""
+
+#: administration.php:503
+msgid "Map Style"
+msgstr ""
+
+#: administration.php:509
+msgid "Night"
+msgstr ""
+
+#: administration.php:389
+msgid "NOT ACTIVATED"
+msgstr ""
+
+#: functions.php:296
+msgid ""
+"Nothing to backup but a backup of the original coordinates already exists in "
+"the Exif field User Comment."
+msgstr ""
+
+#. 1: HTML link opening tag. 2: HTML link closing tag.
+#: administration.php:521
+#, php-format
+msgid ""
+"Officially undocumented option. Disabling may likely breach the %1$sAzure "
+"Maps Platform API’s Terms of Use%2$s!"
+msgstr ""
+
+#: administration.php:446
+msgid ""
+"Opening time of a very big WP Media Library in the grid view may be slightly "
+"better with this option disabled."
+msgstr ""
+
+#: plugin.php:261
+msgid "Please enter a number from 0% to 100%!"
+msgstr ""
+
+#. %s: maximum pixel value
+#: plugin.php:236
+#, php-format
+msgid "Please enter a number from 24 to %s, percentage 1-100%% or \"auto\"!"
+msgstr ""
+
+#: plugin.php:305
+msgid "Please enter a valid API key! Special characters are not allowed."
+msgstr ""
+
+#: plugin.php:370
+msgid "Please enter a valid number for Zoom Level in the range 1-24!"
+msgstr ""
+
+#: administration.php:547
+msgid "Pushpin Icon Type"
+msgstr ""
+
+#: administration.php:574
+msgid "Pushpin Icon Type for Search Results"
+msgstr ""
+
+#: administration.php:540
+msgid "Pushpin Secondary Color"
+msgstr ""
+
+#: administration.php:533
+msgid "Pushpins Color"
+msgstr ""
+
+#: administration.php:567
+msgid "Pushpins Color for Search Results"
+msgstr ""
+
+#: administration.php:470
+msgid "Restore default settings"
+msgstr ""
+
+#: azure-map.php:56
+msgid "Restore Original Coordinates"
+msgstr ""
+
+#: administration.php:126
+msgid "Restoring..."
+msgstr ""
+
+#: administration.php:504
+msgid "Road"
+msgstr ""
+
+#: administration.php:510
+msgid "Road Shaded Relief"
+msgstr ""
+
+#: administration.php:505
+msgid "Satellite"
+msgstr ""
+
+#: administration.php:374
+msgid "Save Changes"
+msgstr ""
+
+#: azure-map.php:59
+msgid "Save Coordinates"
+msgstr ""
+
+#: administration.php:119
+msgid "Saving..."
+msgstr ""
+
+#: administration.php:515
+msgid "Scalebar"
+msgstr ""
+
+#: azure-map.php:43
+msgid "Search"
+msgstr ""
+
+#: administration.php:514
+msgid "Search bar"
+msgstr ""
+
+#: azure-map.php:42
+msgid "Search for a location..."
+msgstr ""
+
+#: azure-map.php:44
+msgid "Search Near Map Center"
+msgstr ""
+
+#: administration.php:564
+msgid "Search Results Pushpin Options"
+msgstr ""
+
+#: plugin.php:328
+msgid "Server response:"
+msgstr ""
+
+#: administration.php:277
+msgid "Settings saved."
+msgstr ""
+
+#: administration.php:462
+msgid ""
+"Some images may have incorrect EXIF format. When enabled, this option "
+"suppresses PHP warnings from the exif_read_data() function and logs them to "
+"the server error log for AJAX requests in WP Media Library grid view or the "
+"browser console. Enable only for debugging."
+msgstr ""
+
+#: plugin.php:328
+msgid "Status Code:"
+msgstr ""
+
+#: administration.php:118
+msgid ""
+"This image already has GPS coordinates. Are you sure you want to override "
+"them?"
+msgstr ""
+
+#: administration.php:501
+msgid ""
+"This option shows a button that opens the map in full-screen mode, expanding "
+"to cover the entire physical screen instead of just the browser window."
+msgstr ""
+
+#: administration.php:123
+msgid ""
+"This will not erase backup coordinates saved in the Exif field User Comment."
+msgstr ""
+
+#: administration.php:125
+msgid "This will overwrite any current GPS data on the image."
+msgstr ""
+
+#: administration.php:511
+msgid "Which elements should be displayed?"
+msgstr ""
+
+#. 1: HTML line break tag. 2: HTML code opening tag. 3: HTML code closing tag.
+#: administration.php:493
+#, php-format
+msgid ""
+"You can use something like \"235px\", \"auto\" or \"78%%\". Number only "
+"\"235\" will be changed to \"235px\" automatically. \"auto\" does not work "
+"with the Map Height.%1$sHeight and width of the maps can be changed directly "
+"by using CSS. The class is named %2$sgps2photos_maps_map%3$s"
+msgstr ""
+
+#: administration.php:482
+msgid "Zoom Level"
+msgstr ""
+
+#: administration.php:484
+msgid ""
+"Zoom Level for single image. Maps with several pins are focused "
+"automatically."
+msgstr ""

@@ -13,7 +13,7 @@ View and edit EXIF GPS coordinates for your photos by selecting a location on a 
 
 == Description ==
 
-GPS 2 Photos enhances your WordPress Media Library and NextGEN Gallery by allowing you to easily view, add, and edit GPS coordinates for your images. It displays a field with GPS coordinates for each JPEG image, showing its location based on EXIF data. If an image doesn't have GPS information, you can add it by simply clicking on the map or typing it in manually.
+GPS 2 Photos enhances your WordPress Media Library and popular gallery plugins like NextGEN Gallery, Envira Gallery, FooGallery, and Modula, by allowing you to easily view, add, and edit GPS coordinates for your images. It displays a field with GPS coordinates for each JPEG image, showing its location based on EXIF data. If an image doesn't have GPS information, you can add it by simply clicking on the map, searching for a location, or typing it in manually.
 
 The plugin is using Microsoft Azure Maps and requires free Azure Maps API Key to function.
 To amend EXIF GPS coordinates is using the PHP Exif Library (PEL) by Martin Geisler. (Copyright (C) 2004–2006 Martin Geisler. Licensed under the GNU GPL.)
@@ -21,9 +21,10 @@ To amend EXIF GPS coordinates is using the PHP Exif Library (PEL) by Martin Geis
 = Features =
 
 *   **WordPress Media Library & NextGEN Gallery Integration:** Works seamlessly inside the standard Media Library and also adds an "Add/Amend GPS" link to images in the NextGEN Gallery management screen.
+*   **Gallery Support:** Integrates with popular gallery plugins, including NextGEN Gallery, Envira Gallery, FooGallery, and Modula.
 *   **View GPS Data:** See a map with a pin for any image that has GPS coordinates in its EXIF data.
 *   **Edit & Add GPS Data:** Easily add or change an image's location by dragging the pin or clicking anywhere on the map.
-*   **Interactive Map Modal:** A clean and simple map interface opens in a modal window right in your Media Library.
+*   **Interactive Map Modal:** A clean and simple map interface with a location search bar opens in a modal window.
 *   **Backup & Restore:** The plugin automatically backs up original GPS data, allowing you to restore it with a single click.
 *   **Azure Maps Integration:** Utilizes the powerful and reliable Azure Maps for displaying map tiles.
 
@@ -48,14 +49,15 @@ Azure Maps offers a generous free tier. For example, you get thousands of free m
 
 **How do I use GPS 2 Photos?**
 
-Option 1: Navigate to your WordPress Media Library. You can use either the grid view or the list view.
+*   **WordPress Media Library:** Navigate to your Media Library (either list or grid view). In list view, you'll see a button in the "GPS Location" column. In grid view, you'll find the button in the "Attachment Details" panel.
+*   **NextGEN Gallery:** Navigate to a gallery via the "Manage Galleries" page. You will see an "Add/Amend GPS" link in the actions for each image.
+*   **Envira, FooGallery, Modula:** On the gallery edit screen, you will find a button or link to add/amend GPS coordinates for each image.
 
-*   **List View:** You will see a new "GPS Location" column. If an image has GPS data, you'll see a "Add/Amend GPS Coordinates" button.
-*   **Grid View:** Click on an image to open the "Attachment Details" screen. You will find a "Add/Amend GPS Coordinates" button in the details panel.
-Option 2: 
-*   **Install NextGEN Gallery:** Navigate to a gallery via the "Manage Galleries" page. You will see an "Add/Amend GPS" link in the actions for each image.
+**How to use the search bar when multiple locations are available?**
 
-Clicking the button or a link will open a modal window with a map. You can then view, edit, or add GPS coordinates.
+When you search for a location, the map may display several pins if multiple matches are found. You can click on any of these result pins to see more details in a popup. When you click on a pin, it will change color to indicate it's selected, and its coordinates will automatically populate the Latitude and Longitude fields. You can then save these coordinates to your image.
+
+Clicking the button or link will open a modal window with a map. You can then view, edit, or add GPS coordinates.
 
 **Can I use this plugin if my photos have no GPS data?**
 

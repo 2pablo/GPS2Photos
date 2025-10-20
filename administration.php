@@ -58,8 +58,6 @@ function gps2photos_options_init() {
 	add_action( 'wp_ajax_gps2photos_get_coordinates', 'gps2photos_get_coordinates_callback' );
 }
 
-//add_action( 'admin_footer-nextgen-gallery5_page_nggallery-manage-gallery', 'gps2photos_add_hidden_modal' );
-
 /**
  * Outputs the hidden modal HTML for the GPS 2 Photos plugin in the admin footer.
  *
@@ -150,12 +148,16 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		// Enqueue modal css.
 		wp_enqueue_style( 'gps2photos-modal-css', GPS_2_PHOTOS_DIR_URL . '/css/gps2photos-modal.css', array(), '1.0.0' );
 
-		// --- Register and Enqueue Azure Maps Scripts (with conflict check) ---
+		// Register and Enqueue Azure Maps Scripts (with conflict check).
 		if ( ! wp_style_is( 'azure-maps-css', 'enqueued' ) ) {
 			wp_enqueue_style( 'azure-maps-css', 'https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css', array(), null, 'all' );
 		}
 		if ( ! wp_script_is( 'azure-maps-js', 'enqueued' ) ) {
 			wp_enqueue_script( 'azure-maps-js', 'https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js', array(), null, false );
+		}
+		// Add a reference to the Azure Maps Services Module JavaScript file for search functionality.
+		if ( ! wp_script_is( 'azure-maps-service-js', 'enqueued' ) ) {
+			wp_enqueue_script( 'azure-maps-service-js', 'https://atlas.microsoft.com/sdk/javascript/service/2/atlas-service.min.js', array(), null, false );
 		}
 		if ( ! wp_script_is( 'azure-maps-geolocation-js', 'enqueued' ) ) {
 			wp_enqueue_script( 'azure-maps-geolocation-js', GPS_2_PHOTOS_DIR_URL . '/js/geolocation-module/azure-maps-geolocation-control.min.js', array( 'azure-maps-js' ), '1.0.0', false );
@@ -165,10 +167,10 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		}
 
 		add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
-		
+
 		// Register and enqueue a placeholder script (can be empty).
-		wp_register_script('gps2photos-map-js', '', [], false, true);
-		wp_enqueue_script('gps2photos-map-js');
+		wp_register_script( 'gps2photos-map-js', '', array(), '1.0.0', true );
+		wp_enqueue_script( 'gps2photos-map-js' );
 	}
 
 	// Enqueue for Envira Gallery edit screen.
@@ -209,13 +211,6 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			wp_enqueue_script( 'gps2photos-modula' );
 		}
 	}
-
-	// Add the single hidden modal to the footer on all relevant pages.
-	// The check inside the function prevents it from being added multiple times.
-	// if ( ! has_action( 'admin_footer', 'gps2photos_add_hidden_modal' ) ) {
-	// 	add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
-	// }
-
 
 	// Only load the settings page scripts on our plugin's admin page.
 	if ( $hook === 'toplevel_page_gps-2-photos' ) {
@@ -395,16 +390,17 @@ function gps2photos_options_page() {
 								<span class="description">';
 							printf(
 								/* translators: 1: HTML link opening tag. 2: HTML link closing tag. 3: HTML link opening tag. 4: HTML link closing tag. */
-								esc_html_e( 'Get the Azure Maps Key by following the instruction in %1$shere%2$s or go directly to: %3$sAzure Maps Dev Center%4$s.', 'gps-2-photos' ),
+								esc_html__( 'Get the Azure Maps Key by following the instruction in %1$shere%2$s or go directly to: %3$sAzure Maps Dev Center%4$s.', 'gps-2-photos' ),
 								'<a href="https://msdn.microsoft.com/en-us/library/ff428642.aspx title="Getting a Azure Maps Key" target="_blank">',
 								'</a> ',
 								'<a href="https://www.bingmapsportal.com/" title="Azure Maps Dev Center" target="_blank">',
 								'</a>.</span>'
 							);
 						} else {
-							echo '<span class="gps2photos_key_activated">' . esc_html_e( 'ACTIVATED', 'gps-2-photos' ) . '</h3></span>';
+							echo '<span class="gps2photos_key_activated">' . esc_html__( 'ACTIVATED', 'gps-2-photos' ) . '</h3></span>';
 						}
 						?>
+					</h3>
 						<h4><?php esc_html_e( 'Azure Maps API Key', 'gps-2-photos' ); ?></h4>
 
 						<input type="text" name="plugin_gps2photos_options[geo_azure_key]" value="<?php echo esc_textarea( $options['geo_azure_key'] ); ?>" style='min-width:25em' size='<?php echo esc_textarea( ( strlen( $options['geo_azure_key'] ) + 16 ) ); ?>' /><br />
@@ -443,17 +439,31 @@ function gps2photos_options_page() {
 						</span></p>
 				</div>
 				<div class="inside">
-					<p><input type="checkbox" name="plugin_gps2photos_options[gps_media_library]" value="1" <?php checked( $options['gps_media_library'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Add GPS info to WP Media Library', 'gps-2-photos' ); ?></b></p>
-					<p><input type="checkbox" name="plugin_gps2photos_options[gps_coordinates_preview]" value="1" <?php checked( $options['gps_coordinates_preview'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Add GPS Coordinates preview on a mini map to WP Media Library', 'gps-2-photos' ); ?></b></p>
-					<p><input type="checkbox" name="plugin_gps2photos_options[always_override_gps]" value="1" <?php checked( $options['always_override_gps'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ); ?></b></p>
+					<p><input type="checkbox" name="plugin_gps2photos_options[gps_media_library]" value="1" <?php checked( $options['gps_media_library'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Add GPS info to WP Media Library', 'gps-2-photos' ); ?></b>
+						<span class="gps2photos-tooltip-container">
+							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
+							<span class="gps2photos-tooltip-text">
+								<?php esc_html_e( 'The opening time of a very big WP Media Library in the grid view may be slightly better with this option disabled.', 'gps-2-photos' ); ?>
+							</span>
+						</span>
+					</p>
 					<p><input type="checkbox" name="plugin_gps2photos_options[backup_existing_coordinates]" value="1" <?php checked( $options['backup_existing_coordinates'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Backup Existing Coordinates	', 'gps-2-photos' ); ?></b>
 						<span class="gps2photos-tooltip-container">
 							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
 							<span class="gps2photos-tooltip-text">
-								<?php esc_html_e( 'GPS coordinates will be added to the User Comment Exif field as "Original GPS coordinates:Latitude:...,Longitude:..." if not already there. If present they can be restored.', 'gps-2-photos' ); ?>
+								<?php esc_html_e( 'GPS coordinates will be added to the User Comment Exif field as "Original GPS coordinates:Latitude,Longitude" if not already there. If present they can be restored.', 'gps-2-photos' ); ?>
+							</span>
+						</span>
+					</p>					
+					<p><input type="checkbox" name="plugin_gps2photos_options[exif_error_handler]" value="1" <?php checked( $options['exif_error_handler'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'EXIF error handler', 'gps-2-photos' ); ?></b>
+						<span class="gps2photos-tooltip-container">
+							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
+							<span class="gps2photos-tooltip-text">
+								<?php esc_html_e( 'Some images may have incorrect EXIF format. When enabled, this option suppresses PHP warnings from the exif_read_data() function and logs them to the server error log for AJAX requests in WP Media Library grid view or the browser console. Enable only for debugging.', 'gps-2-photos' ); ?>
 							</span>
 						</span>
 					</p>
+					<p><input type="checkbox" name="plugin_gps2photos_options[always_override_gps]" value="1" <?php checked( $options['always_override_gps'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ); ?></b></p>
 				</div>
 				<div class="gps2photos_restore_defaults">
 					<h3>
@@ -501,6 +511,7 @@ function gps2photos_options_page() {
 					<h4><?php esc_html_e( 'Which elements should be displayed?', 'gps-2-photos' ); ?></h4>
 					<input type="checkbox" name="plugin_gps2photos_options[dashboard]" value="1" <?php checked( $options['dashboard'], 1 ); ?>>&ensp;<?php esc_html_e( 'Dashboard with map navigation controls', 'gps-2-photos' ); ?><br />
 					<input type="checkbox" name="plugin_gps2photos_options[locate_me_button]" value="1" <?php checked( $options['locate_me_button'], 1 ); ?>>&ensp;<?php esc_html_e( 'Locate Me button (dependent on Dashboard visibility)', 'gps-2-photos' ); ?><br />
+					<input type="checkbox" name="plugin_gps2photos_options[map_search_bar]" value="1" <?php checked( $options['map_search_bar'], 1 ); ?>>&ensp;<?php esc_html_e( 'Search bar', 'gps-2-photos' ); ?><br />
 					<input type="checkbox" name="plugin_gps2photos_options[scalebar]" value="1" <?php checked( $options['scalebar'], 1 ); ?>>&ensp;<?php esc_html_e( 'Scalebar', 'gps-2-photos' ); ?><br />
 					<input type="checkbox" name="plugin_gps2photos_options[logo]" value="1" <?php checked( $options['logo'], 1 ); ?>>&ensp;<?php esc_html_e( 'Azure logo', 'gps-2-photos' ); ?><br />
 					<span style="margin-left:26px;" class="description">
@@ -516,10 +527,10 @@ function gps2photos_options_page() {
 				</div>
 				<div class="inside">
 					<h3>
-						<p><?php esc_html_e( 'Pushpins options', 'gps-2-photos' ); ?></p>
+						<p><?php esc_html_e( 'Main Coordinates Pushpin Options', 'gps-2-photos' ); ?></p>
 					</h3>
 					<b>
-						<?php esc_html_e( 'Pushpins Color for Images', 'gps-2-photos' ); ?>
+						<?php esc_html_e( 'Pushpins Color', 'gps-2-photos' ); ?>
 					</b>
 					<br />
 					<div class="gps2photos_margin_top">
@@ -539,20 +550,54 @@ function gps2photos_options_page() {
 						<select id="gps2image_pin_icon_type" class="gps2photos_margin_top gps2photos_margin_bottom" name="plugin_gps2photos_options[pin_icon_type]" style="margin-top:17px" onchange="gps2photos_update_image()">
 							<option value="marker" <?php echo ( $options['pin_icon_type'] === 'marker' ) ? 'selected' : ''; ?>>marker</option>
 							<option value="marker-thick" <?php echo ( $options['pin_icon_type'] === 'marker-thick' ) ? 'selected' : ''; ?>>marker-thick</option>
-							<option value="marker-square" <?php echo ( $options['pin_icon_type'] === 'marker-square' ) ? 'selected' : ''; ?>>marker-square</option>
+							<option value="marker-arrow" <?php echo ( $options['pin_icon_type'] === 'marker-arrow' ) ? 'selected' : ''; ?>>marker-arrow</option>
 							<option value="marker-ball-pin" <?php echo ( $options['pin_icon_type'] === 'marker-ball-pin' ) ? 'selected' : ''; ?>>marker-ball-pin</option>
 							<option value="flag" <?php echo ( $options['pin_icon_type'] === 'flag' ) ? 'selected' : ''; ?>>flag</option>
+							<option value="flag-triangle" <?php echo ( $options['pin_icon_type'] === 'flag-triangle' ) ? 'selected' : ''; ?>>flag-triangle</option>
 							<option value="pin" <?php echo ( $options['pin_icon_type'] === 'pin' ) ? 'selected' : ''; ?>>pin</option>
-							<option value="pin-round" <?php echo ( $options['pin_icon_type'] === 'pin-round' ) ? 'selected' : ''; ?>>pin-round</option>
 						</select><img id="gps2image_pin_icon_image" style="margin-left:20px; margin-bottom:6px; vertical-align: bottom;" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/pin-types/' . $options['pin_icon_type'] . '.png' ); ?>' alt="icon type">
 					</div>
 					<br />
+				</div>
+				<div class="inside">
+					<h3>
+						<p><?php esc_html_e( 'Search Results Pushpin Options', 'gps-2-photos' ); ?></p>
+					</h3>
+					<b>
+						<?php esc_html_e( 'Pushpins Color for Search Results', 'gps-2-photos' ); ?>
+					</b>
+					<br />
+					<div class="gps2photos_margin_top">
+						<input type="text" class="color-picker code" data-default-color="#007BFF" name="plugin_gps2photos_options[search_pin_color]" value="<?php echo esc_attr( $options['search_pin_color'] ); ?>" />
+					</div><br />
+					<b>
+						<?php esc_html_e( 'Pushpin Icon Type for Search Results', 'gps-2-photos' ); ?>
+					</b><br />
+					<div style="display: inline-block; vertical-align: bottom;">
+						<select id="gps2image_search_pin_icon_type" class="gps2photos_margin_top gps2photos_margin_bottom" name="plugin_gps2photos_options[search_pin_icon_type]" style="margin-top:17px" onchange="gps2photos_update_search_image()">
+							<option value="marker" <?php echo ( $options['search_pin_icon_type'] === 'marker' ) ? 'selected' : ''; ?>>marker</option>
+							<option value="marker-thick" <?php echo ( $options['search_pin_icon_type'] === 'marker-thick' ) ? 'selected' : ''; ?>>marker-thick</option>
+							<option value="marker-arrow" <?php echo ( $options['search_pin_icon_type'] === 'marker-arrow' ) ? 'selected' : ''; ?>>marker-arrow</option>
+							<option value="marker-ball-pin" <?php echo ( $options['search_pin_icon_type'] === 'marker-ball-pin' ) ? 'selected' : ''; ?>>marker-ball-pin</option>
+							<option value="flag" <?php echo ( $options['search_pin_icon_type'] === 'flag' ) ? 'selected' : ''; ?>>flag</option>
+							<option value="flag-triangle" <?php echo ( $options['search_pin_icon_type'] === 'flag-triangle' ) ? 'selected' : ''; ?>>flag-triangle</option>
+							<option value="pin" <?php echo ( $options['search_pin_icon_type'] === 'pin' ) ? 'selected' : ''; ?>>pin</option>
+						</select><img id="gps2image_search_pin_icon_image" style="margin-left:20px; margin-bottom:6px; vertical-align: bottom;" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/pin-types/' . $options['search_pin_icon_type'] . '.png' ); ?>' alt="icon type">
+					</div>
 				</div>
 			</div>
 			<script>
 			function gps2photos_update_image() {
 				var select = document.getElementById("gps2image_pin_icon_type");
 				var image = document.getElementById("gps2image_pin_icon_image");
+				var selectedValue = select.value;
+
+				// Update the image source
+				image.src = "<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL ); ?>/img/pin-types/" + selectedValue + ".png";
+			}
+			function gps2photos_update_search_image() {
+				var select = document.getElementById("gps2image_search_pin_icon_type");
+				var image = document.getElementById("gps2image_search_pin_icon_image");
 				var selectedValue = select.value;
 
 				// Update the image source

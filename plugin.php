@@ -27,7 +27,7 @@
  * License:     GNLv2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Domain Path: /languages
- * Text Domain: ngg-geo2-maps
+ * Text Domain: gps-2-photos
  */
 
 
@@ -36,7 +36,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-// Defines the universal path to Geo2 Maps directory in plugins folder.
+// Defines the universal path to GPS 2 Photos directory in plugins folder.
 define( 'GPS_2_PHOTOS_DIR_URL', plugins_url( '', __FILE__ ) );
 
 // Defines the universal path to WordPress plugins folder.
@@ -108,18 +108,21 @@ function gps2photos_defaults_array() {
 		'map_fullscreen'              => 0, // This option shows Azure Maps button to open not in a full browser window but on the full physical screen.
 		'map'                         => 'satellite_road_labels', // road/satellite/satellite_road_labels/grayscale_light/grayscale_dark/night/road_shaded_relief(high_contrast_dark/high_contrast_light-only in the Plus version).
 		'gps_media_library'           => 1, // Add GPS info to  WP Media Library.
-		'gps_coordinates_preview'     => 1, // Show GPS coordinates preview in the WP Media Library.
+		'backup_existing_coordinates' => 1, // GPS coordinates will be added to the User Comment Exif field as "Original GPS coordinates:Latitude,Longitude" if not already there. If present they can be restored.
 		'always_override_gps'         => 0, // Do not ask again and always override existing GPS coordinates in a Photo.
-		'backup_existing_coordinates' => 0, // GPS coordinates will be added to the User Comment Exif field as "Original GPS coordinates:Latitude:...,Longitude:..." if not already there. If present they can be restored.
+		'exif_error_handler'          => 0,
 		// MAP OPTIONS.
 		'dashboard'                   => 1, // Shows/hides map navigation controls.
 		'locate_me_button'            => 1, // Shows/hides Locate Me button in the map's navigation controls.
 		'scalebar'                    => 1, // Shows/hides scalebar from the map.
+		'map_search_bar'              => 1, // Shows/hides the search bar on the map.
 		'logo'                        => 1, // Shows/hides Azure logo in the left bottom corner.
 		// PINS OPTIONS.
+		'pin_icon_type'               => 'marker', // Predefined icons: 1: "marker",2: "marker-thick", 3: "marker-arrow", 4: "marker-ball-pin", 5: "flag", 6: "flag-triangle", 7: "pin".
 		'pin_color'                   => 'rgba(0, 255, 0, 1)', // Pins for images. Color of the main pin on a map.
 		'pin_secondary_color'         => 'rgba(0, 0, 0, 1)', // Pins for images. Color of the main pin on a map.
-		'pin_icon_type'               => 'marker', // Predefined icons: 1: "marker",2: "marker-thick", 3: "marker-arrow", 4: "marker-ball-pin", 5: "flag", 6: "flag-triangle", 7: "pin".
+		'search_pin_color'            => 'rgba(0, 123, 255, 1)', // Color of the search result pins on a map.
+		'search_pin_icon_type'        => 'pin',
 		'restore_defaults'            => 0,
 	);
 	return $defaults;
@@ -184,7 +187,7 @@ function gps2photos_validate_color( $text ) {
 	if ( substr( $text, 0, 1 ) === '#' ) {
 		$trimmed_text = ltrim( $text, '#' );
 		if ( strlen( $trimmed_text ) !== 3 && strlen( $trimmed_text ) !== 6 ) {
-			$error_message = esc_html__( ' is not a valid hex color. Please enter i.e. #000 or #9900ff!', 'ngg-geo2-maps-plus' );
+			$error_message = esc_html__( ' is not a valid hex color. Please enter i.e. #000 or #9900ff!', 'gps-2-photos' );
 			$color         = '#ccc';
 		} else {
 			$color = sanitize_hex_color( $text );
@@ -196,7 +199,7 @@ function gps2photos_validate_color( $text ) {
 		foreach ( $color_no_array as $number ) {
 			$number = trim( $number ); // Removes whitespace.
 			if ( ! is_numeric( $number ) || strlen( $number ) === 0 || strlen( $number ) > 4 ) {
-				$error_message = esc_html__( ' Please enter a valid RGB(A) color!', 'ngg-geo2-maps-plus' );
+				$error_message = esc_html__( ' Please enter a valid RGB(A) color!', 'gps-2-photos' );
 				$color         = 'rgba(0,0,0,1)';
 				break;
 			} else {
@@ -204,7 +207,7 @@ function gps2photos_validate_color( $text ) {
 			}
 		}
 	} else {
-		$error_message = esc_html__( ' is not a valid color code. Please enter a correct hex or RGB(A) color!', 'ngg-geo2-maps' );
+		$error_message = esc_html__( ' is not a valid color code. Please enter a correct hex or RGB(A) color!', 'gps-2-photos' );
 	}
 
 	if ( ! empty( $error_message ) ) {
@@ -230,7 +233,7 @@ function gps2photos_validate_color( $text ) {
 function gps2photos_validate_auto_number( $text, $max, $default_value ) {
 		$error_message = sprintf(
 			/* translators: %s: maximum pixel value */
-			esc_html__( 'Please enter a number from 24 to %s, percentage 1-100%% or "auto"!', 'ngg-geo2-maps' ),
+			esc_html__( 'Please enter a number from 24 to %s, percentage 1-100%% or "auto"!', 'gps-2-photos' ),
 			$max
 		);
 
@@ -255,7 +258,7 @@ function gps2photos_validate_auto_number( $text, $max, $default_value ) {
 		} elseif ( $string > 0 && $string <= 100 ) {
 			return $text;
 		} else {
-			add_settings_error( 'plugin_gps2photo', 'invalid_number_error', esc_html__( 'Please enter a number from 0% to 100%!', 'ngg-geo2-maps' ), 'error' );
+			add_settings_error( 'plugin_gps2photo', 'invalid_number_error', esc_html__( 'Please enter a number from 0% to 100%!', 'gps-2-photos' ), 'error' );
 			return $default_value;
 		}
 	} else {
@@ -299,7 +302,7 @@ function gps2photos_options_validate( $input ) {
 				}
 			}
 			if ( $check === 1 ) {
-				add_settings_error( 'plugin_gps2photo', 'invalid_API_key_error', esc_html__( 'Please enter a valid API key! Special characters are not allowed.', 'ngg-geo2-maps' ), 'error' );
+				add_settings_error( 'plugin_gps2photo', 'invalid_API_key_error', esc_html__( 'Please enter a valid API key! Special characters are not allowed.', 'gps-2-photos' ), 'error' );
 				$input['geo_azure_key']         = '';
 				$input['geo_azure_auth_status'] = 0;
 			} else {
@@ -315,18 +318,18 @@ function gps2photos_options_validate( $input ) {
 				$jsonfile = wp_remote_retrieve_body( $response );
 				// Decode the json.
 				if ( ! json_decode( $jsonfile, true ) ) {
-					add_settings_error( 'plugin_gps2photo', 'Azure API key validation.', esc_html__( 'API key validation request failed when trying to decode Azure Maps server response!', 'ngg-geo2-maps' ), 'error' );
+					add_settings_error( 'plugin_gps2photo', 'Azure API key validation.', esc_html__( 'API key validation request failed when trying to decode Azure Maps server response!', 'gps-2-photos' ), 'error' );
 					$input['geo_azure_auth_status'] = 0;
 				} else {
 					$response = json_decode( $jsonfile, true );
 					// Check if there is an error in the response.
 					if ( isset( $response['error'] ) ) {
 						$status_code = wp_remote_retrieve_response_code( $response );
-						add_settings_error( 'plugin_gps2photo', 'Azure API key validation error.', esc_html__( 'Azure API key validation unsuccessful!', 'ngg-geo2-maps' ) . ' ' . esc_html__( 'Server response:', 'ngg-geo2-maps' ) . ' ' . esc_html__( 'Status Code:', 'ngg-geo2-maps' ) . ' ' . $status_code, 'error' );
+						add_settings_error( 'plugin_gps2photo', 'Azure API key validation error.', esc_html__( 'Azure API key validation unsuccessful!', 'gps-2-photos' ) . ' ' . esc_html__( 'Server response:', 'gps-2-photos' ) . ' ' . esc_html__( 'Status Code:', 'gps-2-photos' ) . ' ' . $status_code, 'error' );
 						$input['geo_azure_auth_status'] = 0;
 					} else {
 						// Assume valid response if there's no error field.
-						add_settings_error( 'plugin_gps2photo', 'Azure API key validation.', esc_html__( 'Azure Maps API key validation successful! You can start using Geo2 Maps.', 'ngg-geo2-maps' ), 'success' );
+						add_settings_error( 'plugin_gps2photo', 'Azure API key validation.', esc_html__( 'Azure Maps API key validation successful! You can start using GPS 2 Photos!', 'gps-2-photos' ), 'success' );
 						$input['geo_azure_auth_status'] = 1;
 					}
 				}
@@ -339,10 +342,10 @@ function gps2photos_options_validate( $input ) {
 	// Clears undefined checkboxes (undefined = unchecked!).
 	if ( ! isset( $input['gps_media_library'] ) ) {
 		$input['gps_media_library'] = 0; }
-	if ( ! isset( $input['gps_coordinates_preview'] ) ) {
-		$input['gps_coordinates_preview'] = 0; }
 	if ( ! isset( $input['always_override_gps'] ) ) {
 		$input['always_override_gps'] = 0; }
+	if ( ! isset( $input['exif_error_handler'] ) ) {
+		$input['exif_error_handler'] = 0; }
 	if ( ! isset( $input['backup_existing_coordinates'] ) ) {
 		$input['backup_existing_coordinates'] = 0; }
 	if ( ! isset( $input['dashboard'] ) ) {
@@ -351,6 +354,8 @@ function gps2photos_options_validate( $input ) {
 		$input['locate_me_button'] = 0; }
 	if ( ! isset( $input['scalebar'] ) ) {
 		$input['scalebar'] = 0; }
+	if ( ! isset( $input['map_search_bar'] ) ) {
+		$input['map_search_bar'] = 0; }
 	if ( ! isset( $input['map_fullscreen'] ) ) {
 		$input['map_fullscreen'] = 0; }
 	if ( ! isset( $input['logo'] ) ) {
@@ -362,7 +367,7 @@ function gps2photos_options_validate( $input ) {
 	if ( strlen( $input['zoom'] ) !== 0 && $saved_options['zoom'] !== $input['zoom'] ) {
 		if ( ! is_numeric( $input['zoom'] ) || $input['zoom'] > 24 || $input['zoom'] < 1 ) {
 			unset( $input['zoom'] );
-			add_settings_error( 'plugin_gps2photo', 'invalid_zoom_number_error', esc_html__( 'Please enter a valid number for Zoom Level in the range 1-24!', 'ngg-geo2-maps' ), 'error' );
+			add_settings_error( 'plugin_gps2photo', 'invalid_zoom_number_error', esc_html__( 'Please enter a valid number for Zoom Level in the range 1-24!', 'gps-2-photos' ), 'error' );
 		}
 	}
 
@@ -370,7 +375,7 @@ function gps2photos_options_validate( $input ) {
 		if ( is_numeric( $input['map_height'] ) && $input['map_height'] <= 4320 && $input['map_height'] >= 24 ) {
 			$input['map_height'] = strval( $input['map_height'] ) . 'px';
 		} else {
-			$input['map_height'] = gps2photos_validate_auto_number( $input['map_height'], 4320, '300px' );
+			$input['map_height'] = gps2photos_validate_auto_number( $input['map_height'], 4320, '80%' );
 		}
 	}
 
@@ -386,6 +391,7 @@ function gps2photos_options_validate( $input ) {
 	$colors = array(
 		$input['pin_color']           => 'pin_color',
 		$input['pin_secondary_color'] => 'pin_secondary_color',
+		$input['search_pin_color']    => 'search_pin_color',
 	);
 	foreach ( $colors as $color => $key ) {
 		if ( strlen( $color ) !== 0 ) {

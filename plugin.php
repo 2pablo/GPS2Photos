@@ -21,7 +21,7 @@
 /**
  * Plugin Name: GPS 2 Photos
  * Plugin URI:  https://wordpress.org/plugins/gps-2-photo/
- * Description: GPS 2 Photo Add-on for NextGEN Gallery is a flexible plugin which allows to add GPS coordinates to the photo EXIF data by selecting a location on a map.
+ * Description: GPS 2 Photo Add-on allows to add GPS coordinates to the photo EXIF data by selecting a location on a map.
  * Version:     1.0.0
  * Author URI:  http://geo2maps.pasart.net
  * License:     GNLv2

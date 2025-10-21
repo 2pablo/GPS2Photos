@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: GPS 2 Photos\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-10-19 21:52+0000\n"
-"PO-Revision-Date: 2025-10-19 23:04+0000\n"
+"PO-Revision-Date: 2025-10-19 23:05+0000\n"
 "Last-Translator: \n"
 "Language-Team: Polish\n"
 "Language: pl_PL\n"
@@ -347,7 +347,7 @@ msgstr "Długość geograficzna"
 
 #: administration.php:530
 msgid "Main Coordinates Pushpin Options"
-msgstr "Opcje pinezki głównych współrzędnych"
+msgstr "Opcje Pinezki Głównych Współrzędnych"
 
 #: administration.php:367
 msgid "Map"

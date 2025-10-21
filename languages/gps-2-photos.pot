@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: GPS 2 Photos\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-10-19 21:52+0000\n"
+"POT-Creation-Date: 2025-10-20 22:15+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -183,10 +183,10 @@ msgstr ""
 
 #: azure-map.php:30
 msgid ""
-"For manual entry for Latitude please enter a value between -90 and 90. For "
-"Longitude please enter a value between -180 and 180. Both Latitude and "
-"Longitude must be provided. If both fields will be left empty this will "
-"erase coordinates."
+"For manual entry for Latitude, please enter a value between -90 and 90. For "
+"Longitude, please enter a value between -180 and 180. Both Latitude and "
+"Longitude must be provided. If both fields will be left empty, this will "
+"erase the coordinates."
 msgstr ""
 
 #: administration.php:366
@@ -207,8 +207,8 @@ msgstr ""
 
 #. Description of the plugin
 msgid ""
-"GPS 2 Photo Add-on for NextGEN Gallery is a flexible plugin which allows to "
-"add GPS coordinates to the photo EXIF data by selecting a location on a map."
+"GPS 2 Photo Add-on allows to add GPS coordinates to the photo EXIF data by "
+"selecting a location on a map."
 msgstr ""
 
 #. Name of the plugin
@@ -239,8 +239,8 @@ msgstr ""
 #: administration.php:454
 msgid ""
 "GPS coordinates will be added to the User Comment Exif field as \"Original "
-"GPS coordinates:Latitude:...,Longitude:...\" if not already there. If "
-"present they can be restored."
+"GPS coordinates:Latitude,Longitude\" if not already there. If present they "
+"can be restored."
 msgstr ""
 
 #: functions.php:315
@@ -343,8 +343,8 @@ msgstr ""
 
 #: functions.php:296
 msgid ""
-"Nothing to backup but a backup of the original coordinates already exists in "
-"the Exif field User Comment."
+"Nothing to backup, but a backup of the original coordinates already exists "
+"in the Exif field User Comment."
 msgstr ""
 
 #. 1: HTML link opening tag. 2: HTML link closing tag.
@@ -353,12 +353,6 @@ msgstr ""
 msgid ""
 "Officially undocumented option. Disabling may likely breach the %1$sAzure "
 "Maps Platform API’s Terms of Use%2$s!"
-msgstr ""
-
-#: administration.php:446
-msgid ""
-"Opening time of a very big WP Media Library in the grid view may be slightly "
-"better with this option disabled."
 msgstr ""
 
 #: plugin.php:261
@@ -477,6 +471,12 @@ msgstr ""
 
 #: plugin.php:328
 msgid "Status Code:"
+msgstr ""
+
+#: administration.php:446
+msgid ""
+"The opening time of a very big WP Media Library in the grid view may be "
+"slightly better with this option disabled."
 msgstr ""
 
 #: administration.php:118

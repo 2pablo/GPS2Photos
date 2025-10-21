@@ -76,17 +76,17 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
 				$gps_lat_dec = $gps_data ? $gps_data['latitude'] : '';
 				$gps_lon_dec = $gps_data ? $gps_data['longitude'] : '';
 
-				$form_fields['gps_latitude']  = array(
+				$form_fields['gps-latitude']  = array(
 					'value' => $gps_lat_dms,
 					'label' => esc_html__( 'GPS Lat.', 'gps-2-photos' ),
 					'input' => 'html',
-					'html'  => "<input type='text' class='text' readonly='readonly' id='attachments-" . $post->ID . "-gps_latitude' name='attachments[$post->ID][gps_latitude]' value='" . esc_attr( $gps_lat_dms ) . "' /><br />",
+					'html'  => "<input type='text' class='text' readonly='readonly' id='attachments-" . $post->ID . "-gps-latitude' name='attachments[$post->ID][gps-latitude]' value='" . esc_attr( $gps_lat_dms ) . "' /><br />",
 				);
-				$form_fields['gps_longitude'] = array(
+				$form_fields['gps-longitude'] = array(
 					'value' => $gps_lon_dms,
 					'label' => esc_html__( 'GPS Long.', 'gps-2-photos' ),
 					'input' => 'html',
-					'html'  => "<input type='text' class='text' readonly='readonly' id='attachments-" . $post->ID . "-gps_longitude' name='attachments[$post->ID][gps_longitude]' value='" . esc_attr( $gps_lon_dms ) . "' /><br />",
+					'html'  => "<input type='text' class='text' readonly='readonly' id='attachments-" . $post->ID . "-gps-longitude' name='attachments[$post->ID][gps-longitude]' value='" . esc_attr( $gps_lon_dms ) . "' /><br />",
 				);
 
 				if ( $gps_data ) {

@@ -245,12 +245,10 @@ window.gps2photos_init_map = function(apiKey, position) {
 			var wasPasted = event.inputType === "insertFromPaste" || isPasting;
 			
 			if (wasPasted) {
-				console.log("was pasted");
 				// Run immediately on paste
 				isPasting = false;
 				updateMarkerFromInputs();
 			} else {
-				console.log(updateTimer);
 				clearTimeout(updateTimer);
 				// Wait until user stops typing (1000ms)
 				updateTimer = setTimeout(updateMarkerFromInputs, 1000);
@@ -331,7 +329,6 @@ window.gps2photos_init_map = function(apiKey, position) {
         // Function to deselect all search results.
         function deselectAllSearchResults() {
             var features = searchDatasource.getShapes();
-			console.log(features);
             features.forEach(function(feature) {
                 feature.addProperty("isSelected", false);
             });

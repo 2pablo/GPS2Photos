@@ -37,9 +37,6 @@ jQuery(document).ready(function ($) {
 
 					// Get the attachment ID from the hidden input in the meta div.
 					var attachmentId = $metaDiv.find('input[name="img_id"]').val();
-
-					// The image div is a sibling to the meta div.
-					var $imageDiv = $metaDiv.siblings('.foogallery-image-edit-main');
 					var imageUrl = $metaDiv.find('#attachments-foogallery-file-url').val();
 
 					if (attachmentId && imageUrl) {

@@ -106,13 +106,14 @@
 }
 
 #gps2photos-search-container input[type="text"] {
-	flex-grow: 1;
+	flex-grow: 10;
 	line-height: 1.5;
 	text-align: center;
 	min-height: 20px;
 }
 
 #gps2photos-search-container .button {
+	flex-grow: 1;
 	line-height: 1.5;
 	text-align: center;
 	min-height: 20px;

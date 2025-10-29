@@ -9,11 +9,14 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-View and edit EXIF GPS coordinates for your photos by selecting a location on a map or typing in the coordinates.
+View, add, and edit EXIF GPS coordinates for your photos by selecting a location on a map, searching for it or typing in the coordinates.
 
 == Description ==
 
-GPS 2 Photos enhances your WordPress Media Library and popular gallery plugins like NextGEN Gallery, Envira Gallery, FooGallery, and Modula, by allowing you to easily view, add, and edit GPS coordinates for your images. It displays a field with GPS coordinates for each JPEG image, showing its location based on EXIF data. If an image doesn't have GPS information, you can add it by simply clicking on the map, searching for a location, or typing it in manually.
+GPS 2 Photos lets you view, add, or edit EXIF GPS coordinates for JPEG images in the WordPress Media Library and galleries powered by NextGEN, Envira, FooGallery, or Modula.
+It displays existing GPS data as editable fields (Media Library only), or provides a button to add or update coordinates. Clicking the button opens a map interface where you can set a location by simply clicking on the map, searching for a place, or typing them in manually.
+
+This plugins extends the functionality of the Geo 2 Maps add-on for NextGEN Gallery which displays maps with photos, galleries, or albums using EXIF GPS data.
 
 The plugin is using Microsoft Azure Maps and requires free Azure Maps API Key to function.
 To amend EXIF GPS coordinates is using the PHP Exif Library (PEL) by Martin Geisler. (Copyright (C) 2004–2006 Martin Geisler. Licensed under the GNU GPL.)
@@ -77,6 +80,6 @@ If you enable the "Backup Existing Coordinates" option in the plugin settings, e
 
 == Changelog ==
 
-= 1.0.0 - 2024-07-26 =
+= 1.0.0 - 2024-10-29 =
 
 *   Initial release.

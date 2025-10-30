@@ -3,7 +3,7 @@ Contributors: pablo2
 Tags: gps, exif, photo, image, map, location, coordinates, geo, geotag
 Donate link: https://www.paypal.com/PawelBlock
 Requires at least: 5.0
-Tested up to: 6.8.2
+Tested up to: 6.8.3
 Requires PHP: 7.2.0
 Stable tag: 1.0.0
 License: GPLv2 or later
@@ -53,8 +53,8 @@ Azure Maps offers a generous free tier. For example, you get thousands of free m
 **How do I use GPS 2 Photos?**
 
 *   **WordPress Media Library:** Navigate to your Media Library (either list or grid view). In list view, you'll see a button in the "GPS Location" column. In grid view, you'll find the button in the "Attachment Details" panel.
-*   **NextGEN Gallery:** Navigate to a gallery via the "Manage Galleries" page. You will see an "Add/Amend GPS" link in the actions for each image.
-*   **Envira, FooGallery, Modula:** On the gallery edit screen, you will find a button or link to add/amend GPS coordinates for each image.
+*   **NextGEN Gallery:** Navigate to a gallery via the "Manage Galleries" page. You will see an "Add/Amend GPS" link in the actions bar for each image.
+*   **Envira, FooGallery, Modula:** On the gallery edit screen, you will find a button to add/amend GPS coordinates for each image.
 
 **How to use the search bar when multiple locations are available?**
 

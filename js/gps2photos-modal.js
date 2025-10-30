@@ -13,6 +13,9 @@
  */
 jQuery(document).ready(function ($) {
 	'use strict';
+	// A global map to store modified coordinates {lat, lon} by image ID for the current session.
+	window.gps2photos_modified_coords = new Map();
+
 	/**
 	 * Converts decimal degrees to a Degrees, Minutes, Seconds (DMS) string.
 	 *
@@ -53,6 +56,7 @@ jQuery(document).ready(function ($) {
 	 */
 	function initOrUpdateMap(lat, lon, zoom = undefined) {
 		if (!window.gps2photos_maps || !window.gps2photos_maps.map) {
+			console.log("Initializing new map instance.");
 			function initMapWithKeyAndPosition(apiKey) {
 				window['gps2photos_init_map'](apiKey, [lat, lon]);
 			}
@@ -76,8 +80,10 @@ jQuery(document).ready(function ($) {
 					type: 'fly' // "jump" | "ease"
 				});
 			} else {
+				console.log("no GPS .");
 				// if GPS data is erased or no GPS data, hide the marker.
 				if (marker) {
+					console.log("Hiding marker as no GPS data is available.");
 					marker.setOptions({ visible: false });
 				}
 				// When current zoom closer then the default zoom - zoom out, else leave as it is.
@@ -95,7 +101,7 @@ jQuery(document).ready(function ($) {
 	// Use event delegation for buttons that might be added dynamically.
 	$(document).on('click', '.gps2photos-open-map-btn', function () {
 		var attachmentId = $(this).data('image-id');
-		console.log($(this).data().lat);
+		console.log($(this).data().backupExists);
 		openModal(attachmentId, $(this).data('file-path'), false, $(this).data());
 	});
 
@@ -124,63 +130,79 @@ jQuery(document).ready(function ($) {
 	 */
 	function openModal(imageId, imagePath, galleryName = false, buttonData = null) {
 		var modal = $('#gps2photos-modal');
-		var $saveBtn = modal.find('.gps2photos-save-coords-btn');
-		// Argument 'galleryName' is either false, "nextgen" "envira", "foo" or "modula".
-		var isGalleryName = !!galleryName; // Convert to boolean.
-
-		if (isGalleryName) {
-			// For NextGEN, original-lat is not set, so it will be undefined.
-			var originalLat = $saveBtn.data('original-lat');
-			var originalLon = $saveBtn.data('original-lon');
-		} else {
-			console.log($saveBtn.data('original-lat'));
-			if ($saveBtn.data('original-lat')) {
-				var originalLat = $saveBtn.data('original-lat');
-				var originalLon = $saveBtn.data('original-lon');
-			} else {
-				var originalLat = buttonData.lat;
-				var originalLon = buttonData.lon;
-			}
-		}
+		var originalLat = '';
+		var originalLon = '';
 
 		if (modal.length) {
 			modal.css('visibility', 'visible');
 
-			// Initialize the map for WP Media Library only if lat (and lon) are already provided.
-			// Position is provided if preview of coordinates is enabled. 
-			// For NextGEN and other galleries we always initialize the map because the coordinates are unknown.
-			if (!isGalleryName && buttonData.lat) {
-				initOrUpdateMap(originalLat, originalLon);
-				// Update jQuery internal cache data attributes.
-				$saveBtn.data('original-lat', originalLat).data('original-lon', originalLon);
-				modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', imagePath);
-				// Show/hide the restore button based on data-backup-exists value.
-				if ($saveBtn.backupExists !== undefined) {
-					if ($saveBtn.backupExists) {
-						modal.find('.gps2photos-restore-coords-btn').show();
-					} else {
-						modal.find('.gps2photos-restore-coords-btn').hide();
+			var $saveBtn = modal.find('.gps2photos-save-coords-btn');
+			// Argument 'galleryName' is either false, "nextgen" "envira", "foo" or "modula".
+			var isGalleryName = !!galleryName; // Convert to boolean.
+
+			if (isGalleryName) {
+				// For NextGEN, original-lat is not set, so it will be undefined.
+				originalLat = $saveBtn.data('original-lat');
+				originalLon = $saveBtn.data('original-lon');
+				// For galleries we are reusing the same modal.
+				// Only fetch if the imageId is different from the one already on the button.
+				if ($saveBtn.data('image-id') !== imageId) {
+					// Reset the originalLat to force an AJAX fetch.
+					originalLat = '';
+				} else {
+					console.log("ggg");
+					originalLat = 'prevent_ajax_fetch_below';
+				}
+			} else {
+				// Check if the same image is reopened - it will have data in the button's data attributes.
+				if ($saveBtn.data('image-id') === imageId) {
+					console.log("The same image: " + imageId);
+					if ($saveBtn.data('original-lat') !== '') {
+						originalLat = $saveBtn.data('original-lat');
+						originalLon = $saveBtn.data('original-lon');
+					}
+					modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', imagePath);
+					// Show/hide the restore button based on data-backup-exists value.
+					// Coordinates may be empty but backup may exist.
+					if ($saveBtn.backupExists !== undefined) {
+						if ($saveBtn.backupExists) {
+							modal.find('.gps2photos-restore-coords-btn').show();
+						} else {
+							modal.find('.gps2photos-restore-coords-btn').hide();
+						}
 					}
 				} else {
-					if (buttonData.backupExists) {
-						modal.find('.gps2photos-restore-coords-btn').show();
+					console.log("New image: " + imageId);
+					// If the image has been modified in this session, force an AJAX fetch.
+					if (window.gps2photos_modified_coords.has(imageId)) {
+						// Different image ID for Media Library. Force an AJAX fetch by setting originalLat to empty.
+						// This handles the case where the user navigates away and back, causing the button data to be stale.
+						originalLat = ''; // Force AJAX fetch
+					} else {
+						console.log("New Image - data from button: " + imageId);
+						// Different image ID for Media Library. Get data from buttonData if available.
+						originalLat = buttonData.lat;
+						originalLon = buttonData.lon;
+						$saveBtn.data('original-lat', originalLat).data('original-lon', originalLon);
+						modal.find('.gps2photos-save-coords-btn, .gps2photos-restore-coords-btn').data('file-path', imagePath);
+						// Show/hide the restore button based on data-backup-exists value.
+						// Coordinates may be empty but backup may exist.
+						if (buttonData.backupExists !== undefined) {
+							if (buttonData.backupExists) {
+								modal.find('.gps2photos-restore-coords-btn').show();
+							} else {
+								modal.find('.gps2photos-restore-coords-btn').hide();
+							}
+						}
 					}
 				}
 			}
 
-			// For galleries we are reusing the same modal.
-			// Only fetch if the imageId is different from the one already on the button.
-			if (isGalleryName && $saveBtn.data('image-id') !== imageId) {
-				// Reset the originalLat to force an AJAX fetch.
-				originalLat = '';
-			} else {
-				initOrUpdateMap(originalLat, originalLon);
-			}
 			$saveBtn.data('image-id', imageId).data('gallery-name', galleryName);
 			modal.find('.gps2photos-restore-coords-btn').data('image-id', imageId).data('gallery-name', galleryName);
 
 			// If originalLat is empty, it could mean either the image has no GPS, or the data wasn't pre-loaded.
-			// Ths happens for NextGEN Gallery. In either case, we fetch the data on-demand to be sure.
+			// This happens for NextGEN Gallery. In either case, we fetch the data on-demand to be sure.
 			if (originalLat === '' || originalLat === undefined) {
 				$.ajax({
 					url: gps2photos_ajax.ajaxurl,
@@ -214,12 +236,16 @@ jQuery(document).ready(function ($) {
 							// Show/hide the restore button based on the AJAX response.
 							var $restoreBtn = modal.find('.gps2photos-restore-coords-btn');
 							$restoreBtn.toggle(backupExists);
+							$saveBtn.backupExists = backupExists;
 						}
 					},
 					error: function () {
 						console.error('Ajax failed to fetch GPS coordinates.');
 					}
 				});
+			} else {
+				// If we have coordinates, initialize the map immediately.
+				initOrUpdateMap(originalLat, originalLon);
 			}
 		}
 	}
@@ -338,6 +364,9 @@ jQuery(document).ready(function ($) {
 				if (response.success) {
 					$messageDiv.text(response.data.message).removeClass('error').removeClass('notice-warning').addClass('notice-success').show();
 
+					// Mark this image as modified to ensure data is re-fetched if the user navigates away and back.
+					window.gps2photos_modified_coords.set(attachmentId, { lat: latNum, lon: lonNum });
+
 					// Update original data attributes to prevent re-saving without changes.
 					$saveBtn.data('original-lat', latNum);
 					$saveBtn.data('original-lon', lonNum);
@@ -415,6 +444,9 @@ jQuery(document).ready(function ($) {
 					var restoredCoords = response.data.coords;
 					$messageDiv.text(response.data.message).removeClass('error').addClass('notice-success').show();
 
+					// Mark this image as modified to ensure data is re-fetched if the user navigates away and back.
+					window.gps2photos_modified_coords.set(attachmentId, { lat: restoredCoords.latitude, lon: restoredCoords.longitude });
+
 					var latNum = parseFloat(restoredCoords.latitude);
 					var lonNum = parseFloat(restoredCoords.longitude);
 
@@ -443,8 +475,8 @@ jQuery(document).ready(function ($) {
 						$('input[name="attachments[' + attachmentId + '][gps-longitude]"]').val(restoredLonDMS);
 
 						// Selector for attachment edit page (list view).
-						$('#gps-latitude').val(latDMS);
-						$('#gps-longitude').val(lonDMS);
+						$('#gps-latitude').val(restoredLatDMS);
+						$('#gps-longitude').val(restoredLonDMS);
 					}
 				} else {
 					$messageDiv.text(gps2photos_ajax.l10n.error_prefix + ' ' + response.data).removeClass('notice-success').addClass('error').show();
@@ -459,4 +491,45 @@ jQuery(document).ready(function ($) {
 			}
 		});
 	});
+
+	// --- MEDIA LIBRARY GRID VIEW SYNC ---
+	// Only initialize the MutationObserver on the Media Library page (upload.php) when in grid mode.
+	// This prevents the observer from running unnecessarily on other admin pages.
+	if ($('body.upload-php').length && $('#wp-media-grid').length) {
+		var mediaObserver = new MutationObserver(function (mutations) {
+			mutations.forEach(function (mutation) {
+				// We only care about added nodes.
+				if (mutation.addedNodes.length === 0) return;
+
+				// Find the attachment details pane.
+				var $target = $(mutation.target);
+				var $detailsPane = $target.find('.attachment-details');
+				if (!$detailsPane.length) {
+					return;
+				}
+
+				// Find our button to get the image ID.
+				var $button = $detailsPane.find('.gps2photos-open-map-btn');
+				if (!$button.length) {
+					return;
+				}
+
+				var imageId = $button.data('image-id');
+
+				// Check if this image has been modified in the current session.
+				if (window.gps2photos_modified_coords.has(imageId)) {
+					var coords = window.gps2photos_modified_coords.get(imageId);
+					var latDMS = gps2photos_decimalToDMS(coords.lat, true);
+					var lonDMS = gps2photos_decimalToDMS(coords.lon, false);
+
+					// Update the visible input fields in the attachment details pane.
+					$('input[name="attachments[' + imageId + '][gps-latitude]"]').val(latDMS);
+					$('input[name="attachments[' + imageId + '][gps-longitude]"]').val(lonDMS);
+				}
+			});
+		});
+
+		// Start observing the media modal content area for changes.
+		mediaObserver.observe(document.body, { childList: true, subtree: true, attributes: false });
+	}
 });

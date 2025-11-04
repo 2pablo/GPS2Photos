@@ -80,6 +80,6 @@ If you enable the "Backup Existing Coordinates" option in the plugin settings, e
 
 == Changelog ==
 
-= 1.0.0 - 2024-10-29 =
+= 1.0.0 - 2024-11-04 =
 
 *   Initial release.

@@ -35,7 +35,7 @@ function gps2photos_options_init() {
 		)
 	);
 
-	// Migrate Azure Maps Key from NextGEN Gallery Geo or Geo2Maps Plus if available.
+	// Migrate Azure Maps Key from Geo2 Maps or Geo2Maps Plus if available.
 	$gps2photos_options = get_option( 'plugin_gps2photos_options' );
 
 	if ( ! isset( $gps2photos_options['geo_azure_key'] ) || empty( $gps2photos_options['geo_azure_key'] ) ) {

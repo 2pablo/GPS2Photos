@@ -105,7 +105,7 @@ function gps2photos_defaults_array() {
 		'zoom'                        => '16',
 		'map_height'                  => '80%',
 		'map_width'                   => '80%',
-		'map_fullscreen'              => 0, // This option shows Azure Maps button to open not in a full browser window but on the full physical screen.
+		'map_fullscreen'              => 1, // This option shows Azure Maps button to open not in a full browser window but on the full physical screen.
 		'map'                         => 'satellite_road_labels', // road/satellite/satellite_road_labels/grayscale_light/grayscale_dark/night/road_shaded_relief(high_contrast_dark/high_contrast_light-only in the Plus version).
 		'gps_media_library'           => 1, // Add GPS info to  WP Media Library.
 		'backup_existing_coordinates' => 1, // GPS coordinates will be added to the User Comment Exif field as "Original GPS coordinates:Latitude,Longitude" if not already there. If present they can be restored.
@@ -118,7 +118,7 @@ function gps2photos_defaults_array() {
 		'map_search_bar'              => 1, // Shows/hides the search bar on the map.
 		'logo'                        => 1, // Shows/hides Azure logo in the left bottom corner.
 		// PINS OPTIONS.
-		'pin_icon_type'               => 'marker', // Predefined icons: 1: "marker",2: "marker-thick", 3: "marker-arrow", 4: "marker-ball-pin", 5: "flag", 6: "flag-triangle", 7: "pin".
+		'pin_icon_type'               => 'marker', // Predefined icons: "marker", "marker-thick", "marker-arrow", "marker-ball-pin", "flag", "flag-triangle", "pin".
 		'pin_color'                   => 'rgba(0, 255, 0, 1)', // Pins for images. Color of the main pin on a map.
 		'pin_secondary_color'         => 'rgba(0, 0, 0, 1)', // Pins for images. Color of the main pin on a map.
 		'search_pin_color'            => 'rgba(0, 123, 255, 1)', // Color of the search result pins on a map.

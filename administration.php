@@ -81,17 +81,16 @@ add_action( 'admin_enqueue_scripts', 'gps2photos_plugin_admin_scripts' );
  * @param string $hook The current admin page hook.
  */
 function gps2photos_plugin_admin_scripts( $hook ) {
-	// Adds I18n.
-	load_plugin_textdomain( 'gps-2-photos', false, basename( __DIR__ ) . '/languages' );
-
 	// Get current screen object to get post type.
 	// If not, we're not on an Envira or Foo Gallery page.
-	// Optional method: 'envira' === get_post_type( $_GET['post'] ).
 	if ( function_exists( 'get_current_screen' ) ) {
 		$screen = get_current_screen();
+		if ( is_object( $screen ) && isset( $screen->id ) ) {
+			// The screen ID often contains the post ID for edit screens.
+			global $post;
+			$post_id = is_object( $post ) ? $post->ID : 0;
+		}
 	}
-	// Get post ID from query.
-	$post_id = isset( $_GET['post'] ) ? absint( $_GET['post'] ) : 0;
 	// Scripts for Media Library, NextGEN Gallery, and our own page.
 	if ( in_array( $hook, array( 'upload.php', 'post.php', 'nextgen-gallery5_page_nggallery-manage-gallery' ), true ) ||
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'envira' && $post_id !== 0 ) ||
@@ -269,14 +268,16 @@ add_action( 'admin_notices', 'gps2photos_admin_notices' );
  * @since 1.0.0
  */
 function gps2photos_admin_notices() {
-	// Only show on your plugin settings page.
-	if ( isset( $_GET['page'] ) && $_GET['page'] === 'gps-2-photos' ) {
+	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking WordPress-set parameters for display only.
+	if ( isset( $_GET['page'] ) && 'gps-2-photos' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
 
-		if ( isset( $_GET['settings-updated'] ) && $_GET['settings-updated'] ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WordPress-set status parameters after settings save.
+		if ( isset( $_GET['settings-updated'] ) && sanitize_text_field( wp_unslash( $_GET['settings-updated'] ) ) ) {
 			echo '<div id="message" class="notice notice-success is-dismissible">
                 <p><strong>' . esc_html__( 'Settings saved.', 'gps-2-photos' ) . '</strong></p>
             </div>';
-		} elseif ( isset( $_GET['settings-error'] ) && ! $_GET['settings-error'] ) {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WordPress-set status parameters after settings save.
+		} elseif ( isset( $_GET['settings-error'] ) && ! sanitize_text_field( wp_unslash( $_GET['settings-error'] ) ) ) {
 			echo '<div id="message" class="notice notice-error is-dismissible">
                 <p><strong>' . esc_html__( 'An error occurred when saving!', 'gps-2-photos' ) . '</strong></p>
             </div>';

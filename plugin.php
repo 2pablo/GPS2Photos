@@ -24,7 +24,7 @@
  * Description: GPS 2 Photo Add-on allows to add GPS coordinates to the photo EXIF data by selecting a location on a map.
  * Version:     1.0.0
  * Author URI:  http://geo2maps.pasart.net
- * License:     GNLv2
+ * License:     GPLv2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Domain Path: /languages
  * Text Domain: gps-2-photos

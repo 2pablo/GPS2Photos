@@ -213,8 +213,11 @@ jQuery(document).ready(function ($) {
 							var filePath = response.data.file_path || '';
 							var backupExists = response.data.backup_exists || false;
 
-							$('#gps2photos-modal-lat-input').val(lat.toFixed(7));
-							$('#gps2photos-modal-lon-input').val(lon.toFixed(7));
+							// Only call toFixed on valid numbers.
+							var latValue = (typeof lat === 'number') ? lat.toFixed(7) : '';
+							var lonValue = (typeof lon === 'number') ? lon.toFixed(7) : '';
+							$('#gps2photos-modal-lat-input').val(latValue);
+							$('#gps2photos-modal-lon-input').val(lonValue);
 
 							// Update jQuery internal cache data attributes.
 							$saveBtn.data('original-lat', lat).data('original-lon', lon);

@@ -209,9 +209,9 @@ function gps2photos_get_image_path( $image_id, $gallery_name = false, $image_url
 function gps2photos_get_coordinates_callback() {
 	check_ajax_referer( 'gps2photos-get-gps-nonce', 'nonce' );
 
-	$image_id     = isset( $_POST['image_id'] ) ? intval( $_POST['image_id'] ) : 0;
-	$gallery_name = isset( $_POST['gallery_name'] ) ? esc_attr( $_POST['gallery_name'] ) : false;
-	$image_url    = isset( $_POST['imagePath'] ) ? esc_url_raw( $_POST['imagePath'] ) : '';
+	$image_id     = isset( $_POST['image_id'] ) ? intval( wp_unslash( $_POST['image_id'] ) ) : 0;
+	$gallery_name = isset( $_POST['gallery_name'] ) ? sanitize_text_field( wp_unslash( $_POST['gallery_name'] ) ) : '';
+	$image_url    = isset( $_POST['imagePath'] ) ? esc_url_raw( wp_unslash( $_POST['imagePath'] ) ) : '';
 
 	if ( ! $image_id ) {
 		wp_send_json_error( 'Invalid image ID.' );
@@ -254,9 +254,9 @@ function gps2photos_get_coordinates_callback() {
 function gps2photos_save_coordinates_callback() {
 	check_ajax_referer( 'gps2photos-save-gps-nonce', 'nonce' );
 
-	$latitude         = isset( $_POST['latitude'] ) ? sanitize_text_field( $_POST['latitude'] ) : '';
-	$longitude        = isset( $_POST['longitude'] ) ? sanitize_text_field( $_POST['longitude'] ) : '';
-	$override_setting = isset( $_POST['override_setting'] ) ? intval( $_POST['override_setting'] ) : 0;
+	$latitude         = isset( $_POST['latitude'] ) ? sanitize_text_field( wp_unslash( $_POST['latitude'] ) ) : '';
+	$longitude        = isset( $_POST['longitude'] ) ? sanitize_text_field( wp_unslash( $_POST['longitude'] ) ) : '';
+	$override_setting = isset( $_POST['override_setting'] ) ? intval( wp_unslash( $_POST['override_setting'] ) ) : 0;
 	$file_path        = isset( $_POST['file_path'] ) ? sanitize_text_field( wp_unslash( $_POST['file_path'] ) ) : '';
 
 	if ( empty( $file_path ) || ! file_exists( $file_path ) ) {
@@ -368,7 +368,10 @@ function gps2photos_get_backup_coordinates( $file_path ) {
 
 		return false;
 	} catch ( Exception $e ) {
-		error_log( 'Error reading backup GPS data: ' . $e->getMessage() );
+		if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+			// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logging production errors for debugging corrupted EXIF data.
+			error_log( 'GPS-2-Photos: Error reading backup GPS data - ' . $e->getMessage() );
+		}
 		return false;
 	}
 }
@@ -421,6 +424,7 @@ function gps2photos_coordinates( $picture_path, $options ) {
 	// Exif read error handler.
 	if ( $options['exif_error_handler'] === 1 ) {
 		// Sets error handler for potential errors in exif_read_data().
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_set_error_handler -- Necessary to catch EXIF read errors from corrupted images
 		set_error_handler(
 			function ( $err_no, $err_str, $err_file, $err_line ) {
 				// For AJAX requests (like the Media Library grid view), log errors to the server
@@ -428,10 +432,10 @@ function gps2photos_coordinates( $picture_path, $options ) {
 				// error in the browser console for easier debugging.
 				$error = 'GPS 2 Photos (AJAX) - exif_read_data() error:\\nError no: ' . $err_no . '\\nError message: ' . $err_str . '\\nError file: ' . str_replace( '\\', '\\\\', $err_file ) . '\\nError line: ' . $err_line;
 				if ( wp_doing_ajax() ) {
+					// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logging EXIF errors for user support
 					error_log( $error );
 				} else {
 					// Shows errors in the browser console.
-					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo "<script>console.warn('" . esc_textarea( $error ) . "' );</script>";
 				}
 				// Return true to signify the error has been handled and prevent PHP's default handler.
@@ -690,6 +694,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 
 		return true;
 	} catch ( Exception $e ) {
+		// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- Logging EXIF errors for user support
 		error_log( 'Error saving GPS data: ' . $e->getMessage() );
 		return false;
 	}

@@ -149,14 +149,14 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 
 		// Register and Enqueue Azure Maps Scripts (with conflict check).
 		if ( ! wp_style_is( 'azure-maps-css', 'enqueued' ) ) {
-			wp_enqueue_style( 'azure-maps-css', 'https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css', array(), null, 'all' );
+			wp_enqueue_style( 'azure-maps-css', 'https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.css', array(), '3.0.0', 'all' );
 		}
 		if ( ! wp_script_is( 'azure-maps-js', 'enqueued' ) ) {
-			wp_enqueue_script( 'azure-maps-js', 'https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js', array(), null, false );
+			wp_enqueue_script( 'azure-maps-js', 'https://atlas.microsoft.com/sdk/javascript/mapcontrol/3/atlas.min.js', array(), '3.0.0', false );
 		}
 		// Add a reference to the Azure Maps Services Module JavaScript file for search functionality.
 		if ( ! wp_script_is( 'azure-maps-service-js', 'enqueued' ) ) {
-			wp_enqueue_script( 'azure-maps-service-js', 'https://atlas.microsoft.com/sdk/javascript/service/2/atlas-service.min.js', array(), null, false );
+			wp_enqueue_script( 'azure-maps-service-js', 'https://atlas.microsoft.com/sdk/javascript/service/2/atlas-service.min.js', array(), '2.0.0', false );
 		}
 		if ( ! wp_script_is( 'azure-maps-geolocation-js', 'enqueued' ) ) {
 			wp_enqueue_script( 'azure-maps-geolocation-js', GPS_2_PHOTOS_DIR_URL . '/js/geolocation-module/azure-maps-geolocation-control.min.js', array( 'azure-maps-js' ), '1.0.0', false );

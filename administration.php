@@ -269,7 +269,7 @@ add_action( 'admin_notices', 'gps2photos_admin_notices' );
  */
 function gps2photos_admin_notices() {
 	// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Checking WordPress-set parameters for display only.
-	if ( isset( $_GET['page'] ) && 'gps-2-photos' === sanitize_text_field( wp_unslash( $_GET['page'] ) ) ) {
+	if ( isset( $_GET['page'] ) && sanitize_text_field( wp_unslash( $_GET['page'] ) ) === 'gps-2-photos' ) {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Reading WordPress-set status parameters after settings save.
 		if ( isset( $_GET['settings-updated'] ) && sanitize_text_field( wp_unslash( $_GET['settings-updated'] ) ) ) {

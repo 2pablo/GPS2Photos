@@ -28,27 +28,27 @@ function gps2photos_options_init() {
 	}
 
 	register_setting(
-		'plugin_gps2photos_options',
-		'plugin_gps2photos_options',
+		'gps2photos_options',
+		'gps2photos_options',
 		array(
 			'sanitize_callback' => 'gps2photos_options_validate',
 		)
 	);
 
 	// Migrate Azure Maps Key from Geo2 Maps or Geo2Maps Plus if available.
-	$gps2photos_options = get_option( 'plugin_gps2photos_options' );
+	$gps2photos_options = get_option( 'gps2photos_options' );
 
 	if ( ! isset( $gps2photos_options['geo_azure_key'] ) || empty( $gps2photos_options['geo_azure_key'] ) ) {
 		$geo2_options = get_option( 'plugin_geo2_maps_options' );
 		if ( isset( $geo2_options['geo_azure_key'] ) ) {
 			$options['geo_azure_key'] = $geo2_options['geo_azure_key'];
-			update_option( 'plugin_gps2photos_options', $options );
+			update_option( 'gps2photos_options', $options );
 		}
 	} elseif ( is_plugin_active( 'ngg-geo2-maps-plus/plugin.php' ) ) {
 		$geo2_options = get_option( 'plugin_geo2_maps_plus_options' );
 		if ( isset( $geo2_options['geo_azure_key'] ) ) {
 			$options['geo_azure_key'] = $geo2_options['geo_azure_key'];
-			update_option( 'plugin_gps2photos_options', $options );
+			update_option( 'gps2photos_options', $options );
 		}
 	}
 	// Hook for authenticated users to access AJAX calls.
@@ -376,8 +376,8 @@ function gps2photos_options_page() {
 				</p>
 			</div>
 
-			<?php settings_fields( 'plugin_gps2photos_options' ); ?>
-			<?php $options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) ); ?>
+			<?php settings_fields( 'gps2photos_options' ); ?>
+			<?php $options = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) ); ?>
 
 			<div id="general" class="postbox gps2photos_tab_content">
 				<h3>
@@ -404,7 +404,7 @@ function gps2photos_options_page() {
 					</h3>
 						<h4><?php esc_html_e( 'Azure Maps API Key', 'gps-2-photos' ); ?></h4>
 
-						<input type="text" name="plugin_gps2photos_options[geo_azure_key]" value="<?php echo esc_textarea( $options['geo_azure_key'] ); ?>" style='min-width:25em' size='<?php echo esc_textarea( ( strlen( $options['geo_azure_key'] ) + 16 ) ); ?>' /><br />
+						<input type="text" name="gps2photos_options[geo_azure_key]" value="<?php echo esc_textarea( $options['geo_azure_key'] ); ?>" style='min-width:25em' size='<?php echo esc_textarea( ( strlen( $options['geo_azure_key'] ) + 16 ) ); ?>' /><br />
 						<p><span class="description">
 							<?php
 							printf(
@@ -440,7 +440,7 @@ function gps2photos_options_page() {
 						</span></p>
 				</div>
 				<div class="inside">
-					<p><input type="checkbox" name="plugin_gps2photos_options[gps_media_library]" value="1" <?php checked( $options['gps_media_library'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Add GPS info to WP Media Library', 'gps-2-photos' ); ?></b>
+					<p><input type="checkbox" name="gps2photos_options[gps_media_library]" value="1" <?php checked( $options['gps_media_library'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Add GPS info to WP Media Library', 'gps-2-photos' ); ?></b>
 						<span class="gps2photos-tooltip-container">
 							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
 							<span class="gps2photos-tooltip-text">
@@ -448,7 +448,7 @@ function gps2photos_options_page() {
 							</span>
 						</span>
 					</p>
-					<p><input type="checkbox" name="plugin_gps2photos_options[backup_existing_coordinates]" value="1" <?php checked( $options['backup_existing_coordinates'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Backup Existing Coordinates	', 'gps-2-photos' ); ?></b>
+					<p><input type="checkbox" name="gps2photos_options[backup_existing_coordinates]" value="1" <?php checked( $options['backup_existing_coordinates'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Backup Existing Coordinates	', 'gps-2-photos' ); ?></b>
 						<span class="gps2photos-tooltip-container">
 							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
 							<span class="gps2photos-tooltip-text">
@@ -456,7 +456,7 @@ function gps2photos_options_page() {
 							</span>
 						</span>
 					</p>					
-					<p><input type="checkbox" name="plugin_gps2photos_options[exif_error_handler]" value="1" <?php checked( $options['exif_error_handler'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'EXIF error handler', 'gps-2-photos' ); ?></b>
+					<p><input type="checkbox" name="gps2photos_options[exif_error_handler]" value="1" <?php checked( $options['exif_error_handler'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'EXIF error handler', 'gps-2-photos' ); ?></b>
 						<span class="gps2photos-tooltip-container">
 							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
 							<span class="gps2photos-tooltip-text">
@@ -464,13 +464,13 @@ function gps2photos_options_page() {
 							</span>
 						</span>
 					</p>
-					<p><input type="checkbox" name="plugin_gps2photos_options[always_override_gps]" value="1" <?php checked( $options['always_override_gps'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ); ?></b></p>
+					<p><input type="checkbox" name="gps2photos_options[always_override_gps]" value="1" <?php checked( $options['always_override_gps'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Always override existing GPS coordinates without asking', 'gps-2-photos' ); ?></b></p>
 				</div>
 				<div class="gps2photos_restore_defaults">
 					<h3>
 						<p><?php esc_html_e( 'Restore default settings', 'gps-2-photos' ); ?> </p>
 					</h3>
-					<input type="checkbox" name="plugin_gps2photos_options[restore_defaults]" value="1" <?php checked( $options['restore_defaults'], 1 ); ?>>&ensp;<?php esc_html_e( 'Enable only if you want to restore default settings on deactivation/activation of this plugin.', 'gps-2-photos' ); ?>
+					<input type="checkbox" name="gps2photos_options[restore_defaults]" value="1" <?php checked( $options['restore_defaults'], 1 ); ?>>&ensp;<?php esc_html_e( 'Enable only if you want to restore default settings on deactivation/activation of this plugin.', 'gps-2-photos' ); ?>
 				</div>
 			</div>
 
@@ -481,12 +481,12 @@ function gps2photos_options_page() {
 
 				<div class="inside">
 					<b><?php esc_html_e( 'Zoom Level', 'gps-2-photos' ); ?></b><br />
-					<input type="text" class="code gps2photos_margin_top gps2photos_margin_bottom" name="plugin_gps2photos_options[zoom]" value="<?php echo (int) $options['zoom']; ?>" /><br />
+					<input type="text" class="code gps2photos_margin_top gps2photos_margin_bottom" name="gps2photos_options[zoom]" value="<?php echo (int) $options['zoom']; ?>" /><br />
 					<span class="description"><?php esc_html_e( 'Zoom Level for single image. Maps with several pins are focused automatically.', 'gps-2-photos' ); ?></span><br /><br />
 					<b><?php esc_html_e( 'Map Container Height', 'gps-2-photos' ); ?></b><br />
-					<input type="text" class="code gps2photos_margin_top" name="plugin_gps2photos_options[map_height]" value="<?php echo esc_attr( $options['map_height'] ); ?>" /><br /><br />
+					<input type="text" class="code gps2photos_margin_top" name="gps2photos_options[map_height]" value="<?php echo esc_attr( $options['map_height'] ); ?>" /><br /><br />
 					<b><?php esc_html_e( 'Map Container Width', 'gps-2-photos' ); ?></b><br />
-					<input type="text" class="code gps2photos_margin_top gps2photos_margin_bottom" name="plugin_gps2photos_options[map_width]" value="<?php echo esc_attr( $options['map_width'] ); ?>" /><br />
+					<input type="text" class="code gps2photos_margin_top gps2photos_margin_bottom" name="gps2photos_options[map_width]" value="<?php echo esc_attr( $options['map_width'] ); ?>" /><br />
 					<span class="description">
 						<?php
 						printf(
@@ -499,22 +499,22 @@ function gps2photos_options_page() {
 						?>
 					</span><br />
 
-					<p><input type="checkbox" name="plugin_gps2photos_options[map_fullscreen]" value="1" <?php checked( $options['map_fullscreen'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Enable fullscreen mode', 'gps-2-photos' ); ?></b></p><span class="description"><?php esc_html_e( 'This option shows a button that opens the map in full-screen mode, expanding to cover the entire physical screen instead of just the browser window.', 'gps-2-photos' ); ?></span><br />
+					<p><input type="checkbox" name="gps2photos_options[map_fullscreen]" value="1" <?php checked( $options['map_fullscreen'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Enable fullscreen mode', 'gps-2-photos' ); ?></b></p><span class="description"><?php esc_html_e( 'This option shows a button that opens the map in full-screen mode, expanding to cover the entire physical screen instead of just the browser window.', 'gps-2-photos' ); ?></span><br />
 
 					<h4><?php esc_html_e( 'Map Style', 'gps-2-photos' ); ?></h4>
-					<input type="radio" name="plugin_gps2photos_options[map]" value="road" <?php checked( $options['map'], 'road', 1 ); ?>> <?php esc_html_e( 'Road', 'gps-2-photos' ); ?><br />
-					<input type="radio" name="plugin_gps2photos_options[map]" value="satellite" <?php checked( $options['map'], 'satellite', 1 ); ?>> <?php esc_html_e( 'Satellite', 'gps-2-photos' ); ?><br />
-					<input type="radio" name="plugin_gps2photos_options[map]" value="satellite_road_labels" <?php checked( $options['map'], 'satellite_road_labels', 1 ); ?>> <?php esc_html_e( 'Hybrid (satellite_road_labels)', 'gps-2-photos' ); ?><br />
-					<input type="radio" name="plugin_gps2photos_options[map]" value="grayscale_light" <?php checked( $options['map'], 'grayscale_light', 1 ); ?>> <?php esc_html_e( 'Grayscale Light', 'gps-2-photos' ); ?><br />
-					<input type="radio" name="plugin_gps2photos_options[map]" value="grayscale_dark" <?php checked( $options['map'], 'grayscale_dark', 1 ); ?>> <?php esc_html_e( 'Grayscale Dark', 'gps-2-photos' ); ?><br />
-					<input type="radio" name="plugin_gps2photos_options[map]" value="night" <?php checked( $options['map'], 'night', 1 ); ?>> <?php esc_html_e( 'Night', 'gps-2-photos' ); ?><br />
-					<input type="radio" name="plugin_gps2photos_options[map]" value="road_shaded_relief" <?php checked( $options['map'], 'road_shaded_relief', 1 ); ?>> <?php esc_html_e( 'Road Shaded Relief', 'gps-2-photos' ); ?><br /><br />
+					<input type="radio" name="gps2photos_options[map]" value="road" <?php checked( $options['map'], 'road', 1 ); ?>> <?php esc_html_e( 'Road', 'gps-2-photos' ); ?><br />
+					<input type="radio" name="gps2photos_options[map]" value="satellite" <?php checked( $options['map'], 'satellite', 1 ); ?>> <?php esc_html_e( 'Satellite', 'gps-2-photos' ); ?><br />
+					<input type="radio" name="gps2photos_options[map]" value="satellite_road_labels" <?php checked( $options['map'], 'satellite_road_labels', 1 ); ?>> <?php esc_html_e( 'Hybrid (satellite_road_labels)', 'gps-2-photos' ); ?><br />
+					<input type="radio" name="gps2photos_options[map]" value="grayscale_light" <?php checked( $options['map'], 'grayscale_light', 1 ); ?>> <?php esc_html_e( 'Grayscale Light', 'gps-2-photos' ); ?><br />
+					<input type="radio" name="gps2photos_options[map]" value="grayscale_dark" <?php checked( $options['map'], 'grayscale_dark', 1 ); ?>> <?php esc_html_e( 'Grayscale Dark', 'gps-2-photos' ); ?><br />
+					<input type="radio" name="gps2photos_options[map]" value="night" <?php checked( $options['map'], 'night', 1 ); ?>> <?php esc_html_e( 'Night', 'gps-2-photos' ); ?><br />
+					<input type="radio" name="gps2photos_options[map]" value="road_shaded_relief" <?php checked( $options['map'], 'road_shaded_relief', 1 ); ?>> <?php esc_html_e( 'Road Shaded Relief', 'gps-2-photos' ); ?><br /><br />
 					<h4><?php esc_html_e( 'Which elements should be displayed?', 'gps-2-photos' ); ?></h4>
-					<input type="checkbox" name="plugin_gps2photos_options[dashboard]" value="1" <?php checked( $options['dashboard'], 1 ); ?>>&ensp;<?php esc_html_e( 'Dashboard with map navigation controls', 'gps-2-photos' ); ?><br />
-					<input type="checkbox" name="plugin_gps2photos_options[locate_me_button]" value="1" <?php checked( $options['locate_me_button'], 1 ); ?>>&ensp;<?php esc_html_e( 'Locate Me button (dependent on Dashboard visibility)', 'gps-2-photos' ); ?><br />
-					<input type="checkbox" name="plugin_gps2photos_options[map_search_bar]" value="1" <?php checked( $options['map_search_bar'], 1 ); ?>>&ensp;<?php esc_html_e( 'Search bar', 'gps-2-photos' ); ?><br />
-					<input type="checkbox" name="plugin_gps2photos_options[scalebar]" value="1" <?php checked( $options['scalebar'], 1 ); ?>>&ensp;<?php esc_html_e( 'Scalebar', 'gps-2-photos' ); ?><br />
-					<input type="checkbox" name="plugin_gps2photos_options[logo]" value="1" <?php checked( $options['logo'], 1 ); ?>>&ensp;<?php esc_html_e( 'Azure logo', 'gps-2-photos' ); ?><br />
+					<input type="checkbox" name="gps2photos_options[dashboard]" value="1" <?php checked( $options['dashboard'], 1 ); ?>>&ensp;<?php esc_html_e( 'Dashboard with map navigation controls', 'gps-2-photos' ); ?><br />
+					<input type="checkbox" name="gps2photos_options[locate_me_button]" value="1" <?php checked( $options['locate_me_button'], 1 ); ?>>&ensp;<?php esc_html_e( 'Locate Me button (dependent on Dashboard visibility)', 'gps-2-photos' ); ?><br />
+					<input type="checkbox" name="gps2photos_options[map_search_bar]" value="1" <?php checked( $options['map_search_bar'], 1 ); ?>>&ensp;<?php esc_html_e( 'Search bar', 'gps-2-photos' ); ?><br />
+					<input type="checkbox" name="gps2photos_options[scalebar]" value="1" <?php checked( $options['scalebar'], 1 ); ?>>&ensp;<?php esc_html_e( 'Scalebar', 'gps-2-photos' ); ?><br />
+					<input type="checkbox" name="gps2photos_options[logo]" value="1" <?php checked( $options['logo'], 1 ); ?>>&ensp;<?php esc_html_e( 'Azure logo', 'gps-2-photos' ); ?><br />
 					<span style="margin-left:26px;" class="description">
 						<?php
 						printf(
@@ -535,20 +535,20 @@ function gps2photos_options_page() {
 					</b>
 					<br />
 					<div class="gps2photos_margin_top">
-						<input type="text" class="color-picker code" data-default-color="#00FF00" name="plugin_gps2photos_options[pin_color]" value="<?php echo esc_attr( $options['pin_color'] ); ?>" />
+						<input type="text" class="color-picker code" data-default-color="#00FF00" name="gps2photos_options[pin_color]" value="<?php echo esc_attr( $options['pin_color'] ); ?>" />
 					</div><br />
 					<b>
 						<?php esc_html_e( 'Pushpin Secondary Color', 'gps-2-photos' ); ?>
 					</b>
 					<br />
 					<div class="gps2photos_margin_top">
-					<input type="text" class="color-picker code" data-default-color="#000000" name="plugin_gps2photos_options[pin_secondary_color]" value="<?php echo esc_attr( $options['pin_secondary_color'] ); ?>" />
+					<input type="text" class="color-picker code" data-default-color="#000000" name="gps2photos_options[pin_secondary_color]" value="<?php echo esc_attr( $options['pin_secondary_color'] ); ?>" />
 					</div><br />
 					<b>
 						<?php esc_html_e( 'Pushpin Icon Type', 'gps-2-photos' ); ?>
 					</b><br />
 					<div style="display: inline-block; vertical-align: bottom;">
-						<select id="gps2image_pin_icon_type" class="gps2photos_margin_top gps2photos_margin_bottom" name="plugin_gps2photos_options[pin_icon_type]" style="margin-top:17px" onchange="gps2photos_update_image()">
+						<select id="gps2image_pin_icon_type" class="gps2photos_margin_top gps2photos_margin_bottom" name="gps2photos_options[pin_icon_type]" style="margin-top:17px" onchange="gps2photos_update_image()">
 							<option value="marker" <?php echo ( $options['pin_icon_type'] === 'marker' ) ? 'selected' : ''; ?>>marker</option>
 							<option value="marker-thick" <?php echo ( $options['pin_icon_type'] === 'marker-thick' ) ? 'selected' : ''; ?>>marker-thick</option>
 							<option value="marker-arrow" <?php echo ( $options['pin_icon_type'] === 'marker-arrow' ) ? 'selected' : ''; ?>>marker-arrow</option>
@@ -569,13 +569,13 @@ function gps2photos_options_page() {
 					</b>
 					<br />
 					<div class="gps2photos_margin_top">
-						<input type="text" class="color-picker code" data-default-color="#007BFF" name="plugin_gps2photos_options[search_pin_color]" value="<?php echo esc_attr( $options['search_pin_color'] ); ?>" />
+						<input type="text" class="color-picker code" data-default-color="#007BFF" name="gps2photos_options[search_pin_color]" value="<?php echo esc_attr( $options['search_pin_color'] ); ?>" />
 					</div><br />
 					<b>
 						<?php esc_html_e( 'Pushpin Icon Type for Search Results', 'gps-2-photos' ); ?>
 					</b><br />
 					<div style="display: inline-block; vertical-align: bottom;">
-						<select id="gps2image_search_pin_icon_type" class="gps2photos_margin_top gps2photos_margin_bottom" name="plugin_gps2photos_options[search_pin_icon_type]" style="margin-top:17px" onchange="gps2photos_update_search_image()">
+						<select id="gps2image_search_pin_icon_type" class="gps2photos_margin_top gps2photos_margin_bottom" name="gps2photos_options[search_pin_icon_type]" style="margin-top:17px" onchange="gps2photos_update_search_image()">
 							<option value="marker" <?php echo ( $options['search_pin_icon_type'] === 'marker' ) ? 'selected' : ''; ?>>marker</option>
 							<option value="marker-thick" <?php echo ( $options['search_pin_icon_type'] === 'marker-thick' ) ? 'selected' : ''; ?>>marker-thick</option>
 							<option value="marker-arrow" <?php echo ( $options['search_pin_icon_type'] === 'marker-arrow' ) ? 'selected' : ''; ?>>marker-arrow</option>

@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return string The HTML for the modal content.
  */
 function gps2photos_get_map_for_modal() {
-	$options      = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+	$options      = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) );
 	$html_output  = '
 <div id="gps2photos-modal" class="gps2photos-modal">
 	<div class="gps2photos-modal-content" style="max-width: ' . esc_attr( $options['map_width'] ) . '; max-height: ' . esc_attr( $options['map_height'] ) . ';">		

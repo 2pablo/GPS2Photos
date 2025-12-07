@@ -312,8 +312,8 @@ msgid "http://geo2maps.pasart.net"
 msgstr "http://geo2maps.pasart.net"
 
 #. URI of the plugin
-msgid "https://wordpress.org/plugins/gps-2-photo/"
-msgstr "https://wordpress.org/plugins/gps-2-photo/"
+msgid "https://wordpress.org/plugins/gps-2-photos/"
+msgstr "https://wordpress.org/plugins/gps-2-photos/"
 
 #: administration.php:506
 msgid "Hybrid (satellite_road_labels)"

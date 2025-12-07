@@ -896,71 +896,6 @@ class PelTag {
 	const SUB_SEC_TIME_DIGITIZED = 0x9292;
 
 	/**
-	 * Temperature.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::SRATIONAL}.
-	 *
-	 * Components: 1.
-	 */
-	const TEMPERATURE = 0x9400;
-
-	/**
-	 * Humidity.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::RATIONAL}.
-	 *
-	 * Components: 1.
-	 */
-	const HUMIDITY = 0x9401;
-
-	/**
-	 * Pressure.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::RATIONAL}.
-	 *
-	 * Components: 1.
-	 */
-	const PRESSURE = 0x9402;
-
-	/**
-	 * Water Depth.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::SRATIONAL}.
-	 *
-	 * Components: 1.
-	 */
-	const WATER_DEPTH = 0x9403;
-
-	/**
-	 * Acceleration.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::RATIONAL}.
-	 *
-	 * Components: 1.
-	 */
-	const ACCELERATION = 0x9404;
-
-	/**
-	 * Camera Elevation Angle.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::SRATIONAL}.
-	 *
-	 * Components: 1.
-	 */
-	const CAMERA_ELEVATION_ANGLE = 0x9405;
-	/**
 	 * Windows XP Title
 	 *
 	 * Format: {@link PelFormat::BYTE}, modelled by the
@@ -1283,7 +1218,7 @@ class PelTag {
 
 	/**
 	 * Camera Owner Name.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
+ * Added for GPS 2 PHOTOS WordPress Plugin
 	 * for compatibility with EXIF SPECIFICATION 2.3
 	 *
 	 * Format: {@link PelFormat::ASCII}.
@@ -1346,83 +1281,6 @@ class PelTag {
 	 * Components: Any.
 	 */
 	const LENS_SERIAL_NUMBER = 0xA435;
-
-	/**
-	 * Title name of Image.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::ASCII} or UTF-8.
-	 *
-	 * Components: Any.
-	 */
-	const IMAGE_TITLE = 0xA436;
-
-	/**
-	 * Photographer name.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::ASCII} or UTF-8.
-	 *
-	 * Components: Any.
-	 */
-	const PHOTOGRAPHER = 0xA437;
-
-	/**
-	 * Person who edited the image.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::ASCII} or UTF-8.
-	 *
-	 * Components: Any.
-	 */
-	const IMAGE_EDITOR = 0xA438;
-
-	/**
-	 * Camera Firmware.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::ASCII} or UTF-8.
-	 *
-	 * Components: Any.
-	 */
-	const CAMERA_FIRMWARE = 0xA439;
-
-	/**
-	 * RAW Developing Software.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::ASCII} or UTF-8.
-	 *
-	 * Components: Any.
-	 */
-	const RAW_DEVELOPING_SOFTWARE = 0xA43A;
-
-	/**
-	 * Image Editing Software.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::ASCII} or UTF-8.
-	 *
-	 * Components: Any.
-	 */
-	const IMAGE_EDITING_SOFTWARE = 0xA43B;
-
-	/**
-	 * Metadata Editing Software.
-	 * Added for GPS 2 PHOTOS WordPress Plugin
-	 * for compatibility with EXIF SPECIFICATION 3.0
-	 *
-	 * Format: {@link PelFormat::ASCII} or UTF-8.
-	 *
-	 * Components: Any.
-	 */
-	const METADATA_EDITING_SOFTWARE = 0xA43C;
 
 	/**
 	 * Gamma.
@@ -2259,12 +2117,6 @@ class PelTag {
 		self::SUB_SEC_TIME                   => 'SubSecTime',
 		self::SUB_SEC_TIME_ORIGINAL          => 'SubSecTimeOriginal',
 		self::SUB_SEC_TIME_DIGITIZED         => 'SubSecTimeDigitized',
-		self::TEMPERATURE                    => 'Temperature',
-		self::HUMIDITY                       => 'Humidity',
-		self::PRESSURE                       => 'Pressure',
-		self::WATER_DEPTH                    => 'WaterDepth',
-		self::ACCELERATION                   => 'Acceleration',
-		self::CAMERA_ELEVATION_ANGLE         => 'CameraElevationAngle',
 		self::XP_TITLE                       => 'WindowsXPTitle',
 		self::XP_COMMENT                     => 'WindowsXPComment',
 		self::XP_AUTHOR                      => 'WindowsXPAuthor',
@@ -2306,13 +2158,6 @@ class PelTag {
 		self::LENS_MODEL                     => 'LensMake',
 		self::LENS_MAKE                      => 'LensModel',
 		self::LENS_SERIAL_NUMBER             => 'LensSerialNumber',
-		self::IMAGE_TITLE                    => 'ImageTitle',
-		self::PHOTOGRAPHER                   => 'Photographer',
-		self::IMAGE_EDITOR                   => 'ImageEditor',
-		self::CAMERA_FIRMWARE                => 'CameraFirmware',
-		self::RAW_DEVELOPING_SOFTWARE        => 'RawDevelopingSoftware',
-		self::IMAGE_EDITING_SOFTWARE         => 'ImageEditingSoftware',
-		self::METADATA_EDITING_SOFTWARE      => 'MetadataEditingSoftware',
 		self::GAMMA                          => 'Gamma',
 		self::PRINT_IM                       => 'PrintIM',
 		self::PREDICTOR                      => 'Predictor',
@@ -2411,12 +2256,6 @@ class PelTag {
 		self::SUB_SEC_TIME                   => 'SubSec Time',
 		self::SUB_SEC_TIME_ORIGINAL          => 'SubSec Time Original',
 		self::SUB_SEC_TIME_DIGITIZED         => 'SubSec Time Digitized',
-		self::TEMPERATURE                    => 'Temperature',
-		self::HUMIDITY                       => 'Humidity',
-		self::PRESSURE                       => 'Pressure',
-		self::WATER_DEPTH                    => 'Water Depth',
-		self::ACCELERATION                   => 'Acceleration',
-		self::CAMERA_ELEVATION_ANGLE         => 'Camera Elevation Angle',
 		self::XP_TITLE                       => 'Windows XP Title',
 		self::XP_COMMENT                     => 'Windows XP Comment',
 		self::XP_AUTHOR                      => 'Windows XP Author',
@@ -2458,13 +2297,6 @@ class PelTag {
 		self::LENS_MODEL                     => 'Lens Make',
 		self::LENS_MAKE                      => 'Lens Model',
 		self::LENS_SERIAL_NUMBER             => 'Lens Serial Number',
-		self::IMAGE_TITLE                    => 'Image Title',
-		self::PHOTOGRAPHER                   => 'Photographer',
-		self::IMAGE_EDITOR                   => 'Image Editor',
-		self::CAMERA_FIRMWARE                => 'Camera Firmware',
-		self::RAW_DEVELOPING_SOFTWARE        => 'Raw Developing Software',
-		self::IMAGE_EDITING_SOFTWARE         => 'Image Editing Software',
-		self::METADATA_EDITING_SOFTWARE      => 'Metadata Editing Software',
 		self::GAMMA                          => 'Gamma',
 		self::PRINT_IM                       => 'Print IM',
 		self::PREDICTOR                      => 'Predictor',

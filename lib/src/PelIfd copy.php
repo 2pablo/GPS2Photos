@@ -248,12 +248,6 @@ class PelIfd implements \IteratorAggregate, \ArrayAccess {
 			PelTag::SUB_SEC_TIME,
 			PelTag::SUB_SEC_TIME_ORIGINAL,
 			PelTag::SUB_SEC_TIME_DIGITIZED,
-			PelTag::TEMPERATURE, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::HUMIDITY, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::PRESSURE, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::WATER_DEPTH, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::ACCELERATION, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::CAMERA_ELEVATION_ANGLE, // Added for compatibility with EXIF Specification 3.0.
 			PelTag::FLASH_PIX_VERSION,
 			PelTag::COLOR_SPACE,
 			PelTag::PIXEL_X_DIMENSION,
@@ -290,13 +284,6 @@ class PelIfd implements \IteratorAggregate, \ArrayAccess {
 			PelTag::LENS_MAKE, // Added for compatibility with EXIF Specification 2.3.
 			PelTag::LENS_MODEL, // Added for compatibility with EXIF Specification 2.3.
 			PelTag::LENS_SERIAL_NUMBER, // Added for compatibility with EXIF Specification 2.3.
-			PelTag::IMAGE_TITLE, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::PHOTOGRAPHER, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::IMAGE_EDITOR, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::CAMERA_FIRMWARE, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::RAW_DEVELOPING_SOFTWARE, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::IMAGE_EDITING_SOFTWARE, // Added for compatibility with EXIF Specification 3.0.
-			PelTag::METADATA_EDITING_SOFTWARE, // Added for compatibility with EXIF Specification 3.0.
 			PelTag::GAMMA,
 		),
 		self::GPS                   => array(

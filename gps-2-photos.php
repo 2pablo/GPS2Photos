@@ -20,7 +20,7 @@
 
 /**
  * Plugin Name: GPS 2 Photos
- * Plugin URI:  https://wordpress.org/plugins/gps-2-photo/
+ * Plugin URI:  https://wordpress.org/plugins/gps-2-photos/
  * Description: GPS 2 Photo Add-on allows to add GPS coordinates to the photo EXIF data by selecting a location on a map.
  * Version:     1.0.0
  * Author URI:  http://geo2maps.pasart.net
@@ -144,8 +144,8 @@ function gps2photos_options_activation() {
 
 	$defaults = gps2photos_defaults_array();
 
-	if ( ! get_option( 'plugin_gps2photos_options' ) ) {
-		add_option( 'plugin_gps2photos_options', $defaults );
+	if ( ! get_option( 'gps2photos_options' ) ) {
+		add_option( 'gps2photos_options', $defaults );
 	}
 }
 
@@ -164,10 +164,10 @@ function gps2photos_options_deactivation() {
 	}
 
 	$defaults = gps2photos_defaults_array();
-	$options  = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+	$options  = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) );
 
 	if ( $options['restore_defaults'] === 1 ) {
-		update_option( 'plugin_gps2photos_options', $defaults );
+		update_option( 'gps2photos_options', $defaults );
 	}
 }
 
@@ -279,7 +279,7 @@ function gps2photos_validate_auto_number( $text, $max, $default_value ) {
  */
 function gps2photos_options_validate( $input ) {
 	// Gets variable values already saved on the server.
-	$saved_options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+	$saved_options = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) );
 
 	// Invalid characters in API key for validation below.
 	$special_chars = array( '?', '[', ']', '/', '\\', '=', '<', '>', ':', ';', ',', "'", '"', '&', '$', '#', '*', '(', ')', '|', '~', '`', '!', '{', '}', '%', '+', '’', '«', '»', '”', '“', chr( 0 ), '<', '>', '.', ',' );

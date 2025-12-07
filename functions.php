@@ -44,7 +44,7 @@ add_filter( 'attachment_fields_to_edit', 'gps2photos_add_attachment_fields_to_ed
  * @return array  $form_fields The modified array of form fields with GPS data and controls.
  */
 function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
-	$options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+	$options = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) );
 
 	$file_path = get_attached_file( $post->ID );
 
@@ -142,7 +142,7 @@ function gps2photos_get_azure_maps_api_key_callback() {
 
 	// If the constant is not defined, get it from the options array.
 	if ( empty( $azure_api_key ) ) {
-		$options       = get_option( 'plugin_gps2photos_options' );
+		$options       = get_option( 'gps2photos_options' );
 		$azure_api_key = isset( $options['geo_azure_key'] ) ? $options['geo_azure_key'] : '';
 	}
 
@@ -223,7 +223,7 @@ function gps2photos_get_coordinates_callback() {
 		wp_send_json_error( 'File not found.' );
 	}
 
-	$options       = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+	$options       = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) );
 	$gps_data      = gps2photos_coordinates( $file_path, $options );
 	$backup_exists = gps2photos_get_backup_coordinates( $file_path ) !== false;
 
@@ -266,12 +266,12 @@ function gps2photos_save_coordinates_callback() {
 		wp_send_json_error( 'Invalid file path for saving. Path: ' . $file_path );
 	}
 
-	$options = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+	$options = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) );
 
 	// Update the 'always_override_gps' option if the checkbox was present and checked.
 	if ( isset( $_POST['override_setting'] ) ) {
 		$options['always_override_gps'] = $override_setting;
-		update_option( 'plugin_gps2photos_options', $options );
+		update_option( 'gps2photos_options', $options );
 	}
 
 	// Convert to float only if not empty, otherwise keep as is for the save function to handle.
@@ -534,6 +534,49 @@ if ( ! $wp_filesystem ) {
 	WP_Filesystem();
 }
 
+function pel_dump_exif_entries( PelTiff $tiff ) {
+	$ifd0 = $tiff->getIfd();
+	if ( ! $ifd0 ) {
+		return;
+	}
+
+	$allIfds = array( $ifd0 );
+	// include sub-IFDs (EXIF, GPS, MakerNote is an entry inside EXIF IFD)
+	foreach ( $ifd0->getSubIfds() as $sub ) {
+		$allIfds[] = $sub;
+	}
+
+	$out = array();
+	foreach ( $allIfds as $ifd ) {
+		$entries = $ifd->getEntries();
+		foreach ( $entries as $entry ) {
+			$tagId = $entry->getTag();
+			$type  = get_class( $entry );
+			// try to get a printable value; undefined/raw entries return binary
+			try {
+				$val = $entry->getValue();
+				if ( is_array( $val ) ) {
+					$val = implode( ', ', $val );
+				} elseif ( is_string( $val ) ) {
+					// show short binary safely
+					$val = ( strlen( $val ) > 200 ) ? substr( $val, 0, 200 ) . '...' : $val;
+				} elseif ( is_object( $val ) ) {
+					$val = json_encode( $val );
+				}
+			} catch ( Exception $e ) {
+				$val = '[unreadable]';
+			}
+			$out[] = sprintf(
+				'IFD: tag=0x%04X (%d) class=%s value=%s',
+				$tagId,
+				$tagId,
+				$type,
+				$val
+			);
+		}
+	}
+	file_put_contents( WP_CONTENT_DIR . '/uploads/debug_exif_entries_new.txt', implode( "\n", $out ) );
+}
 
 /**
  * Add GPS information to a JPEG file.
@@ -548,7 +591,7 @@ if ( ! $wp_filesystem ) {
  */
 function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restore = false, $original_gps = array(), $backup_exists = false ) {
 	try {
-		$options    = gps2photos_convert_to_int( get_option( 'plugin_gps2photos_options' ) );
+		$options    = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) );
 		$backup_opt = isset( $options['backup_existing_coordinates'] ) ? $options['backup_existing_coordinates'] : 0;
 		$jpeg       = new PelJpeg( $file_path );
 		$exif       = $jpeg->getExif();
@@ -562,7 +605,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 		} else {
 			$tiff = $exif->getTiff();
 		}
-
+		pel_dump_exif_entries( $tiff );
 		$ifd0 = $tiff->getIfd();
 		if ( $ifd0 === null ) {
 			$ifd0 = new PelIfd( PelIfd::IFD0 );
@@ -616,19 +659,14 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 
 		// Reuse existing GPS IFD or create a new one.
 		$gps_ifd = $ifd0->getSubIfd( PelIfd::GPS );
-		if ( $gps_ifd === null ) {
-			$gps_ifd = new PelIfd( PelIfd::GPS );
-			$ifd0->addSubIfd( $gps_ifd ); // adds pointer in IFD0 to this GPS sub-IFD.
-			// Required tag when a GPS IFD is present (EXIF 2.2 most common).
-			$gps_ifd->addEntry( new PelEntryByte( PelTag::GPS_VERSION_ID, 2, 2, 0, 0 ) ); // "2.2.0.0"
-		}
 
 		// If latitude and longitude are empty, it's a request to remove GPS data.
 		if ( $latitude === '' && $longitude === '' ) {
 			if ( $gps_ifd ) {
 
-				// Unset just these four entries if present.
+				// Unset just these entries if present.
 				$targets = array(
+					PelTag::GPS_VERSION_ID,
 					PelTag::GPS_LATITUDE,
 					PelTag::GPS_LATITUDE_REF,
 					PelTag::GPS_LONGITUDE,
@@ -643,6 +681,8 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 						$changed = true;
 					}
 				}
+
+				unset( $gps_ifd );
 
 				// To remove all entries from the GPS IFD - not tested.
 				// foreach ( $gps_ifd_to_remove->getEntries() as $entry ) {
@@ -661,6 +701,44 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 			global $wp_filesystem;
 			$wp_filesystem->put_contents( $file_path, $jpeg->getBytes(), FS_CHMOD_FILE );
 			return true;
+		}
+
+		// Step 1: Retrieve all entries before modification.
+		// $exifIfd = $tiff->getIfd( PelIfd::EXIF ); // or $tiff->getIfd()->getSubIfd(PelIfd::EXIF).
+		// if ( $exifIfd ) {
+		// $mnEntry = $exifIfd->getEntry( PelTag::MAKER_NOTE );
+		// if ( $mnEntry ) {
+		// getValue() returns raw bytes for undefined entries
+		// $makerNoteRaw = $mnEntry->getValue();
+		// }
+		// }
+		// Step 1: Retrieve all entries before modification.
+		$original_ifd_entries = array();
+		foreach ( $ifd0->getEntries() as $tag => $entry ) {
+			$original_ifd_entries[ $tag ] = clone $entry;
+		}
+
+		$exif_ifd         = $ifd0->getSubIfd( PelIfd::EXIF );
+		$original_entries = array();
+		foreach ( $exif_ifd->getEntries() as $tag => $entry ) {
+			$original_entries[ $tag ] = clone $entry;
+		}
+		// error_log( print_r( 'original_ifd_entries', true ) );
+		// error_log( print_r( $original_ifd_entries, true ) );
+		// file_put_contents(
+		// WP_CONTENT_DIR . '/uploads/debug_raw_exif_org.txt',
+		// print_r(
+		// $exif,
+		// true
+		// )
+		// );
+
+		// Step 2: Add GPS data.
+		if ( $gps_ifd === null ) {
+			$gps_ifd = new PelIfd( PelIfd::GPS );
+			$ifd0->addSubIfd( $gps_ifd ); // adds pointer in IFD0 to this GPS sub-IFD.
+			// Required tag when a GPS IFD is present (EXIF 2.2 most common).
+			$gps_ifd->addEntry( new PelEntryByte( PelTag::GPS_VERSION_ID, 2, 3, 0, 0 ) ); // "2.2.0.0"
 		}
 
 		// Set Latitude.
@@ -688,6 +766,47 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 		} else {
 			$gps_ifd->addEntry( new PelEntryRational( PelTag::GPS_LONGITUDE, $hours, $minutes, $seconds ) );
 		}
+
+		// Step 3: Retrieve all entries after modification.
+		$modified_ifd_entries = array();
+		foreach ( $ifd0->getEntries() as $tag => $entry ) {
+			$modified_ifd_entries[ $tag ] = $entry;
+		}
+
+		// Step 4: Compare and re-add missing entries.
+		foreach ( $original_ifd_entries as $tag => $entry ) {
+			if ( ! isset( $modified_ifd_entries[ $tag ] ) ) {
+				$ifd0->addEntry( $entry ); // Re-add missing entry.
+			}
+		}
+
+		// Step 3: Retrieve all entries after modification.
+		$modified_entries  = array();
+		$exif_ifd_modified = $ifd0->getSubIfd( PelIfd::EXIF );
+		foreach ( $exif_ifd_modified->getEntries() as $tag => $entry ) {
+			$modified_entries[ $tag ] = $entry;
+		}
+
+		// Step 4: Compare and re-add missing entries.
+		foreach ( $original_entries as $tag => $entry ) {
+			if ( ! isset( $modified_entries[ $tag ] ) ) {
+				$exif_ifd_modified->addEntry( $entry ); // Re-add missing entry.
+			}
+		}
+		// if ( $exif_ifd ) {
+		// $ifd0->addSubIfd( $exif_ifd );
+		// }
+
+		// if ( $makerNoteRaw !== null ) {
+		// Ensure EXIF sub-IFD exists
+		// $exifIfd = $tiff->getIfd()->getSubIfd( PelIfd::EXIF );
+		// if ( $exifIfd === null ) {
+		// $exifIfd = new PelIfd( PelIfd::EXIF );
+		// $tiff->getIfd()->addSubIfd( $exifIfd );
+		// }
+		// Use PelEntryUndefined to reinsert raw MakerNote bytes
+		// $exifIfd->addEntry( new PelEntryUndefined( PelTag::MAKER_NOTE, $makerNoteRaw ) );
+		// }
 
 		global $wp_filesystem;
 		$wp_filesystem->put_contents( $file_path, $jpeg->getBytes(), FS_CHMOD_FILE );

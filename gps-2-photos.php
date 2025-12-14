@@ -220,7 +220,7 @@ function gps2photos_validate_color( $text ) {
 	}
 
 	if ( ! empty( $error_message ) ) {
-		add_settings_error( 'plugin_gps2photo', 'invalid_color_number_error', $text . $error_message, 'error' );
+		add_settings_error( 'gps2photos_options_group', 'invalid_color_number_error', $text . $error_message, 'error' );
 	}
 	return $color;
 }
@@ -252,27 +252,27 @@ function gps2photos_validate_auto_number( $text, $max, $default_value ) {
 	} elseif ( strpos( $text, 'px' ) !== false ) {
 		$string = str_replace( 'px', '', $text );
 		if ( ! is_numeric( $string ) ) {
-			add_settings_error( 'plugin_gps2photo', 'invalid_number_error', $error_message, 'error' );
+			add_settings_error( 'gps2photos_options_group', 'invalid_number_error', $error_message, 'error' );
 			return $default_value;
 		} elseif ( $string >= 24 && $string <= $max ) {
 			return $text;
 		} else {
-			add_settings_error( 'plugin_gps2photo', 'invalid_number_error', $error_message, 'error' );
+			add_settings_error( 'gps2photos_options_group', 'invalid_number_error', $error_message, 'error' );
 			return $default_value;
 		}
 	} elseif ( strpos( $text, '%' ) !== false ) {
 		$string = str_replace( '%', '', $text );
 		if ( ! is_numeric( $string ) ) {
-			add_settings_error( 'plugin_gps2photo', 'invalid_number_error', $error_message, 'error' );
+			add_settings_error( 'gps2photos_options_group', 'invalid_number_error', $error_message, 'error' );
 			return $default_value;
 		} elseif ( $string > 0 && $string <= 100 ) {
 			return $text;
 		} else {
-			add_settings_error( 'plugin_gps2photo', 'invalid_number_error', esc_html__( 'Please enter a number from 0% to 100%!', 'gps-2-photos' ), 'error' );
+			add_settings_error( 'gps2photos_options_group', 'invalid_number_error', esc_html__( 'Please enter a number from 0% to 100%!', 'gps-2-photos' ), 'error' );
 			return $default_value;
 		}
 	} else {
-		add_settings_error( 'plugin_gps2photo', 'invalid_number_error', $error_message, 'error' );
+		add_settings_error( 'gps2photos_options_group', 'invalid_number_error', $error_message, 'error' );
 		return $default_value;
 	}
 }
@@ -313,7 +313,7 @@ function gps2photos_options_validate( $opt ) {
 				}
 			}
 			if ( $check === 1 ) {
-				add_settings_error( 'plugin_gps2photo', 'invalid_API_key_error', esc_html__( 'Please enter a valid API key! Special characters are not allowed.', 'gps-2-photos' ), 'error' );
+				add_settings_error( 'gps2photos_options_group', 'invalid_API_key_error', esc_html__( 'Please enter a valid API key! Special characters are not allowed.', 'gps-2-photos' ), 'error' );
 				$opt['geo_azure_key']         = '';
 				$opt['geo_azure_auth_status'] = 0;
 			} else {
@@ -329,18 +329,18 @@ function gps2photos_options_validate( $opt ) {
 				$jsonfile = wp_remote_retrieve_body( $response );
 				// Decode the json.
 				if ( ! json_decode( $jsonfile, true ) ) {
-					add_settings_error( 'plugin_gps2photo', 'Azure API key validation.', esc_html__( 'API key validation request failed when trying to decode Azure Maps server response!', 'gps-2-photos' ), 'error' );
+					add_settings_error( 'gps2photos_options_group', 'Azure API key validation.', esc_html__( 'API key validation request failed when trying to decode Azure Maps server response!', 'gps-2-photos' ), 'error' );
 					$opt['geo_azure_auth_status'] = 0;
 				} else {
 					$response = json_decode( $jsonfile, true );
 					// Check if there is an error in the response.
 					if ( isset( $response['error'] ) ) {
 						$status_code = wp_remote_retrieve_response_code( $response );
-						add_settings_error( 'plugin_gps2photo', 'Azure API key validation error.', esc_html__( 'Azure API key validation unsuccessful!', 'gps-2-photos' ) . ' ' . esc_html__( 'Server response:', 'gps-2-photos' ) . ' ' . esc_html__( 'Status Code:', 'gps-2-photos' ) . ' ' . $status_code, 'error' );
+						add_settings_error( 'gps2photos_options_group', 'Azure API key validation error.', esc_html__( 'Azure API key validation unsuccessful!', 'gps-2-photos' ) . ' ' . esc_html__( 'Server response:', 'gps-2-photos' ) . ' ' . esc_html__( 'Status Code:', 'gps-2-photos' ) . ' ' . $status_code, 'error' );
 						$opt['geo_azure_auth_status'] = 0;
 					} else {
 						// Assume valid response if there's no error field.
-						add_settings_error( 'plugin_gps2photo', 'Azure API key validation.', esc_html__( 'Azure Maps API key validation successful! You can start using GPS 2 Photos!', 'gps-2-photos' ), 'success' );
+						add_settings_error( 'gps2photos_options_group', 'Azure API key validation.', esc_html__( 'Azure Maps API key validation successful! You can start using GPS 2 Photos!', 'gps-2-photos' ), 'success' );
 						$opt['geo_azure_auth_status'] = 1;
 					}
 				}
@@ -378,7 +378,7 @@ function gps2photos_options_validate( $opt ) {
 	if ( strlen( $opt['zoom'] ) !== 0 && $saved_options['zoom'] !== $opt['zoom'] ) {
 		if ( ! is_numeric( $opt['zoom'] ) || $opt['zoom'] > 24 || $opt['zoom'] < 1 ) {
 			unset( $opt['zoom'] );
-			add_settings_error( 'plugin_gps2photo', 'invalid_zoom_number_error', esc_html__( 'Please enter a valid number for Zoom Level in the range 1-24!', 'gps-2-photos' ), 'error' );
+			add_settings_error( 'gps2photos_options_group', 'invalid_zoom_number_error', esc_html__( 'Please enter a valid number for Zoom Level in the range 1-24!', 'gps-2-photos' ), 'error' );
 		}
 	}
 

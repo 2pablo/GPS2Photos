@@ -28,7 +28,7 @@ function gps2photos_options_init() {
 	}
 
 	register_setting(
-		'gps2photos_options',
+		'gps2photos_options_group',
 		'gps2photos_options',
 		array(
 			'sanitize_callback' => 'gps2photos_options_validate',
@@ -288,7 +288,7 @@ function gps2photos_admin_notices() {
             </div>';
 		}
 
-		settings_errors( 'plugin_gps2photo' );
+		settings_errors( 'gps2photos_options_group' );
 	}
 }
 
@@ -337,7 +337,7 @@ function gps2photos_options_page() {
 				</p>
 			</div>
 
-			<?php settings_fields( 'gps2photos_options' ); ?>
+			<?php settings_fields( 'gps2photos_options_group' ); ?>
 			<?php $options = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) ); ?>
 
 			<div id="general" class="postbox gps2photos_tab_content">

@@ -141,8 +141,6 @@ register_activation_hook( __FILE__, 'gps2photos_options_activation' );
  * Runs on plugin activation and adds default options to MySQL database.
  *
  * @since 1.0.0
- *
- * @see   gps2photos_defaults_array()
  */
 function gps2photos_options_activation() {
 	// Security check.
@@ -162,8 +160,6 @@ register_deactivation_hook( __FILE__, 'gps2photos_options_deactivation' );
  * Runs on plugin deactivation and conditionally restores plugins default options.
  *
  * @since 1.0.0
- *
- * @see   gps2photos_defaults_array()
  */
 function gps2photos_options_deactivation() {
 	// Security check.
@@ -187,7 +183,6 @@ function gps2photos_options_deactivation() {
  * @since  1.0.0
  *
  * @see    gps2photos_options_validate()
- * @see    gps2photos_shortcodes_ajax()
  * @param  string $text Color value.
  * @return string
  */
@@ -283,8 +278,8 @@ function gps2photos_validate_auto_number( $text, $max, $default_value ) {
  * Runs when settings are registered - saved to MySQL Database
  *
  * @since  1.0.0
+ *
  * @see    gps2photos_options_init() in administration.php
- * @see    gps2photos_defaults_array()
  * @param  array $opt Array of option values.
  * @return array
  */

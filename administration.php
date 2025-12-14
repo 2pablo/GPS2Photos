@@ -41,14 +41,14 @@ function gps2photos_options_init() {
 	if ( ! isset( $gps2photos_options['geo_azure_key'] ) || empty( $gps2photos_options['geo_azure_key'] ) ) {
 		$geo2_options = get_option( 'plugin_geo2_maps_options' );
 		if ( isset( $geo2_options['geo_azure_key'] ) ) {
-			$options['geo_azure_key'] = $geo2_options['geo_azure_key'];
-			update_option( 'gps2photos_options', $options );
+			$gps2photos_options['geo_azure_key'] = $geo2_options['geo_azure_key'];
+			update_option( 'gps2photos_options', $gps2photos_options );
 		}
 	} elseif ( is_plugin_active( 'ngg-geo2-maps-plus/plugin.php' ) ) {
 		$geo2_options = get_option( 'plugin_geo2_maps_plus_options' );
 		if ( isset( $geo2_options['geo_azure_key'] ) ) {
-			$options['geo_azure_key'] = $geo2_options['geo_azure_key'];
-			update_option( 'gps2photos_options', $options );
+			$gps2photos_options['geo_azure_key'] = $geo2_options['geo_azure_key'];
+			update_option( 'gps2photos_options', $gps2photos_options );
 		}
 	}
 	// Hook for authenticated users to access AJAX calls.

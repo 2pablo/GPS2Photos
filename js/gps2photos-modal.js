@@ -9,7 +9,7 @@
  * @package    GPS 2 Photo Add-on
  * @subpackage JavaScript
  * @since      1.0.0
- * @author     Pawel Block <pblock@op.pl>
+ * @author     Pawel Block <pb@pasart.net>
  */
 jQuery(document).ready(function ($) {
 	'use strict';

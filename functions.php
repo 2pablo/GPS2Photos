@@ -5,7 +5,7 @@
  * @package    GPS 2 Photo Add-on
  * @subpackage Functions
  * @since      1.0.0
- * @author     Pawel Block &lt;pblock@op.pl&gt;
+ * @author     Pawel Block &lt;pb@pasart.net&gt;
  * @copyright  Copyright (c) 2025, Pawel Block
  * @link       http://geo2maps.pasart.net
  * @license    https://www.gnu.org/licenses/gpl-2.0.html
@@ -126,6 +126,7 @@ function gps2photos_add_attachment_fields_to_edit( $form_fields, $post ) {
  *
  * @since 1.0.0
  *
+ * @see    gps2photos_options_init()
  * @return void Sends a JSON response with the Azure Maps API key.
  */
 function gps2photos_get_azure_maps_api_key_callback() {
@@ -157,6 +158,7 @@ function gps2photos_get_azure_maps_api_key_callback() {
  *
  * @since 1.0.0
  *
+ * @see   gps2photos_get_coordinates_callback()
  * @param int    $image_id The ID of the attachment or NextGEN image (pid).
  * @param string $gallery_name The name of the gallery plugin ('nextgen', 'envira', 'foo', 'modula').
  * @param string $image_url     The URL of the image, used as a fallback for NextGEN.
@@ -205,6 +207,8 @@ function gps2photos_get_image_path( $image_id, $gallery_name = false, $image_url
  * AJAX handler for fetching coordinates for a single image.
  *
  * @since 1.0.0
+ *
+ * @see   gps2photos_options_init()
  */
 function gps2photos_get_coordinates_callback() {
 	check_ajax_referer( 'gps2photos-get-gps-nonce', 'nonce' );
@@ -250,6 +254,8 @@ function gps2photos_get_coordinates_callback() {
  * AJAX handler for saving coordinates.
  *
  * @since 1.0.0
+ *
+ * @see   gps2photos_options_init()
  */
 function gps2photos_save_coordinates_callback() {
 	check_ajax_referer( 'gps2photos-save-gps-nonce', 'nonce' );
@@ -327,6 +333,10 @@ function gps2photos_save_coordinates_callback() {
  *
  * @since 1.0.0
  *
+ * @see   gps2photos_add_attachment_fields_to_edit()
+ * @see   gps2photos_get_coordinates_callback()
+ * @see   gps2photos_save_coordinates_callback()
+ * @see   gps2photos_restore_from_backup_callback()
  * @param string $file_path Path to the image file.
  * @return array|bool An array with 'latitude' and 'longitude' or false if not found.
  */
@@ -380,6 +390,8 @@ function gps2photos_get_backup_coordinates( $file_path ) {
  * AJAX handler for restoring coordinates from backup in a single request.
  *
  * @since 1.0.0
+ *
+ * @see   gps2photos_options_init()
  */
 function gps2photos_restore_from_backup_callback() {
 	check_ajax_referer( 'gps2photos-restore-gps-nonce', 'nonce' );
@@ -416,6 +428,9 @@ function gps2photos_restore_from_backup_callback() {
  *
  * @since  1.0.0
  *
+ * @see    gps2photos_add_attachment_fields_to_edit()
+ * @see    gps2photos_get_coordinates_callback()
+ * @see    gps2photos_save_coordinates_callback()
  * @param  string $picture_path A path to a picture.
  * @param  array  $options      Plugin options array.
  * @return string[]|bool  $geo Latitude and longitude coordinates
@@ -504,6 +519,9 @@ function gps2photos_coordinates( $picture_path, $options ) {
 /**
  * Convert a decimal degree into degrees, minutes, and seconds.
  *
+ * @since  1.0.0
+ *
+ * @see   gps2photos_save_gps_to_jpeg()
  * @param int $degree the degree in the form 123.456. Must be in the interval [-180, 180].
  * @return array a triple with the degrees, minutes, and seconds. Each value is an array itself, suitable for passing to a PelEntryRational. If the degree is outside the allowed interval, null is returned instead.
  */
@@ -534,53 +552,13 @@ if ( ! $wp_filesystem ) {
 	WP_Filesystem();
 }
 
-function pel_dump_exif_entries( PelTiff $tiff ) {
-	$ifd0 = $tiff->getIfd();
-	if ( ! $ifd0 ) {
-		return;
-	}
-
-	$allIfds = array( $ifd0 );
-	// include sub-IFDs (EXIF, GPS, MakerNote is an entry inside EXIF IFD)
-	foreach ( $ifd0->getSubIfds() as $sub ) {
-		$allIfds[] = $sub;
-	}
-
-	$out = array();
-	foreach ( $allIfds as $ifd ) {
-		$entries = $ifd->getEntries();
-		foreach ( $entries as $entry ) {
-			$tagId = $entry->getTag();
-			$type  = get_class( $entry );
-			// try to get a printable value; undefined/raw entries return binary
-			try {
-				$val = $entry->getValue();
-				if ( is_array( $val ) ) {
-					$val = implode( ', ', $val );
-				} elseif ( is_string( $val ) ) {
-					// show short binary safely
-					$val = ( strlen( $val ) > 200 ) ? substr( $val, 0, 200 ) . '...' : $val;
-				} elseif ( is_object( $val ) ) {
-					$val = json_encode( $val );
-				}
-			} catch ( Exception $e ) {
-				$val = '[unreadable]';
-			}
-			$out[] = sprintf(
-				'IFD: tag=0x%04X (%d) class=%s value=%s',
-				$tagId,
-				$tagId,
-				$type,
-				$val
-			);
-		}
-	}
-	file_put_contents( WP_CONTENT_DIR . '/uploads/debug_exif_entries_new.txt', implode( "\n", $out ) );
-}
-
 /**
  * Add GPS information to a JPEG file.
  *
+ * @since 1.0.0
+ *
+ * @see   gps2photos_save_coordinates_callback()
+ * @see   gps2photos_get_backup_coordinates()
  * @param string $file_path Path to the JPEG file.
  * @param float  $latitude Latitude in decimal degrees.
  * @param float  $longitude Longitude in decimal degrees.
@@ -605,7 +583,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 		} else {
 			$tiff = $exif->getTiff();
 		}
-		pel_dump_exif_entries( $tiff );
+
 		$ifd0 = $tiff->getIfd();
 		if ( $ifd0 === null ) {
 			$ifd0 = new PelIfd( PelIfd::IFD0 );
@@ -657,7 +635,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 			}
 		}
 
-		// Reuse existing GPS IFD or create a new one.
+		// Reuse existing GPS IFD.
 		$gps_ifd = $ifd0->getSubIfd( PelIfd::GPS );
 
 		// If latitude and longitude are empty, it's a request to remove GPS data.
@@ -703,37 +681,7 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 			return true;
 		}
 
-		// Step 1: Retrieve all entries before modification.
-		// $exifIfd = $tiff->getIfd( PelIfd::EXIF ); // or $tiff->getIfd()->getSubIfd(PelIfd::EXIF).
-		// if ( $exifIfd ) {
-		// $mnEntry = $exifIfd->getEntry( PelTag::MAKER_NOTE );
-		// if ( $mnEntry ) {
-		// getValue() returns raw bytes for undefined entries
-		// $makerNoteRaw = $mnEntry->getValue();
-		// }
-		// }
-		// Step 1: Retrieve all entries before modification.
-		$original_ifd_entries = array();
-		foreach ( $ifd0->getEntries() as $tag => $entry ) {
-			$original_ifd_entries[ $tag ] = clone $entry;
-		}
-
-		$exif_ifd         = $ifd0->getSubIfd( PelIfd::EXIF );
-		$original_entries = array();
-		foreach ( $exif_ifd->getEntries() as $tag => $entry ) {
-			$original_entries[ $tag ] = clone $entry;
-		}
-		// error_log( print_r( 'original_ifd_entries', true ) );
-		// error_log( print_r( $original_ifd_entries, true ) );
-		// file_put_contents(
-		// WP_CONTENT_DIR . '/uploads/debug_raw_exif_org.txt',
-		// print_r(
-		// $exif,
-		// true
-		// )
-		// );
-
-		// Step 2: Add GPS data.
+		// Create a new GPS IFD if none.
 		if ( $gps_ifd === null ) {
 			$gps_ifd = new PelIfd( PelIfd::GPS );
 			$ifd0->addSubIfd( $gps_ifd ); // adds pointer in IFD0 to this GPS sub-IFD.
@@ -766,47 +714,6 @@ function gps2photos_save_gps_to_jpeg( $file_path, $latitude, $longitude, $restor
 		} else {
 			$gps_ifd->addEntry( new PelEntryRational( PelTag::GPS_LONGITUDE, $hours, $minutes, $seconds ) );
 		}
-
-		// Step 3: Retrieve all entries after modification.
-		$modified_ifd_entries = array();
-		foreach ( $ifd0->getEntries() as $tag => $entry ) {
-			$modified_ifd_entries[ $tag ] = $entry;
-		}
-
-		// Step 4: Compare and re-add missing entries.
-		foreach ( $original_ifd_entries as $tag => $entry ) {
-			if ( ! isset( $modified_ifd_entries[ $tag ] ) ) {
-				$ifd0->addEntry( $entry ); // Re-add missing entry.
-			}
-		}
-
-		// Step 3: Retrieve all entries after modification.
-		$modified_entries  = array();
-		$exif_ifd_modified = $ifd0->getSubIfd( PelIfd::EXIF );
-		foreach ( $exif_ifd_modified->getEntries() as $tag => $entry ) {
-			$modified_entries[ $tag ] = $entry;
-		}
-
-		// Step 4: Compare and re-add missing entries.
-		foreach ( $original_entries as $tag => $entry ) {
-			if ( ! isset( $modified_entries[ $tag ] ) ) {
-				$exif_ifd_modified->addEntry( $entry ); // Re-add missing entry.
-			}
-		}
-		// if ( $exif_ifd ) {
-		// $ifd0->addSubIfd( $exif_ifd );
-		// }
-
-		// if ( $makerNoteRaw !== null ) {
-		// Ensure EXIF sub-IFD exists
-		// $exifIfd = $tiff->getIfd()->getSubIfd( PelIfd::EXIF );
-		// if ( $exifIfd === null ) {
-		// $exifIfd = new PelIfd( PelIfd::EXIF );
-		// $tiff->getIfd()->addSubIfd( $exifIfd );
-		// }
-		// Use PelEntryUndefined to reinsert raw MakerNote bytes
-		// $exifIfd->addEntry( new PelEntryUndefined( PelTag::MAKER_NOTE, $makerNoteRaw ) );
-		// }
 
 		global $wp_filesystem;
 		$wp_filesystem->put_contents( $file_path, $jpeg->getBytes(), FS_CHMOD_FILE );

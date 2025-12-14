@@ -6,7 +6,7 @@
  * @subpackage Administration
  * @since      1.0.0
  *
- * @author     Pawel Block &lt;pblock@op.pl&gt;
+ * @author     Pawel Block &lt;pb@pasart.net&gt;
  * @copyright  Copyright (c) 2025, Pawel Block
  * @link       http://geo2maps.pasart.net
  * @license    https://www.gnu.org/licenses/gpl-2.0.html
@@ -66,6 +66,12 @@ require_once 'azure-map.php';
  *
  * @since 1.0.0
  *
+ * @see   gps2photos_options_page() in administration.php
+ * @see   gps2photos_get_map_for_modal() in azure-map.php
+ * @see   gps2photos_add_attachment_fields_to_edit() in functions.php
+ * @see   gps2photos_get_coordinates_callback() in functions.php
+ * @see   gps2photos_save_coordinates_callback() in functions.php
+ * @see   gps2photos_save_gps_to_jpeg() in functions.php
  * @param array|string $options The input array with WordPress plugin options.
  * @return array|string The output array with string integers converted to actual integers.
  */
@@ -93,7 +99,9 @@ function gps2photos_convert_to_int( $options ) {
  *
  * @since  1.0.0
  *
- * @see    gps2photos_options_validate(), gps2photos_options_activation(), gps2photos_options_deactivation()
+ * @see    gps2photos_options_validate()
+ * @see    gps2photos_options_activation()
+ * @see    gps2photos_options_deactivation()
  * @return array
  */
 function gps2photos_defaults_array() {
@@ -178,7 +186,8 @@ function gps2photos_options_deactivation() {
  *
  * @since  1.0.0
  *
- * @see      gps2photos_options_validate(), gps2photos_shortcodes_ajax()
+ * @see    gps2photos_options_validate()
+ * @see    gps2photos_shortcodes_ajax()
  * @param  string $text Color value.
  * @return string
  */
@@ -225,6 +234,7 @@ function gps2photos_validate_color( $text ) {
  *
  * @since 1.0.0
  *
+ * @see   gps2photos_options_validate()
  * @param string $text The text to validate.
  * @param int    $max The maximum valid pixel value.
  * @param mixed  $default_value The default value to return if the text is not valid.

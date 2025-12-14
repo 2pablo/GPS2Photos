@@ -15,6 +15,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Get the content for the modal window.
  *
+ * @since 1.0.0
+ *
+ * @see gps2photos_add_hidden_modal() in administration.php
  * @return string The HTML for the modal content.
  */
 function gps2photos_get_map_for_modal() {

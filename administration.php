@@ -5,7 +5,7 @@
  * @package    GPS 2 Photo Add-on
  * @subpackage Administration
  * @since      1.0.0
- * @author     Pawel Block &lt;pblock@op.pl&gt;
+ * @author     Pawel Block &lt;pb@pasart.net&gt;
  * @copyright  Copyright (c) 2025, Pawel Block
  * @link       http://geo2maps.pasart.net
  * @license    https://www.gnu.org/licenses/gpl-2.0.html
@@ -62,6 +62,8 @@ function gps2photos_options_init() {
  * Outputs the hidden modal HTML for the GPS 2 Photos plugin in the admin footer.
  *
  * @since 1.0.0
+ *
+ * @see gps2photos_plugin_admin_scripts()
  */
 function gps2photos_add_hidden_modal() {
 	// Add the modal HTML directly, but hidden.
@@ -223,8 +225,8 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			'jQuery( function() { jQuery( ".color-picker" ).wpColorPicker(); } );'
 		);
 
-		// Allows switching between tabs.
-		add_action( 'admin_print_footer_scripts', 'gps2photos_admin_tabs_script' );
+		// Enqueue admin tabs script.
+		wp_enqueue_script( 'gps2photos-admin-tabs', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-admin-tabs.js', array( 'jquery' ), '1.0.0', true );
 	}
 }
 
@@ -248,6 +250,9 @@ function gps2photos_add_nextgen_action_callback( $actions ) {
  * Renders the "Add/Amend GPS" action link HTML.
  * This function is called by NextGEN Gallery for each image.
  *
+ * @since 1.0.0
+ *
+ * @see   gps2photos_add_nextgen_action_callback()
  * @param string $id The action ID ('gps2photos_add_gps').
  * @param object $picture The image object from NextGEN.
  * @return string The HTML for the action link.
@@ -256,7 +261,7 @@ function gps2photos_render_gps_action_link( $id, $picture ) {
 	return sprintf(
 		'<a href="#" class="gps2photos-add-gps" data-gallery-name="nextgen" data-pid="%d" data-image-url="%s">%s</a>',
 		esc_attr( $picture->pid ),
-		esc_url( $picture->imageURL ), // imageURL is the absolute URL to the image.
+		esc_url( $picture->imageURL ), // imageURL is the NextGEN plugin absolute URL to the image.
 		esc_html__( 'Add/Amend GPS', 'gps-2-photos' )
 	);
 }
@@ -305,55 +310,11 @@ function gps2photos_add_page() {
 }
 
 /**
- * Allows switching between tabs.
- *
- * @since 1.0.0
- */
-function gps2photos_admin_tabs_script() {
-	?>
-	<script type="text/javascript">
-		jQuery(document).ready(function($) {
-			var active_tab = localStorage.getItem("gps2photos_active_tab");
-			if (active_tab) {
-				let tab_content, tab_links;
-				tab_content = document.getElementsByClassName("gps2photos_tab_content");
-				for (let i = 0; i < tab_content.length; i++) {
-					tab_content[i].style.display = "none";
-				}
-				tab_links = document.getElementsByClassName("gps2photos_tab_links");
-				for (let i = 0; i < tab_links.length; i++) {
-					tab_links[i].className = tab_links[i].className.replace("gps2photos_active", "");
-				}
-				document.getElementById(active_tab).style.display = "block";
-				$('button[name="' + active_tab + '"]').addClass("gps2photos_active");
-			} else {
-				$('button[name="general"]').addClass("gps2photos_active");
-				document.getElementById('general').style.display = "block";
-			}
-		});
-
-		function gps2photos_openTab(evt, tagName) {
-			localStorage.setItem('gps2photos_active_tab', jQuery(evt.currentTarget).attr('name'));
-			let tab_content, tab_links;
-			tab_content = document.getElementsByClassName("gps2photos_tab_content");
-			for (let i = 0; i < tab_content.length; i++) {
-				tab_content[i].style.display = "none";
-			}
-			tab_links = document.getElementsByClassName("gps2photos_tab_links");
-			for (let i = 0; i < tab_links.length; i++) {
-				tab_links[i].className = tab_links[i].className.replace(" gps2photos_active", "");
-			}
-			document.getElementById(tagName).style.display = "block";
-			evt.currentTarget.className += " gps2photos_active";
-		}
-	</script>
-	<?php
-}
-
-/**
  * Creates the options page.
  *
  * @since 1.0.0
+ *
+ * @see   gps2photos_add_page()
  */
 function gps2photos_options_page() {
 	wp_enqueue_media();

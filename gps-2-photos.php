@@ -283,11 +283,12 @@ function gps2photos_validate_auto_number( $text, $max, $default_value ) {
  * Runs when settings are registered - saved to MySQL Database
  *
  * @since  1.0.0
- * @see    gps2photos_options_init() in administration.php, gps2photos_defaults_array()
- * @param  array $input Array of option values.
+ * @see    gps2photos_options_init() in administration.php
+ * @see    gps2photos_defaults_array()
+ * @param  array $opt Array of option values.
  * @return array
  */
-function gps2photos_options_validate( $input ) {
+function gps2photos_options_validate( $opt ) {
 	// Gets variable values already saved on the server.
 	$saved_options = gps2photos_convert_to_int( get_option( 'gps2photos_options' ) );
 
@@ -299,28 +300,28 @@ function gps2photos_options_validate( $input ) {
 
 	// Checks if API keys are already validated and saved to avoid overriding by default value.
 	if ( $saved_options['geo_azure_auth_status'] === 1 ) {
-		$input['geo_azure_auth_status'] = 1;
+		$opt['geo_azure_auth_status'] = 1;
 	}
 
 	// Validates and sanitizes Microsoft Azure API Key.
-	if ( strlen( $input['geo_azure_key'] ) !== 0 ) {
-		if ( $saved_options['geo_azure_key'] !== $input['geo_azure_key'] ) {
+	if ( strlen( $opt['geo_azure_key'] ) !== 0 ) {
+		if ( $saved_options['geo_azure_key'] !== $opt['geo_azure_key'] ) {
 			$check = 0;
 			foreach ( $special_chars as $char ) {
-				if ( strpos( $input['geo_azure_key'], $char ) !== false ) {
+				if ( strpos( $opt['geo_azure_key'], $char ) !== false ) {
 					$check = 1;
 				}
 			}
 			if ( $check === 1 ) {
 				add_settings_error( 'plugin_gps2photo', 'invalid_API_key_error', esc_html__( 'Please enter a valid API key! Special characters are not allowed.', 'gps-2-photos' ), 'error' );
-				$input['geo_azure_key']         = '';
-				$input['geo_azure_auth_status'] = 0;
+				$opt['geo_azure_key']         = '';
+				$opt['geo_azure_auth_status'] = 0;
 			} else {
 				// Sends sample query to the Azure REST server to validate credentials.
 				// URL of Azure Maps REST Services Locations API.
 				$base_url = 'https://atlas.microsoft.com/search/address/json';
 				// Construct the final Locations API URI.
-				$url = $base_url . '?api-version=1.0&subscription-key=' . $input['geo_azure_key'] . '&query=' . rawurlencode( $query );
+				$url = $base_url . '?api-version=1.0&subscription-key=' . $opt['geo_azure_key'] . '&query=' . rawurlencode( $query );
 
 				// Gets the response from the Search Address API and store it in a string.
 				$response = wp_remote_get( $url );
@@ -329,90 +330,90 @@ function gps2photos_options_validate( $input ) {
 				// Decode the json.
 				if ( ! json_decode( $jsonfile, true ) ) {
 					add_settings_error( 'plugin_gps2photo', 'Azure API key validation.', esc_html__( 'API key validation request failed when trying to decode Azure Maps server response!', 'gps-2-photos' ), 'error' );
-					$input['geo_azure_auth_status'] = 0;
+					$opt['geo_azure_auth_status'] = 0;
 				} else {
 					$response = json_decode( $jsonfile, true );
 					// Check if there is an error in the response.
 					if ( isset( $response['error'] ) ) {
 						$status_code = wp_remote_retrieve_response_code( $response );
 						add_settings_error( 'plugin_gps2photo', 'Azure API key validation error.', esc_html__( 'Azure API key validation unsuccessful!', 'gps-2-photos' ) . ' ' . esc_html__( 'Server response:', 'gps-2-photos' ) . ' ' . esc_html__( 'Status Code:', 'gps-2-photos' ) . ' ' . $status_code, 'error' );
-						$input['geo_azure_auth_status'] = 0;
+						$opt['geo_azure_auth_status'] = 0;
 					} else {
 						// Assume valid response if there's no error field.
 						add_settings_error( 'plugin_gps2photo', 'Azure API key validation.', esc_html__( 'Azure Maps API key validation successful! You can start using GPS 2 Photos!', 'gps-2-photos' ), 'success' );
-						$input['geo_azure_auth_status'] = 1;
+						$opt['geo_azure_auth_status'] = 1;
 					}
 				}
 			}
 		}
 	} else {
-		$input['geo_azure_auth_status'] = 0;
+		$opt['geo_azure_auth_status'] = 0;
 	}
 
 	// Clears undefined checkboxes (undefined = unchecked!).
-	if ( ! isset( $input['gps_media_library'] ) ) {
-		$input['gps_media_library'] = 0; }
-	if ( ! isset( $input['always_override_gps'] ) ) {
-		$input['always_override_gps'] = 0; }
-	if ( ! isset( $input['exif_error_handler'] ) ) {
-		$input['exif_error_handler'] = 0; }
-	if ( ! isset( $input['backup_existing_coordinates'] ) ) {
-		$input['backup_existing_coordinates'] = 0; }
-	if ( ! isset( $input['dashboard'] ) ) {
-		$input['dashboard'] = 0; }
-	if ( ! isset( $input['locate_me_button'] ) ) {
-		$input['locate_me_button'] = 0; }
-	if ( ! isset( $input['scalebar'] ) ) {
-		$input['scalebar'] = 0; }
-	if ( ! isset( $input['map_search_bar'] ) ) {
-		$input['map_search_bar'] = 0; }
-	if ( ! isset( $input['map_fullscreen'] ) ) {
-		$input['map_fullscreen'] = 0; }
-	if ( ! isset( $input['logo'] ) ) {
-		$input['logo'] = 0; }
-	if ( ! isset( $input['restore_defaults'] ) ) {
-		$input['restore_defaults'] = 0; }
+	if ( ! isset( $opt['gps_media_library'] ) ) {
+		$opt['gps_media_library'] = 0; }
+	if ( ! isset( $opt['always_override_gps'] ) ) {
+		$opt['always_override_gps'] = 0; }
+	if ( ! isset( $opt['exif_error_handler'] ) ) {
+		$opt['exif_error_handler'] = 0; }
+	if ( ! isset( $opt['backup_existing_coordinates'] ) ) {
+		$opt['backup_existing_coordinates'] = 0; }
+	if ( ! isset( $opt['dashboard'] ) ) {
+		$opt['dashboard'] = 0; }
+	if ( ! isset( $opt['locate_me_button'] ) ) {
+		$opt['locate_me_button'] = 0; }
+	if ( ! isset( $opt['scalebar'] ) ) {
+		$opt['scalebar'] = 0; }
+	if ( ! isset( $opt['map_search_bar'] ) ) {
+		$opt['map_search_bar'] = 0; }
+	if ( ! isset( $opt['map_fullscreen'] ) ) {
+		$opt['map_fullscreen'] = 0; }
+	if ( ! isset( $opt['logo'] ) ) {
+		$opt['logo'] = 0; }
+	if ( ! isset( $opt['restore_defaults'] ) ) {
+		$opt['restore_defaults'] = 0; }
 
 	// Validates options.
-	if ( strlen( $input['zoom'] ) !== 0 && $saved_options['zoom'] !== $input['zoom'] ) {
-		if ( ! is_numeric( $input['zoom'] ) || $input['zoom'] > 24 || $input['zoom'] < 1 ) {
-			unset( $input['zoom'] );
+	if ( strlen( $opt['zoom'] ) !== 0 && $saved_options['zoom'] !== $opt['zoom'] ) {
+		if ( ! is_numeric( $opt['zoom'] ) || $opt['zoom'] > 24 || $opt['zoom'] < 1 ) {
+			unset( $opt['zoom'] );
 			add_settings_error( 'plugin_gps2photo', 'invalid_zoom_number_error', esc_html__( 'Please enter a valid number for Zoom Level in the range 1-24!', 'gps-2-photos' ), 'error' );
 		}
 	}
 
-	if ( strlen( $input['map_height'] ) !== 0 && $saved_options['map_height'] !== $input['map_height'] ) {
-		if ( is_numeric( $input['map_height'] ) && $input['map_height'] <= 4320 && $input['map_height'] >= 24 ) {
-			$input['map_height'] = strval( $input['map_height'] ) . 'px';
+	if ( strlen( $opt['map_height'] ) !== 0 && $saved_options['map_height'] !== $opt['map_height'] ) {
+		if ( is_numeric( $opt['map_height'] ) && $opt['map_height'] <= 4320 && $opt['map_height'] >= 24 ) {
+			$opt['map_height'] = strval( $opt['map_height'] ) . 'px';
 		} else {
-			$input['map_height'] = gps2photos_validate_auto_number( $input['map_height'], 4320, '80%' );
+			$opt['map_height'] = gps2photos_validate_auto_number( $opt['map_height'], 4320, '80%' );
 		}
 	}
 
-	if ( strlen( $input['map_width'] ) !== 0 && $saved_options['map_width'] !== $input['map_width'] ) {
-		if ( is_numeric( $input['map_width'] ) && $input['map_width'] <= 7680 && $input['map_width'] >= 24 ) {
-			$input['map_width'] = strval( $input['map_width'] ) . 'px';
+	if ( strlen( $opt['map_width'] ) !== 0 && $saved_options['map_width'] !== $opt['map_width'] ) {
+		if ( is_numeric( $opt['map_width'] ) && $opt['map_width'] <= 7680 && $opt['map_width'] >= 24 ) {
+			$opt['map_width'] = strval( $opt['map_width'] ) . 'px';
 		} else {
-			$input['map_width'] = gps2photos_validate_auto_number( $input['map_width'], 7680, '400px' );
+			$opt['map_width'] = gps2photos_validate_auto_number( $opt['map_width'], 7680, '400px' );
 		}
 	}
 
 	// Validates colors.
 	$colors = array(
-		$input['pin_color']           => 'pin_color',
-		$input['pin_secondary_color'] => 'pin_secondary_color',
-		$input['search_pin_color']    => 'search_pin_color',
+		$opt['pin_color']           => 'pin_color',
+		$opt['pin_secondary_color'] => 'pin_secondary_color',
+		$opt['search_pin_color']    => 'search_pin_color',
 	);
 	foreach ( $colors as $color => $key ) {
 		if ( strlen( $color ) !== 0 ) {
-				$input[ $key ] = gps2photos_validate_color( $color );
+				$opt[ $key ] = gps2photos_validate_color( $color );
 		}
 	}
 
 	// Options defaults.
 	$defaults = gps2photos_defaults_array();
 	// Parses it.
-	$input = wp_parse_args( $input, $defaults );
+	$opt = wp_parse_args( $opt, $defaults );
 
-	return $input;
+	return $opt;
 }

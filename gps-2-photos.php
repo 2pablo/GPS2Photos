@@ -30,7 +30,6 @@
  * Text Domain: gps-2-photos
  */
 
-
 // Security: Exit if accessed directly.
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;

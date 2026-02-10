@@ -145,8 +145,6 @@ jQuery(document).ready(function ($) {
 				if ($saveBtn.data('image-id') !== imageId) {
 					// Reset the originalLat to force an AJAX fetch.
 					originalLat = '';
-				} else {
-					originalLat = 'prevent_ajax_fetch_below';
 				}
 			} else {
 				// Check if the same image is reopened - it will have data in the button's data attributes.

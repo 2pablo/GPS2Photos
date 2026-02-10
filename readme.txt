@@ -1,6 +1,6 @@
 === GPS 2 Photos ===
 Contributors: pablo2
-Tags: gps, exif, photo, map, location, coordinates
+Tags: gps, photo, map, location, coordinates
 Donate link: https://www.paypal.com/PawelBlock
 Requires at least: 5.0
 Tested up to: 6.9
@@ -13,7 +13,7 @@ View, add, and edit EXIF GPS coordinates for your photos by selecting a location
 
 == Description ==
 
-GPS 2 Photos lets you view, add, or edit EXIF GPS coordinates for JPEG images in the WordPress Media Library and galleries powered by NextGEN, Envira, FooGallery, or Modula.
+GPS 2 Photos lets you view, add, or edit EXIF GPS coordinates for JPEG and WebP images in the WordPress Media Library and galleries powered by NextGEN, Envira, FooGallery, or Modula.
 It displays existing GPS data as editable fields (Media Library only), or provides a button to add or update coordinates. Clicking the button opens a map interface where you can set a location by simply clicking on the map, searching for a place, or typing them in manually.
 
 This plugins extends the functionality of the Geo 2 Maps add-on for NextGEN Gallery which displays maps with photos, galleries, or albums using EXIF GPS data.
@@ -23,9 +23,9 @@ To amend EXIF GPS coordinates is using the PHP Exif Library (PEL) by Martin Geis
 
 = Features =
 
-*   **WordPress Media Library & NextGEN Gallery Integration:** Works seamlessly inside the standard Media Library and also adds an "Add/Amend GPS" link to images in the NextGEN Gallery management screen.
+*   **WordPress Media Library & NextGEN Gallery Integration:** Works seamlessly inside the standard Media Library and also adds an "Add/Amend GPS" option to images in the NextGEN Gallery management page.
 *   **Gallery Support:** Integrates with popular gallery plugins, including NextGEN Gallery, Envira Gallery, FooGallery, and Modula.
-*   **View GPS Data:** See a map with a pin for any image that has GPS coordinates in its EXIF data.
+*   **View GPS Data:** See a map with a pin for any image that has GPS coordinates in its EXIF data for JPEG photos and EXIF/XMP for WebP images.
 *   **Edit & Add GPS Data:** Easily add or change an image's location by dragging the pin or clicking anywhere on the map.
 *   **Interactive Map Modal:** A clean and simple map interface with a location search bar opens in a modal window.
 *   **Backup & Restore:** The plugin automatically backs up original GPS data, allowing you to restore it with a single click.
@@ -68,7 +68,7 @@ Yes! That's one of its main features. You can easily add GPS coordinates to any 
 
 **What happens to my original GPS data?**
 
-If you enable the "Backup Existing Coordinates" option in the plugin settings, editing an image that already has GPS data will save the original coordinates into the image's EXIF "User Comment" field. This prevents the original data from being lost. A "Restore Original Coordinates" button will then appear in the map modal, allowing you to revert to the backed-up coordinates at any time.
+If you enable the "Backup Existing Coordinates" option in the plugin settings, editing an image that already has GPS data will save the original coordinates into the image's EXIF "User Comment" field for JPEG files or custom XMP namespace for WebP files. This prevents the original data from being lost. A "Restore Original Coordinates" button will then appear in the map modal, allowing you to revert to the backed-up coordinates at any time.
 
 == Screenshots ==
 

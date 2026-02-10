@@ -5,7 +5,8 @@
  * @package    GPS 2 Photo Add-on
  * @subpackage Administration
  * @since      1.0.0
- * @author     Pawel Block &lt;pb@pasart.net&gt;
+ *
+ * @author     Pawel Block <pb@pasart.net>
  * @copyright  Copyright (c) 2025, Pawel Block
  * @link       http://geo2maps.pasart.net
  * @license    https://www.gnu.org/licenses/gpl-2.0.html
@@ -95,6 +96,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 	}
 	// Scripts for Media Library, NextGEN Gallery, and our own page.
 	if ( in_array( $hook, array( 'upload.php', 'post.php', 'nextgen-gallery5_page_nggallery-manage-gallery' ), true ) ||
+		( strpos( $hook, 'imagely' ) !== false ) ||
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'envira' && $post_id !== 0 ) ||
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'foogallery' && $post_id !== 0 ) ||
 		( $hook === 'post.php' && is_object( $screen ) && $screen->post_type === 'modula-gallery' && $post_id !== 0 ) ) {
@@ -228,11 +230,34 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		// Enqueue admin tabs script.
 		wp_enqueue_script( 'gps2photos-admin-tabs', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-admin-tabs.js', array( 'jquery' ), '1.0.0', true );
 	}
+
+	// Enqueue NextGEN 4.0+ compatibility script.
+	if ( defined( 'NGG_PLUGIN_VERSION' ) && version_compare( NGG_PLUGIN_VERSION, '4.0', '>=' ) ) {
+		// We check for the generic NextGEN admin page or specific hooks if known.
+		if ( strpos( $hook, 'imagely' ) !== false ) {
+			wp_enqueue_script( 'gps2photos-nextgen-v4', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-nextgen-v4.js', array( 'jquery' ), '1.0.0', true );
+			wp_localize_script(
+				'gps2photos-nextgen-v4',
+				'gps2photos_nextgen_v4',
+				array(
+					'l10n' => array(
+						'add_amend_gps' => esc_html__( 'Add/Amend GPS', 'gps-2-photos' ),
+					),
+				)
+			);
+		}
+	}
 }
 
-add_filter( 'ngg_manage_images_row_actions', 'gps2photos_add_nextgen_action_callback', 10, 1 );
+if ( defined( 'NGG_PLUGIN_VERSION' ) ) {
+	if ( version_compare( NGG_PLUGIN_VERSION, '4.0', '<' ) ) {
+		// Adds action link callback to the list of actions for images in NextGEN ver < 4.0.
+		add_filter( 'ngg_manage_images_row_actions', 'gps2photos_add_nextgen_action_callback', 10, 1 );
+	}
+}
+
 /**
- * Adds our action link callback to the list of actions for a NextGEN image.
+ * Adds our action link callback to the list of actions for a NextGEN image (Legacy < 4.0).
  *
  * @since 1.0.0
  *
@@ -245,7 +270,6 @@ function gps2photos_add_nextgen_action_callback( $actions ) {
 	$actions['gps2photos_add_gps'] = 'gps2photos_render_gps_action_link';
 	return $actions;
 }
-
 /**
  * Renders the "Add/Amend GPS" action link HTML.
  * This function is called by NextGEN Gallery for each image.

@@ -6,7 +6,7 @@
  * @subpackage Administration
  * @since      1.0.0
  *
- * @author     Pawel Block &lt;pb@pasart.net&gt;
+ * @author     Pawel Block <pb@pasart.net>
  * @copyright  Copyright (c) 2025, Pawel Block
  * @link       http://geo2maps.pasart.net
  * @license    https://www.gnu.org/licenses/gpl-2.0.html

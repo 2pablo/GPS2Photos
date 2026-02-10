@@ -229,6 +229,17 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 
 		// Enqueue admin tabs script.
 		wp_enqueue_script( 'gps2photos-admin-tabs', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-admin-tabs.js', array( 'jquery' ), '1.0.0', true );
+
+		// Enqueue admin settings script.
+		wp_register_script( 'gps2photos-admin-settings', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-admin-settings.js', array(), '1.0.0', true );
+		wp_localize_script(
+			'gps2photos-admin-settings',
+			'gps2photos_admin_settings',
+			array(
+				'plugin_url' => GPS_2_PHOTOS_DIR_URL,
+			)
+		);
+		wp_enqueue_script( 'gps2photos-admin-settings' );
 	}
 
 	// Enqueue NextGEN 4.0+ compatibility script.
@@ -572,24 +583,6 @@ function gps2photos_options_page() {
 					</div>
 				</div>
 			</div>
-			<script>
-			function gps2photos_update_image() {
-				var select = document.getElementById("gps2image_pin_icon_type");
-				var image = document.getElementById("gps2image_pin_icon_image");
-				var selectedValue = select.value;
-
-				// Update the image source
-				image.src = "<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL ); ?>/img/pin-types/" + selectedValue + ".png";
-			}
-			function gps2photos_update_search_image() {
-				var select = document.getElementById("gps2image_search_pin_icon_type");
-				var image = document.getElementById("gps2image_search_pin_icon_image");
-				var selectedValue = select.value;
-
-				// Update the image source
-				image.src = "<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL ); ?>/img/pin-types/" + selectedValue + ".png";
-			}
-			</script>
 			<div id="gps2photos_maps_addon" class="postbox gps2photos_tab_content">
 				<div class="inside" style="max-width:1544px;">
 					<a href="http://geo2maps.pasart.net" target="_blank">

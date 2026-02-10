@@ -19,7 +19,7 @@ It displays existing GPS data as editable fields (Media Library only), or provid
 This plugins extends the functionality of the Geo 2 Maps add-on for NextGEN Gallery which displays maps with photos, galleries, or albums using EXIF GPS data.
 
 The plugin is using Microsoft Azure Maps and requires free Azure Maps API Key to function.
-To amend EXIF GPS coordinates is using the PHP Exif Library (PEL) by Martin Geisler. (Copyright (C) 2004–2006 Martin Geisler. Licensed under the GNU GPL.)
+To amend EXIF GPS coordinates is using the PHP Exif Library (PEL) by Martin Geisler. (Copyright (C) 2004–2006 Martin Geisler. Licensed under the GNU GPL. https://github.com/FileEye/pel )
 
 = Features =
 

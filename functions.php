@@ -813,12 +813,12 @@ function gps2photos_coordinates_webp( $file_path ) {
 		$geo['longitude_format'] = $exif['GPSLongitudeRef'] . ' ' . $gps['longitude_hour'] . '&deg;' . $gps['longitude_minute'] . '&#x27;' . round( $gps['longitude_second'], 4 ) . '&#x22;';
 
 		if ( isset( $exif['GPSLatitudeDecimal'] ) && ! empty( $exif['GPSLatitudeDecimal'] ) ) {
-				$geo['latitude'] = $exif['GPSLatitudeDecimal'];
+			$geo['latitude'] = $exif['GPSLatitudeDecimal'];
 		} else {
 			$geo['latitude'] = $gps['latitude_string'] * ( $gps['latitude_hour'] + ( $gps['latitude_minute'] / 60 ) + ( $gps['latitude_second'] / 3600 ) );
 		}
 		if ( isset( $exif['GPSLongitudeDecimal'] ) && ! empty( $exif['GPSLongitudeDecimal'] ) ) {
-				$geo['longitude'] = $exif['GPSLongitudeDecimal'];
+			$geo['longitude'] = $exif['GPSLongitudeDecimal'];
 		} else {
 			$geo['longitude'] = $gps['longitude_string'] * ( $gps['longitude_hour'] + ( $gps['longitude_minute'] / 60 ) + ( $gps['longitude_second'] / 3600 ) );
 		}
@@ -1500,7 +1500,6 @@ function gps2photos_save_gps_to_webp( $file_path, $latitude, $longitude, $restor
 	$file_size   = strlen( $new_content ) - 8;
 	$new_content = substr_replace( $new_content, pack( 'V', $file_size ), 4, 4 );
 
-	$wp_filesystem->put_contents( 'C:\Users\paulo\Local Sites\geo2maps\app\public\wp-content\new_content2.txt', $new_content );
 	return $wp_filesystem->put_contents( $file_path, $new_content, FS_CHMOD_FILE );
 }
 

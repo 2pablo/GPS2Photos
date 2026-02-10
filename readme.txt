@@ -1,7 +1,7 @@
 === GPS 2 Photos ===
 Contributors: pablo2
 Tags: gps, photo, map, location, coordinates
-Donate link: https://www.paypal.com/PawelBlock
+Donate link: https://www.paypal.com/donate/?hosted_button_id=7JWUJ2J9RXWYU
 Requires at least: 5.0
 Tested up to: 6.9
 Requires PHP: 7.2.0

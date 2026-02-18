@@ -33,7 +33,7 @@ function gps2photos_get_map_for_modal() {
 		<div class="gps2photos-modal-header">
 			<h2>' . esc_html__( 'Add/Amend GPS Coordinates', 'gps-2-photos' ) . '
 				<span class="gps2photos-tooltip-container">
-					<img class="gps2photos-tooltip-trigger" src="' . esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ) . '" alt="Info">
+					<img class="gps2photos-tooltip-trigger" src="' . esc_attr( GPS2PHOTOS_DIR_URL . '/img/information.png' ) . '" alt="Info">
 					<span class="gps2photos-tooltip-text">'
 						. esc_html__(
 							'For manual entry for Latitude, please enter a value between -90 and 90. For Longitude, please enter a value between -180 and 180. Both Latitude and Longitude must be provided. If both fields will be left empty, this will erase the coordinates.',

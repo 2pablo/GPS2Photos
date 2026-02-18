@@ -35,17 +35,20 @@
  */
 namespace lsolesen\pel;
 
-class PelIllegalFormatException extends PelException
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Construct a new exception indicating an illegal format.
-     *
-     * @param int $type
-     *            the type of IFD.
-     */
-    public function __construct($type)
-    {
-        parent::__construct('Unknown format: 0x%X', $type);
-    }
+class PelIllegalFormatException extends PelException {
+
+
+	/**
+	 * Construct a new exception indicating an illegal format.
+	 *
+	 * @param int $type
+	 *            the type of IFD.
+	 */
+	public function __construct( $type ) {
+		parent::__construct( 'Unknown format: 0x%X', $type );
+	}
 }

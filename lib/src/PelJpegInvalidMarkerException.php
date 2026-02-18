@@ -35,21 +35,24 @@
  */
 namespace lsolesen\pel;
 
-class PelJpegInvalidMarkerException extends PelException
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Construct a new invalid marker exception.
-     * The exception will contain a message describing the error,
-     * including the byte found and the offset of the offending byte.
-     *
-     * @param int $marker
-     *            the byte found.
-     * @param int $offset
-     *            the offset in the data.
-     */
-    public function __construct($marker, $offset)
-    {
-        parent::__construct('Invalid marker found at offset %d: 0x%2X', $offset, $marker);
-    }
+class PelJpegInvalidMarkerException extends PelException {
+
+
+	/**
+	 * Construct a new invalid marker exception.
+	 * The exception will contain a message describing the error,
+	 * including the byte found and the offset of the offending byte.
+	 *
+	 * @param int $marker
+	 *            the byte found.
+	 * @param int $offset
+	 *            the offset in the data.
+	 */
+	public function __construct( $marker, $offset ) {
+		parent::__construct( 'Invalid marker found at offset %d: 0x%2X', $offset, $marker );
+	}
 }

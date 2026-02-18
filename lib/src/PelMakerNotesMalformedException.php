@@ -46,6 +46,10 @@
  */
 namespace lsolesen\pel;
 
-class PelMakerNotesMalformedException extends PelException
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
+
+class PelMakerNotesMalformedException extends PelException {
+
 }

@@ -56,70 +56,73 @@
  */
 namespace lsolesen\pel;
 
-class PelEntryAscii extends PelEntry
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * The string hold by this entry.
-     *
-     * This is the string that was given to the {@link __construct
-     * constructor} or later to {@link setValue}, without any final NULL
-     * character.
-     *
-     * @var string
-     */
-    private $str;
+class PelEntryAscii extends PelEntry {
 
-    /**
-     * Make a new PelEntry that can hold an ASCII string.
-     *
-     * @param int $tag
-     *            the tag which this entry represents. This should be
-     *            one of the constants defined in {@link PelTag}, e.g., {@link
-     *            PelTag::IMAGE_DESCRIPTION}, {@link PelTag::MODEL}, or any other
-     *            tag with format {@link PelFormat::ASCII}.
-     * @param string $str
-     *            the string that this entry will represent. The
-     *            string must obey the same rules as the string argument to {@link
-     *            setValue}, namely that it should be given without any trailing
-     *            NULL character and that it must be plain 7-bit ASCII.
-     */
-    public function __construct($tag, $str = '')
-    {
-        $this->tag = $tag;
-        $this->format = PelFormat::ASCII;
-        $this->setValue($str);
-    }
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \lsolesen\pel\PelEntry::setValue()
-     */
-    public function setValue($str)
-    {
-        $this->components = strlen($str) + 1;
-        $this->str = $str;
-        $this->bytes = $str . chr(0x00);
-    }
+	/**
+	 * The string hold by this entry.
+	 *
+	 * This is the string that was given to the {@link __construct
+	 * constructor} or later to {@link setValue}, without any final NULL
+	 * character.
+	 *
+	 * @var string
+	 */
+	private $str;
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \lsolesen\pel\PelEntry::getValue()
-     */
-    public function getValue()
-    {
-        return $this->str;
-    }
+	/**
+	 * Make a new PelEntry that can hold an ASCII string.
+	 *
+	 * @param int    $tag
+	 *            the tag which this entry represents. This should be
+	 *            one of the constants defined in {@link PelTag}, e.g., {@link
+	 *            PelTag::IMAGE_DESCRIPTION}, {@link PelTag::MODEL}, or any other
+	 *            tag with format {@link PelFormat::ASCII}.
+	 * @param string $str
+	 *            the string that this entry will represent. The
+	 *            string must obey the same rules as the string argument to {@link
+	 *            setValue}, namely that it should be given without any trailing
+	 *            NULL character and that it must be plain 7-bit ASCII.
+	 */
+	public function __construct( $tag, $str = '' ) {
+		$this->tag    = $tag;
+		$this->format = PelFormat::ASCII;
+		$this->setValue( $str );
+	}
 
-    /**
-     *
-     * {@inheritdoc}
-     * @see \lsolesen\pel\PelEntry::getText()
-     */
-    public function getText($brief = false)
-    {
-        return $this->str;
-    }
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 * @see \lsolesen\pel\PelEntry::setValue()
+	 */
+	public function setValue( $str ) {
+		$this->components = strlen( $str ) + 1;
+		$this->str        = $str;
+		$this->bytes      = $str . chr( 0x00 );
+	}
+
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 * @see \lsolesen\pel\PelEntry::getValue()
+	 */
+	public function getValue() {
+		return $this->str;
+	}
+
+	/**
+	 *
+	 * {@inheritdoc}
+	 *
+	 * @see \lsolesen\pel\PelEntry::getText()
+	 */
+	public function getText( $brief = false ) {
+		return $this->str;
+	}
 }

@@ -48,123 +48,123 @@
  */
 namespace lsolesen\pel;
 
-class PelEntryUndefined extends PelEntry
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Make a new PelEntry that can hold undefined data.
-     *
-     * @param integer $tag
-     *            which this entry represents. This
-     *            should be one of the constants defined in {@link PelTag},
-     *            e.g., {@link PelTag::SCENE_TYPE}, {@link
-     *            PelTag::MAKER_NOTE} or any other tag with format {@link
-     *            PelFormat::UNDEFINED}.
-     * @param string $data
-     *            the data that this entry will be holding. Since
-     *            the format is undefined, no checking will be done on the data. If no data are given, a empty string will be stored
-     */
-    public function __construct($tag, $data = '')
-    {
-        $this->tag = $tag;
-        $this->format = PelFormat::UNDEFINED;
-        $this->setValue($data);
-    }
+class PelEntryUndefined extends PelEntry {
 
-    /**
-     * Set the data of this undefined entry.
-     *
-     * @param string $data
-     *            the data that this entry will be holding. Since
-     *            the format is undefined, no checking will be done on the data.
-     */
-    public function setValue($data)
-    {
-        $this->components = strlen($data);
-        $this->bytes = $data;
-    }
 
-    /**
-     * Get the data of this undefined entry.
-     *
-     * @return string the data that this entry is holding.
-     */
-    public function getValue()
-    {
-        return $this->bytes;
-    }
+	/**
+	 * Make a new PelEntry that can hold undefined data.
+	 *
+	 * @param integer $tag
+	 *            which this entry represents. This
+	 *            should be one of the constants defined in {@link PelTag},
+	 *            e.g., {@link PelTag::SCENE_TYPE}, {@link
+	 *            PelTag::MAKER_NOTE} or any other tag with format {@link
+	 *            PelFormat::UNDEFINED}.
+	 * @param string  $data
+	 *            the data that this entry will be holding. Since
+	 *            the format is undefined, no checking will be done on the data. If no data are given, a empty string will be stored
+	 */
+	public function __construct( $tag, $data = '' ) {
+		$this->tag    = $tag;
+		$this->format = PelFormat::UNDEFINED;
+		$this->setValue( $data );
+	}
 
-    /**
-     * Get the value of this entry as text.
-     *
-     * The value will be returned in a format suitable for presentation.
-     *
-     * @param boolean $brief
-     *            some values can be returned in a long or more
-     *            brief form, and this parameter controls that.
-     * @return string the value as text.
-     */
-    public function getText($brief = false)
-    {
-        switch ($this->tag) {
-            case PelTag::FILE_SOURCE:
-                // CC (e->components, 1, v);
-                switch (ord($this->bytes[0])) {
-                    case 0x03:
-                        return 'DSC';
-                    default:
-                        return sprintf('0x%02X', ord($this->bytes[0]));
-                }
-                break;
-            case PelTag::SCENE_TYPE:
-                // CC (e->components, 1, v);
-                switch (ord($this->bytes[0])) {
-                    case 0x01:
-                        return 'Directly photographed';
-                    default:
-                        return sprintf('0x%02X', ord($this->bytes[0]));
-                }
-                break;
-            case PelTag::COMPONENTS_CONFIGURATION:
-                // CC (e->components, 4, v);
-                $v = '';
-                for ($i = 0; $i < 4; $i ++) {
-                    switch (ord($this->bytes[$i])) {
-                        case 0:
-                            $v .= '-';
-                            break;
-                        case 1:
-                            $v .= 'Y';
-                            break;
-                        case 2:
-                            $v .= 'Cb';
-                            break;
-                        case 3:
-                            $v .= 'Cr';
-                            break;
-                        case 4:
-                            $v .= 'R';
-                            break;
-                        case 5:
-                            $v .= 'G';
-                            break;
-                        case 6:
-                            $v .= 'B';
-                            break;
-                        default:
-                            $v .= 'reserved';
-                            break;
-                    }
-                    if ($i < 3) {
-                        $v .= ' ';
-                    }
-                }
-                return $v;
-            case PelTag::MAKER_NOTE:
-                // TODO: handle maker notes.
-                return $this->components . ' bytes unknown MakerNote data';
-            default:
-                return '(undefined)';
-        }
-    }
+	/**
+	 * Set the data of this undefined entry.
+	 *
+	 * @param string $data
+	 *            the data that this entry will be holding. Since
+	 *            the format is undefined, no checking will be done on the data.
+	 */
+	public function setValue( $data ) {
+		$this->components = strlen( $data );
+		$this->bytes      = $data;
+	}
+
+	/**
+	 * Get the data of this undefined entry.
+	 *
+	 * @return string the data that this entry is holding.
+	 */
+	public function getValue() {
+		return $this->bytes;
+	}
+
+	/**
+	 * Get the value of this entry as text.
+	 *
+	 * The value will be returned in a format suitable for presentation.
+	 *
+	 * @param boolean $brief
+	 *            some values can be returned in a long or more
+	 *            brief form, and this parameter controls that.
+	 * @return string the value as text.
+	 */
+	public function getText( $brief = false ) {
+		switch ( $this->tag ) {
+			case PelTag::FILE_SOURCE:
+				// CC (e->components, 1, v);
+				switch ( ord( $this->bytes[0] ) ) {
+					case 0x03:
+						return 'DSC';
+					default:
+						return sprintf( '0x%02X', ord( $this->bytes[0] ) );
+				}
+				break;
+			case PelTag::SCENE_TYPE:
+				// CC (e->components, 1, v);
+				switch ( ord( $this->bytes[0] ) ) {
+					case 0x01:
+						return 'Directly photographed';
+					default:
+						return sprintf( '0x%02X', ord( $this->bytes[0] ) );
+				}
+				break;
+			case PelTag::COMPONENTS_CONFIGURATION:
+				// CC (e->components, 4, v);
+				$v = '';
+				for ( $i = 0; $i < 4; $i++ ) {
+					switch ( ord( $this->bytes[ $i ] ) ) {
+						case 0:
+							$v .= '-';
+							break;
+						case 1:
+							$v .= 'Y';
+							break;
+						case 2:
+							$v .= 'Cb';
+							break;
+						case 3:
+							$v .= 'Cr';
+							break;
+						case 4:
+							$v .= 'R';
+							break;
+						case 5:
+							$v .= 'G';
+							break;
+						case 6:
+							$v .= 'B';
+							break;
+						default:
+							$v .= 'reserved';
+							break;
+					}
+					if ( $i < 3 ) {
+						$v .= ' ';
+					}
+				}
+				return $v;
+			case PelTag::MAKER_NOTE:
+				// TODO: handle maker notes.
+				return $this->components . ' bytes unknown MakerNote data';
+			default:
+				return '(undefined)';
+		}
+	}
 }

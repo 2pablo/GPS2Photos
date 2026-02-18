@@ -47,31 +47,33 @@
  */
 namespace lsolesen\pel;
 
-class PelJpegContent
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    private $data = null;
+class PelJpegContent {
 
-    /**
-     * Make a new piece of JPEG content.
-     *
-     * @param PelDataWindow $data
-     *            the content.
-     */
-    public function __construct(PelDataWindow $data)
-    {
-        $this->data = $data;
-    }
 
-    /**
-     * Return the bytes of the content.
-     *
-     * @return string bytes representing this JPEG content. These bytes
-     *         will match the bytes given to {@link __construct the
-     *         constructor}.
-     */
-    public function getBytes()
-    {
-        return $this->data->getBytes();
-    }
+	private $data = null;
+
+	/**
+	 * Make a new piece of JPEG content.
+	 *
+	 * @param PelDataWindow $data
+	 *            the content.
+	 */
+	public function __construct( PelDataWindow $data ) {
+		$this->data = $data;
+	}
+
+	/**
+	 * Return the bytes of the content.
+	 *
+	 * @return string bytes representing this JPEG content. These bytes
+	 *         will match the bytes given to {@link __construct the
+	 *         constructor}.
+	 */
+	public function getBytes() {
+		return $this->data->getBytes();
+	}
 }

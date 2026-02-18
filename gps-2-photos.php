@@ -36,10 +36,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Defines the universal path to GPS 2 Photos directory in plugins folder.
-define( 'GPS_2_PHOTOS_DIR_URL', plugins_url( '', __FILE__ ) );
+define( 'GPS2PHOTOS_DIR_URL', plugins_url( '', __FILE__ ) );
 
 // Defines the universal path to WordPress plugins folder.
-define( 'GPS_2_PHOTOS_PLUGINS_DIR_URL', plugins_url( '', basename( __DIR__ ) ) );
+define( 'GPS2PHOTOS_PLUGINS_DIR_URL', plugins_url( '', basename( __DIR__ ) ) );
 
 if ( is_admin() ) {
 	/**
@@ -297,6 +297,9 @@ function gps2photos_options_validate( $opt ) {
 		$opt['geo_azure_auth_status'] = 1;
 	}
 
+	// Sanitize API Key.
+	$opt['geo_azure_key'] = isset( $opt['geo_azure_key'] ) ? sanitize_text_field( $opt['geo_azure_key'] ) : '';
+
 	// Validates and sanitizes Microsoft Azure API Key.
 	if ( strlen( $opt['geo_azure_key'] ) !== 0 ) {
 		if ( $saved_options['geo_azure_key'] !== $opt['geo_azure_key'] ) {
@@ -344,29 +347,43 @@ function gps2photos_options_validate( $opt ) {
 		$opt['geo_azure_auth_status'] = 0;
 	}
 
-	// Clears undefined checkboxes (undefined = unchecked!).
-	if ( ! isset( $opt['gps_media_library'] ) ) {
-		$opt['gps_media_library'] = 0; }
-	if ( ! isset( $opt['always_override_gps'] ) ) {
-		$opt['always_override_gps'] = 0; }
-	if ( ! isset( $opt['exif_error_handler'] ) ) {
-		$opt['exif_error_handler'] = 0; }
-	if ( ! isset( $opt['backup_existing_coordinates'] ) ) {
-		$opt['backup_existing_coordinates'] = 0; }
-	if ( ! isset( $opt['dashboard'] ) ) {
-		$opt['dashboard'] = 0; }
-	if ( ! isset( $opt['locate_me_button'] ) ) {
-		$opt['locate_me_button'] = 0; }
-	if ( ! isset( $opt['scalebar'] ) ) {
-		$opt['scalebar'] = 0; }
-	if ( ! isset( $opt['map_search_bar'] ) ) {
-		$opt['map_search_bar'] = 0; }
-	if ( ! isset( $opt['map_fullscreen'] ) ) {
-		$opt['map_fullscreen'] = 0; }
-	if ( ! isset( $opt['logo'] ) ) {
-		$opt['logo'] = 0; }
-	if ( ! isset( $opt['restore_defaults'] ) ) {
-		$opt['restore_defaults'] = 0; }
+	// Validate Checkboxes (Boolean 0 or 1).
+	$checkboxes = array(
+		'gps_media_library',
+		'always_override_gps',
+		'exif_error_handler',
+		'backup_existing_coordinates',
+		'dashboard',
+		'locate_me_button',
+		'scalebar',
+		'map_search_bar',
+		'map_fullscreen',
+		'logo',
+		'restore_defaults',
+	);
+
+	foreach ( $checkboxes as $checkbox ) {
+		if ( ! isset( $opt[ $checkbox ] ) ) {
+			$opt[ $checkbox ] = 0;
+		} else {
+			$opt[ $checkbox ] = ( (int) $opt[ $checkbox ] === 1 ) ? 1 : 0;
+		}
+	}
+
+	// Validate Map Style.
+	$valid_map_styles = array( 'road', 'satellite', 'satellite_road_labels', 'grayscale_light', 'grayscale_dark', 'night', 'road_shaded_relief' );
+	if ( isset( $opt['map'] ) && ! in_array( $opt['map'], $valid_map_styles, true ) ) {
+		$opt['map'] = 'satellite_road_labels';
+	}
+
+	// Validate Pin Icon Types.
+	$valid_pin_icons = array( 'marker', 'marker-thick', 'marker-arrow', 'marker-ball-pin', 'flag', 'flag-triangle', 'pin' );
+	if ( isset( $opt['pin_icon_type'] ) && ! in_array( $opt['pin_icon_type'], $valid_pin_icons, true ) ) {
+		$opt['pin_icon_type'] = 'marker';
+	}
+	if ( isset( $opt['search_pin_icon_type'] ) && ! in_array( $opt['search_pin_icon_type'], $valid_pin_icons, true ) ) {
+		$opt['search_pin_icon_type'] = 'pin';
+	}
 
 	// Validates options.
 	if ( strlen( $opt['zoom'] ) !== 0 && $saved_options['zoom'] !== $opt['zoom'] ) {
@@ -393,14 +410,14 @@ function gps2photos_options_validate( $opt ) {
 	}
 
 	// Validates colors.
-	$colors = array(
-		$opt['pin_color']           => 'pin_color',
-		$opt['pin_secondary_color'] => 'pin_secondary_color',
-		$opt['search_pin_color']    => 'search_pin_color',
+	$color_keys = array(
+		'pin_color',
+		'pin_secondary_color',
+		'search_pin_color',
 	);
-	foreach ( $colors as $color => $key ) {
-		if ( strlen( $color ) !== 0 ) {
-				$opt[ $key ] = gps2photos_validate_color( $color );
+	foreach ( $color_keys as $key ) {
+		if ( isset( $opt[ $key ] ) && strlen( $opt[ $key ] ) !== 0 ) {
+			$opt[ $key ] = gps2photos_validate_color( $opt[ $key ] );
 		}
 	}
 

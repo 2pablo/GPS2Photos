@@ -41,7 +41,11 @@
  */
 namespace lsolesen\pel;
 
-class PelIfdException extends PelException
-{
-    // do nothing
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
+
+class PelIfdException extends PelException {
+
+	// do nothing
 }

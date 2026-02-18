@@ -38,44 +38,45 @@
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public
  *          License (GPL)
  * @package
- *
  */
 namespace lsolesen\pel;
 
-abstract class PelMakerNotes
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    protected $type;
+abstract class PelMakerNotes {
 
-    protected $parent;
 
-    protected $data;
+	protected $type;
 
-    protected $size;
+	protected $parent;
 
-    protected $components;
+	protected $data;
 
-    protected $offset;
+	protected $size;
 
-    public static function createMakerNotesFromManufacturer($man, $parent, $data, $size, $offset)
-    {
-        switch ($man) {
-            case 'Canon':
-                return new PelCanonMakerNotes($parent, $data, $size, $offset);
-            default:
-                return null;
-        }
-    }
+	protected $components;
 
-    public function __construct($parent, $data, $size, $offset)
-    {
-        $this->parent = $parent;
-        $this->data = $data;
-        $this->size = $size;
-        $this->offset = $offset;
-        $this->components = 0;
-        Pel::debug('Creating MakerNotes with %d bytes at offset %d.', $size, $offset);
-    }
+	protected $offset;
 
-    abstract public function load();
+	public static function createMakerNotesFromManufacturer( $man, $parent, $data, $size, $offset ) {
+		switch ( $man ) {
+			case 'Canon':
+				return new PelCanonMakerNotes( $parent, $data, $size, $offset );
+			default:
+				return null;
+		}
+	}
+
+	public function __construct( $parent, $data, $size, $offset ) {
+		$this->parent     = $parent;
+		$this->data       = $data;
+		$this->size       = $size;
+		$this->offset     = $offset;
+		$this->components = 0;
+		Pel::debug( 'Creating MakerNotes with %d bytes at offset %d.', $size, $offset );
+	}
+
+	abstract public function load();
 }

@@ -52,89 +52,88 @@
  */
 namespace lsolesen\pel;
 
-class PelEntryUserComment extends PelEntryUndefined
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * The user comment.
-     *
-     * @var string
-     */
-    private $comment;
+class PelEntryUserComment extends PelEntryUndefined {
 
-    /**
-     * The encoding.
-     *
-     * This should be one of 'ASCII', 'JIS', 'Unicode', or ''.
-     *
-     * @var string
-     */
-    private $encoding;
 
-    /**
-     * Make a new entry for holding a user comment.
-     *
-     * @param string $comment
-     *            the new user comment.
-     * @param string $encoding
-     *            the encoding of the comment. This should be either
-     *            'ASCII', 'JIS', 'Unicode', or the empty string specifying an
-     *            undefined encoding.
-     */
-    public function __construct($comment = '', $encoding = 'ASCII')
-    {
-        parent::__construct(PelTag::USER_COMMENT);
-        $this->setValue($comment, $encoding);
-    }
+	/**
+	 * The user comment.
+	 *
+	 * @var string
+	 */
+	private $comment;
 
-    /**
-     * Set the user comment.
-     *
-     * @param string $comment
-     *            the new user comment.
-     * @param string $encoding
-     *            the encoding of the comment. This should be either
-     *            'ASCII', 'JIS', 'Unicode', or the empty string specifying an
-     *            unknown encoding.
-     */
-    public function setValue($comment = '', $encoding = 'ASCII')
-    {
-        $this->comment = $comment;
-        $this->encoding = $encoding;
-        parent::setValue(str_pad($encoding, 8, chr(0)) . $comment);
-    }
+	/**
+	 * The encoding.
+	 *
+	 * This should be one of 'ASCII', 'JIS', 'Unicode', or ''.
+	 *
+	 * @var string
+	 */
+	private $encoding;
 
-    /**
-     * Returns the user comment.
-     *
-     * The comment is returned with the same character encoding as when
-     * it was set using {@link setValue} or {@link __construct the
-     * constructor}.
-     *
-     * @return string the user comment.
-     */
-    public function getValue()
-    {
-        return $this->comment;
-    }
+	/**
+	 * Make a new entry for holding a user comment.
+	 *
+	 * @param string $comment
+	 *            the new user comment.
+	 * @param string $encoding
+	 *            the encoding of the comment. This should be either
+	 *            'ASCII', 'JIS', 'Unicode', or the empty string specifying an
+	 *            undefined encoding.
+	 */
+	public function __construct( $comment = '', $encoding = 'ASCII' ) {
+		parent::__construct( PelTag::USER_COMMENT );
+		$this->setValue( $comment, $encoding );
+	}
 
-    /**
-     * Returns the encoding.
-     *
-     * @return string the encoding of the user comment.
-     */
-    public function getEncoding()
-    {
-        return $this->encoding;
-    }
+	/**
+	 * Set the user comment.
+	 *
+	 * @param string $comment
+	 *            the new user comment.
+	 * @param string $encoding
+	 *            the encoding of the comment. This should be either
+	 *            'ASCII', 'JIS', 'Unicode', or the empty string specifying an
+	 *            unknown encoding.
+	 */
+	public function setValue( $comment = '', $encoding = 'ASCII' ) {
+		$this->comment  = $comment;
+		$this->encoding = $encoding;
+		parent::setValue( str_pad( $encoding, 8, chr( 0 ) ) . $comment );
+	}
 
-    /**
-     * Returns the user comment.
-     *
-     * @return string the user comment.
-     */
-    public function getText($brief = false)
-    {
-        return $this->comment;
-    }
+	/**
+	 * Returns the user comment.
+	 *
+	 * The comment is returned with the same character encoding as when
+	 * it was set using {@link setValue} or {@link __construct the
+	 * constructor}.
+	 *
+	 * @return string the user comment.
+	 */
+	public function getValue() {
+		return $this->comment;
+	}
+
+	/**
+	 * Returns the encoding.
+	 *
+	 * @return string the encoding of the user comment.
+	 */
+	public function getEncoding() {
+		return $this->encoding;
+	}
+
+	/**
+	 * Returns the user comment.
+	 *
+	 * @return string the user comment.
+	 */
+	public function getText( $brief = false ) {
+		return $this->comment;
+	}
 }

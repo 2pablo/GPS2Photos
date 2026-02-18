@@ -59,116 +59,117 @@
  */
 namespace lsolesen\pel;
 
-class PelEntryRational extends PelEntryLong
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Make a new entry that can hold an unsigned rational.
-     *
-     * @param int $tag
-     *            the tag which this entry represents. This should
-     *            be one of the constants defined in {@link PelTag}, e.g., {@link
-     *            PelTag::X_RESOLUTION}, or any other tag which can have format
-     *            {@link PelFormat::RATIONAL}.
-     * @param array ...$value
-     *            the rational(s) that this entry will
-     *            represent. The arguments passed must obey the same rules as the
-     *            argument to {@link setValue}, namely that each argument should be
-     *            an array with two entries, both of which must be within range of
-     *            an unsigned long (32 bit), that is between 0 and 4294967295
-     *            (inclusive). If not, then a {@link PelOverflowException} will be
-     *            thrown.
-     * @throws PelOverflowException
-     */
-    public function __construct($tag, ...$value)
-    {
-        $this->tag = $tag;
-        $this->format = PelFormat::RATIONAL;
-        $this->dimension = 2;
-        $this->min = 0;
-        $this->max = 4294967295;
+class PelEntryRational extends PelEntryLong {
 
-        $this->setValueArray($value);
-    }
 
-    /**
-     * Format a rational number.
-     *
-     * The rational will be returned as a string with a slash '/'
-     * between the numerator and denominator.
-     *
-     * @param array $number
-     *            the rational which will be formatted.
-     * @param boolean $brief
-     *            not used.
-     * @return string the rational formatted as a string suitable for
-     *         display.
-     */
-    public function formatNumber($number, $brief = false)
-    {
-        return $number[0] . '/' . $number[1];
-    }
+	/**
+	 * Make a new entry that can hold an unsigned rational.
+	 *
+	 * @param int   $tag
+	 *            the tag which this entry represents. This should
+	 *            be one of the constants defined in {@link PelTag}, e.g., {@link
+	 *            PelTag::X_RESOLUTION}, or any other tag which can have format
+	 *            {@link PelFormat::RATIONAL}.
+	 * @param array ...$value
+	 *            the rational(s) that this entry will
+	 *            represent. The arguments passed must obey the same rules as the
+	 *            argument to {@link setValue}, namely that each argument should be
+	 *            an array with two entries, both of which must be within range of
+	 *            an unsigned long (32 bit), that is between 0 and 4294967295
+	 *            (inclusive). If not, then a {@link PelOverflowException} will be
+	 *            thrown.
+	 * @throws PelOverflowException
+	 */
+	public function __construct( $tag, ...$value ) {
+		$this->tag       = $tag;
+		$this->format    = PelFormat::RATIONAL;
+		$this->dimension = 2;
+		$this->min       = 0;
+		$this->max       = 4294967295;
 
-    /**
-     * Get the value of an entry as text.
-     *
-     * The value will be returned in a format suitable for presentation,
-     * e.g., rationals will be returned as 'x/y', ASCII strings will be
-     * returned as themselves etc.
-     *
-     * @param boolean $brief
-     *            some values can be returned in a long or more
-     *            brief form, and this parameter controls that.
-     * @return boolean|string the value as text.
-     */
-    public function getText($brief = false)
-    {
-        if (isset($this->value[0])) {
-            $v = $this->value[0];
-        } else {
-            // TODO: Not sure, if this is the correct path; maybe throw an exception?
-            return '';
-        }
+		$this->setValueArray( $value );
+	}
 
-        switch ($this->tag) {
-            case PelTag::FNUMBER:
-                // CC (e->components, 1, v);
-                return Pel::fmt('f/%.01f', $v[0] / $v[1]);
+	/**
+	 * Format a rational number.
+	 *
+	 * The rational will be returned as a string with a slash '/'
+	 * between the numerator and denominator.
+	 *
+	 * @param array   $number
+	 *            the rational which will be formatted.
+	 * @param boolean $brief
+	 *            not used.
+	 * @return string the rational formatted as a string suitable for
+	 *         display.
+	 */
+	public function formatNumber( $number, $brief = false ) {
+		return $number[0] . '/' . $number[1];
+	}
 
-            case PelTag::APERTURE_VALUE:
-                // CC (e->components, 1, v);
-                // if (!v_rat.denominator) return (NULL);
-                return Pel::fmt('f/%.01f', pow(2, $v[0] / $v[1] / 2));
+	/**
+	 * Get the value of an entry as text.
+	 *
+	 * The value will be returned in a format suitable for presentation,
+	 * e.g., rationals will be returned as 'x/y', ASCII strings will be
+	 * returned as themselves etc.
+	 *
+	 * @param boolean $brief
+	 *            some values can be returned in a long or more
+	 *            brief form, and this parameter controls that.
+	 * @return boolean|string the value as text.
+	 */
+	public function getText( $brief = false ) {
+		if ( isset( $this->value[0] ) ) {
+			$v = $this->value[0];
+		} else {
+			// TODO: Not sure, if this is the correct path; maybe throw an exception?
+			return '';
+		}
 
-            case PelTag::FOCAL_LENGTH:
-                // CC (e->components, 1, v);
-                // if (!v_rat.denominator) return (NULL);
-                return Pel::fmt('%.1f mm', $v[0] / $v[1]);
+		switch ( $this->tag ) {
+			case PelTag::FNUMBER:
+				// CC (e->components, 1, v);
+				return Pel::fmt( 'f/%.01f', $v[0] / $v[1] );
 
-            case PelTag::SUBJECT_DISTANCE:
-                // CC (e->components, 1, v);
-                // if (!v_rat.denominator) return (NULL);
-                return Pel::fmt('%.1f m', $v[0] / $v[1]);
+			case PelTag::APERTURE_VALUE:
+				// CC (e->components, 1, v);
+				// if (!v_rat.denominator) return (NULL);
+				return Pel::fmt( 'f/%.01f', pow( 2, $v[0] / $v[1] / 2 ) );
 
-            case PelTag::EXPOSURE_TIME:
-                // CC (e->components, 1, v);
-                // if (!v_rat.denominator) return (NULL);
-                if ($v[0] / $v[1] < 1) {
-                    return Pel::fmt('1/%d sec.', $v[1] / $v[0]);
-                } else {
-                    return Pel::fmt('%d sec.', $v[0] / $v[1]);
-                }
-                break;
-            case PelTag::GPS_LATITUDE:
-            case PelTag::GPS_LONGITUDE:
-                $degrees = $v[0] / $v[1];
-                $minutes = $this->value[1][0] / $this->value[1][1];
-                $seconds = $this->value[2][0] / $this->value[2][1];
+			case PelTag::FOCAL_LENGTH:
+				// CC (e->components, 1, v);
+				// if (!v_rat.denominator) return (NULL);
+				return Pel::fmt( '%.1f mm', $v[0] / $v[1] );
 
-                return sprintf('%s° %s\' %s" (%.2f°)', $degrees, $minutes, $seconds, $degrees + $minutes / 60 + $seconds / 3600);
+			case PelTag::SUBJECT_DISTANCE:
+				// CC (e->components, 1, v);
+				// if (!v_rat.denominator) return (NULL);
+				return Pel::fmt( '%.1f m', $v[0] / $v[1] );
 
-            default:
-                return parent::getText($brief);
-        }
-    }
+			case PelTag::EXPOSURE_TIME:
+				// CC (e->components, 1, v);
+				// if (!v_rat.denominator) return (NULL);
+				if ( $v[0] / $v[1] < 1 ) {
+					return Pel::fmt( '1/%d sec.', $v[1] / $v[0] );
+				} else {
+					return Pel::fmt( '%d sec.', $v[0] / $v[1] );
+				}
+				break;
+			case PelTag::GPS_LATITUDE:
+			case PelTag::GPS_LONGITUDE:
+				$degrees = $v[0] / $v[1];
+				$minutes = $this->value[1][0] / $this->value[1][1];
+				$seconds = $this->value[2][0] / $this->value[2][1];
+
+				return sprintf( '%s° %s\' %s" (%.2f°)', $degrees, $minutes, $seconds, $degrees + $minutes / 60 + $seconds / 3600 );
+
+			default:
+				return parent::getText( $brief );
+		}
+	}
 }

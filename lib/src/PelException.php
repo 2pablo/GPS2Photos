@@ -37,25 +37,28 @@
  */
 namespace lsolesen\pel;
 
-class PelException extends \Exception
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Construct a new PEL exception.
-     *
-     * @param string $fmt
-     *            an optional format string can be given. It
-     *            will be used as a format string for vprintf(). The remaining
-     *            arguments will be available for the format string as usual with
-     *            vprintf().
-     * @param mixed ...$args
-     *            any number of arguments to be used with
-     *            the format string.
-     */
-    public function __construct($fmt, $args = null)
-    {
-        $args = func_get_args();
-        $fmt = array_shift($args);
-        parent::__construct(vsprintf($fmt, $args));
-    }
+class PelException extends \Exception {
+
+
+	/**
+	 * Construct a new PEL exception.
+	 *
+	 * @param string $fmt
+	 *            an optional format string can be given. It
+	 *            will be used as a format string for vprintf(). The remaining
+	 *            arguments will be available for the format string as usual with
+	 *            vprintf().
+	 * @param mixed  ...$args
+	 *            any number of arguments to be used with
+	 *            the format string.
+	 */
+	public function __construct( $fmt, $args = null ) {
+		$args = func_get_args();
+		$fmt  = array_shift( $args );
+		parent::__construct( vsprintf( $fmt, $args ) );
+	}
 }

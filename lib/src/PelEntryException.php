@@ -47,42 +47,44 @@
  */
 namespace lsolesen\pel;
 
-class PelEntryException extends PelException
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * The IFD type (if known).
-     *
-     * @var int
-     */
-    protected $type;
+class PelEntryException extends PelException {
 
-    /**
-     * The tag of the entry (if known).
-     *
-     * @var int
-     */
-    protected $tag;
 
-    /**
-     * Get the IFD type associated with the exception.
-     *
-     * @return int one of {@link PelIfd::IFD0}, {@link PelIfd::IFD1},
-     *         {@link PelIfd::EXIF}, {@link PelIfd::GPS}, or {@link
-     *         PelIfd::INTEROPERABILITY}. If no type is set, null is returned.
-     */
-    public function getIfdType()
-    {
-        return $this->type;
-    }
+	/**
+	 * The IFD type (if known).
+	 *
+	 * @var int
+	 */
+	protected $type;
 
-    /**
-     * Get the tag associated with the exception.
-     *
-     * @return int the tag. If no tag is set, null is returned.
-     */
-    public function getTag()
-    {
-        return $this->tag;
-    }
+	/**
+	 * The tag of the entry (if known).
+	 *
+	 * @var int
+	 */
+	protected $tag;
+
+	/**
+	 * Get the IFD type associated with the exception.
+	 *
+	 * @return int one of {@link PelIfd::IFD0}, {@link PelIfd::IFD1},
+	 *         {@link PelIfd::EXIF}, {@link PelIfd::GPS}, or {@link
+	 *         PelIfd::INTEROPERABILITY}. If no type is set, null is returned.
+	 */
+	public function getIfdType() {
+		return $this->type;
+	}
+
+	/**
+	 * Get the tag associated with the exception.
+	 *
+	 * @return int the tag. If no tag is set, null is returned.
+	 */
+	public function getTag() {
+		return $this->tag;
+	}
 }

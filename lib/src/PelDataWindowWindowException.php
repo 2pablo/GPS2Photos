@@ -24,6 +24,10 @@
  */
 namespace lsolesen\pel;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
+
 /**
  * A container for bytes with a limited window of accessible bytes.
  *
@@ -38,6 +42,6 @@ namespace lsolesen\pel;
  * @package PEL
  * @subpackage Exception
  */
-class PelDataWindowWindowException extends PelException
-{
+class PelDataWindowWindowException extends PelException {
+
 }

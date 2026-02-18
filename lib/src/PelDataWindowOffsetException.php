@@ -24,12 +24,16 @@
  */
 namespace lsolesen\pel;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
+
 /**
  * An exception thrown when an invalid offset is encountered.
  *
  * @package PEL
  * @subpackage Exception
  */
-class PelDataWindowOffsetException extends PelException
-{
+class PelDataWindowOffsetException extends PelException {
+
 }

@@ -40,80 +40,78 @@
  */
 namespace lsolesen\pel;
 
-class PelJpegComment extends PelJpegContent
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * The comment.
-     *
-     * @var string
-     */
-    private $comment = '';
+class PelJpegComment extends PelJpegContent {
 
-    /**
-     * Construct a new JPEG comment.
-     *
-     * The new comment will contain the string given.
-     *
-     * @param string $comment
-     */
-    public function __construct($comment = '')
-    {
-        $this->comment = $comment;
-    }
 
-    /**
-     * Load and parse data.
-     *
-     * This will load the comment from the data window passed.
-     *
-     * @param PelDataWindow $d
-     */
-    public function load(PelDataWindow $d)
-    {
-        $this->comment = $d->getBytes();
-    }
+	/**
+	 * The comment.
+	 *
+	 * @var string
+	 */
+	private $comment = '';
 
-    /**
-     * Update the value with a new comment.
-     *
-     * Any old comment will be overwritten.
-     *
-     * @param string $comment
-     *            the new comment.
-     */
-    public function setValue($comment)
-    {
-        $this->comment = $comment;
-    }
+	/**
+	 * Construct a new JPEG comment.
+	 *
+	 * The new comment will contain the string given.
+	 *
+	 * @param string $comment
+	 */
+	public function __construct( $comment = '' ) {
+		$this->comment = $comment;
+	}
 
-    /**
-     * Get the comment.
-     *
-     * @return string the comment.
-     */
-    public function getValue()
-    {
-        return $this->comment;
-    }
+	/**
+	 * Load and parse data.
+	 *
+	 * This will load the comment from the data window passed.
+	 *
+	 * @param PelDataWindow $d
+	 */
+	public function load( PelDataWindow $d ) {
+		$this->comment = $d->getBytes();
+	}
 
-    /**
-     * Turn this comment into bytes.
-     *
-     * @return string bytes representing this comment.
-     */
-    public function getBytes()
-    {
-        return $this->comment;
-    }
+	/**
+	 * Update the value with a new comment.
+	 *
+	 * Any old comment will be overwritten.
+	 *
+	 * @param string $comment
+	 *            the new comment.
+	 */
+	public function setValue( $comment ) {
+		$this->comment = $comment;
+	}
 
-    /**
-     * Return a string representation of this object.
-     *
-     * @return string the same as {@link getValue()}.
-     */
-    public function __toString()
-    {
-        return $this->getValue();
-    }
+	/**
+	 * Get the comment.
+	 *
+	 * @return string the comment.
+	 */
+	public function getValue() {
+		return $this->comment;
+	}
+
+	/**
+	 * Turn this comment into bytes.
+	 *
+	 * @return string bytes representing this comment.
+	 */
+	public function getBytes() {
+		return $this->comment;
+	}
+
+	/**
+	 * Return a string representation of this object.
+	 *
+	 * @return string the same as {@link getValue()}.
+	 */
+	public function __toString() {
+		return $this->getValue();
+	}
 }

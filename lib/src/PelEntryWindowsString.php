@@ -59,109 +59,109 @@
  */
 namespace lsolesen\pel;
 
-class PelEntryWindowsString extends PelEntry
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Two zero characters
-     *
-     * @var string
-     */
-    const ZEROES = "\x0\x0";
+class PelEntryWindowsString extends PelEntry {
 
-    /**
-     * The string hold by this entry.
-     *
-     * This is the string that was given to the {@link __construct
-     * constructor} or later to {@link setValue}, without any extra NULL
-     * characters or any such nonsense.
-     *
-     * @var string
-     */
-    private $str;
 
-    /**
-     * Make a new PelEntry that can hold a Windows XP specific string.
-     *
-     * @param int $tag
-     *            the tag which this entry represents. This should be
-     *            one of {@link PelTag::XP_TITLE}, {@link PelTag::XP_COMMENT},
-     *            {@link PelTag::XP_AUTHOR}, {@link PelTag::XP_KEYWORD}, and {@link
-     *            PelTag::XP_SUBJECT} tags. If another tag is used, then this
-     *            entry will be incorrectly reloaded as a {@link PelEntryByte}.
-     * @param string $str
-     *            the string that this entry will represent. It will
-     *            be passed to {@link setValue} and thus has to obey its
-     *            requirements.
-     * @param bool $from_exif
-     *            internal use only, tells that string is UCS-2LE encoded, as PHP fails to detect this encoding
-     */
-    public function __construct($tag, $str = '', $from_exif = false)
-    {
-        $this->tag = $tag;
-        $this->format = PelFormat::BYTE;
-        $this->setValue($str, $from_exif);
-    }
+	/**
+	 * Two zero characters
+	 *
+	 * @var string
+	 */
+	const ZEROES = "\x0\x0";
 
-    /**
-     * Give the entry a new value.
-     *
-     * This will overwrite the previous value. The value can be
-     * retrieved later with the {@link getValue} method.
-     *
-     * @param string $str
-     *            the new value of the entry.
-     * @param bool $from_exif
-     *            internal use only, tells that string is UCS-2LE encoded, as PHP fails to detect this encoding
-     */
-    public function setValue($str, $from_exif = false)
-    {
-        $zlen = strlen(static::ZEROES);
-        if (false !== $from_exif) {
-            $s = $str;
-            if (substr($str, - $zlen, $zlen) == static::ZEROES) {
-                $str = substr($str, 0, - $zlen);
-            }
-            $str = mb_convert_encoding($str, 'UTF-8', 'UCS-2LE');
-        } else {
-            $s = mb_convert_encoding($str, 'UCS-2LE', 'auto');
-        }
+	/**
+	 * The string hold by this entry.
+	 *
+	 * This is the string that was given to the {@link __construct
+	 * constructor} or later to {@link setValue}, without any extra NULL
+	 * characters or any such nonsense.
+	 *
+	 * @var string
+	 */
+	private $str;
 
-        if (substr($s, - $zlen, $zlen) != static::ZEROES) {
-            $s .= static::ZEROES;
-        }
-        $l = strlen($s);
+	/**
+	 * Make a new PelEntry that can hold a Windows XP specific string.
+	 *
+	 * @param int    $tag
+	 *            the tag which this entry represents. This should be
+	 *            one of {@link PelTag::XP_TITLE}, {@link PelTag::XP_COMMENT},
+	 *            {@link PelTag::XP_AUTHOR}, {@link PelTag::XP_KEYWORD}, and {@link
+	 *            PelTag::XP_SUBJECT} tags. If another tag is used, then this
+	 *            entry will be incorrectly reloaded as a {@link PelEntryByte}.
+	 * @param string $str
+	 *            the string that this entry will represent. It will
+	 *            be passed to {@link setValue} and thus has to obey its
+	 *            requirements.
+	 * @param bool   $from_exif
+	 *            internal use only, tells that string is UCS-2LE encoded, as PHP fails to detect this encoding
+	 */
+	public function __construct( $tag, $str = '', $from_exif = false ) {
+		$this->tag    = $tag;
+		$this->format = PelFormat::BYTE;
+		$this->setValue( $str, $from_exif );
+	}
 
-        $this->components = $l;
-        $this->str = $str;
-        $this->bytes = $s;
-    }
+	/**
+	 * Give the entry a new value.
+	 *
+	 * This will overwrite the previous value. The value can be
+	 * retrieved later with the {@link getValue} method.
+	 *
+	 * @param string $str
+	 *            the new value of the entry.
+	 * @param bool   $from_exif
+	 *            internal use only, tells that string is UCS-2LE encoded, as PHP fails to detect this encoding
+	 */
+	public function setValue( $str, $from_exif = false ) {
+		$zlen = strlen( static::ZEROES );
+		if ( false !== $from_exif ) {
+			$s = $str;
+			if ( substr( $str, - $zlen, $zlen ) == static::ZEROES ) {
+				$str = substr( $str, 0, - $zlen );
+			}
+			$str = mb_convert_encoding( $str, 'UTF-8', 'UCS-2LE' );
+		} else {
+			$s = mb_convert_encoding( $str, 'UCS-2LE', 'auto' );
+		}
 
-    /**
-     * Return the string of the entry.
-     *
-     * @return string the string held, without any extra NULL
-     *         characters. The string will be the same as the one given to
-     *         {@link setValue} or to the {@link __construct constructor}.
-     */
-    public function getValue()
-    {
-        return $this->str;
-    }
+		if ( substr( $s, - $zlen, $zlen ) != static::ZEROES ) {
+			$s .= static::ZEROES;
+		}
+		$l = strlen( $s );
 
-    /**
-     * Return the string of the entry.
-     *
-     * This methods returns the same as {@link getValue}.
-     *
-     * @param boolean $brief
-     *            not used.
-     * @return string the string held, without any extra NULL
-     *         characters. The string will be the same as the one given to
-     *         {@link setValue} or to the {@link __construct constructor}.
-     */
-    public function getText($brief = false)
-    {
-        return $this->str;
-    }
+		$this->components = $l;
+		$this->str        = $str;
+		$this->bytes      = $s;
+	}
+
+	/**
+	 * Return the string of the entry.
+	 *
+	 * @return string the string held, without any extra NULL
+	 *         characters. The string will be the same as the one given to
+	 *         {@link setValue} or to the {@link __construct constructor}.
+	 */
+	public function getValue() {
+		return $this->str;
+	}
+
+	/**
+	 * Return the string of the entry.
+	 *
+	 * This methods returns the same as {@link getValue}.
+	 *
+	 * @param boolean $brief
+	 *            not used.
+	 * @return string the string held, without any extra NULL
+	 *         characters. The string will be the same as the one given to
+	 *         {@link setValue} or to the {@link __construct constructor}.
+	 */
+	public function getText( $brief = false ) {
+		return $this->str;
+	}
 }

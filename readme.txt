@@ -18,7 +18,7 @@ It displays existing GPS data as editable fields (Media Library only), or provid
 
 This plugins extends the functionality of the Geo 2 Maps add-on for NextGEN Gallery which displays maps with photos, galleries, or albums using EXIF GPS data.
 
-The plugin is using Microsoft Azure Maps and requires free Azure Maps API Key to function.
+The plugin is using Microsoft Azure Maps and requires free Azure Maps API Key to function described below.
 To amend EXIF GPS coordinates is using the PHP Exif Library (PEL) by Martin Geisler. (Copyright (C) 2004–2006 Martin Geisler. Licensed under the GNU GPL. https://github.com/FileEye/pel )
 
 = Features =
@@ -30,6 +30,31 @@ To amend EXIF GPS coordinates is using the PHP Exif Library (PEL) by Martin Geis
 *   **Interactive Map Modal:** A clean and simple map interface with a location search bar opens in a modal window.
 *   **Backup & Restore:** The plugin automatically backs up original GPS data, allowing you to restore it with a single click.
 *   **Azure Maps Integration:** Utilizes the powerful and reliable Azure Maps for displaying map tiles.
+
+== External Services ==
+
+This plugin relies on Microsoft Azure Maps to display interactive map in the WordPress admin area and obtain GPS coordinates.
+It's using additional modules to enable search for location functionality (geocoding), browser‑based geolocation and fullscreen option.
+
+==== What data is sent and when ====
+Plugin sends sample geolocation query to the Azure REST server to validate the API Key.
+When the map loads or when the user interacts with it, the browser sends requests to Azure Maps servers. These requests may include:
+* Search queries entered by the user or location coordinates
+* Standard HTTP request data (e.g., IP address, browser type, OS)
+* Map tile requests triggered by zooming or panning
+
+If the user chooses to use the map's "Locate Me" button, their location is only shared if they explicitly grant permission in their browser.
+
+==== API key and account requirement ====
+To use this plugin, the site owner must create a free Azure Maps account and generate an API key.  
+Azure Maps offers a **free tier** with generous limits that typical individual or small‑site usage is very unlikely to exceed.
+
+==== Legal documentation ====
+Azure Maps is provided by Microsoft. Relevant policies:
+* [Terms of Use](https://azure.microsoft.com/support/legal/)
+* [Privacy Policy](https://privacy.microsoft.com/privacystatement)
+* [Azure free account creation](https://azure.microsoft.com/en-gb/pricing/purchase-options/azure-account?icid=azurefreeaccount)
+	
 
 == Installation ==
 

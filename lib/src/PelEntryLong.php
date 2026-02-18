@@ -24,6 +24,10 @@
  */
 namespace lsolesen\pel;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
+
 /**
  * Classes used to hold longs, both signed and unsigned.
  *
@@ -52,64 +56,62 @@ namespace lsolesen\pel;
  * @author Martin Geisler <mgeisler@users.sourceforge.net>
  * @package PEL
  */
-class PelEntryLong extends PelEntryNumber
-{
+class PelEntryLong extends PelEntryNumber {
 
-    /**
-     * Make a new entry that can hold an unsigned long.
-     *
-     * The method accept its arguments in two forms: several integer
-     * arguments or a single array argument. The {@link getValue}
-     * method will always return an array except for when a single
-     * integer argument is given here, or when an array with just a
-     * single integer is given.
-     *
-     * This means that one can conveniently use objects like this:
-     * <code>
-     * $a = new PelEntryLong(PelTag::EXIF_IMAGE_WIDTH, 123456);
-     * $b = $a->getValue() - 654321;
-     * </code>
-     * where the call to {@link getValue} will return an integer instead
-     * of an array with one integer element, which would then have to be
-     * extracted.
-     *
-     * @param int $tag
-     *            the tag which this entry represents. This
-     *            should be one of the constants defined in {@link PelTag},
-     *            e.g., {@link PelTag::IMAGE_WIDTH}, or any other tag which can
-     *            have format {@link PelFormat::LONG}.
-     * @param int $value...
-     *            the long(s) that this entry will
-     *            represent or an array of longs. The argument passed must obey
-     *            the same rules as the argument to {@link setValue}, namely that
-     *            it should be within range of an unsigned long (32 bit), that is
-     *            between 0 and 4294967295 (inclusive). If not, then a {@link
-     *            PelExifOverflowException} will be thrown.
-     */
-    public function __construct($tag, $value = null)
-    {
-        $this->tag = $tag;
-        $this->min = 0;
-        $this->max = 4294967295;
-        $this->format = PelFormat::LONG;
 
-        $value = func_get_args();
-        array_shift($value);
-        $this->setValueArray($value);
-    }
+	/**
+	 * Make a new entry that can hold an unsigned long.
+	 *
+	 * The method accept its arguments in two forms: several integer
+	 * arguments or a single array argument. The {@link getValue}
+	 * method will always return an array except for when a single
+	 * integer argument is given here, or when an array with just a
+	 * single integer is given.
+	 *
+	 * This means that one can conveniently use objects like this:
+	 * <code>
+	 * $a = new PelEntryLong(PelTag::EXIF_IMAGE_WIDTH, 123456);
+	 * $b = $a->getValue() - 654321;
+	 * </code>
+	 * where the call to {@link getValue} will return an integer instead
+	 * of an array with one integer element, which would then have to be
+	 * extracted.
+	 *
+	 * @param int $tag
+	 *            the tag which this entry represents. This
+	 *            should be one of the constants defined in {@link PelTag},
+	 *            e.g., {@link PelTag::IMAGE_WIDTH}, or any other tag which can
+	 *            have format {@link PelFormat::LONG}.
+	 * @param int $value...
+	 *            the long(s) that this entry will
+	 *            represent or an array of longs. The argument passed must obey
+	 *            the same rules as the argument to {@link setValue}, namely that
+	 *            it should be within range of an unsigned long (32 bit), that is
+	 *            between 0 and 4294967295 (inclusive). If not, then a {@link
+	 *            PelExifOverflowException} will be thrown.
+	 */
+	public function __construct( $tag, $value = null ) {
+		$this->tag    = $tag;
+		$this->min    = 0;
+		$this->max    = 4294967295;
+		$this->format = PelFormat::LONG;
 
-    /**
-     * Convert a number into bytes.
-     *
-     * @param int $number
-     *            the number that should be converted.
-     * @param boolean $order
-     *            one of {@link PelConvert::LITTLE_ENDIAN} and
-     *            {@link PelConvert::BIG_ENDIAN}, specifying the target byte order.
-     * @return string bytes representing the number given.
-     */
-    public function numberToBytes($number, $order)
-    {
-        return PelConvert::longToBytes($number, $order);
-    }
+		$value = func_get_args();
+		array_shift( $value );
+		$this->setValueArray( $value );
+	}
+
+	/**
+	 * Convert a number into bytes.
+	 *
+	 * @param int     $number
+	 *            the number that should be converted.
+	 * @param boolean $order
+	 *            one of {@link PelConvert::LITTLE_ENDIAN} and
+	 *            {@link PelConvert::BIG_ENDIAN}, specifying the target byte order.
+	 * @return string bytes representing the number given.
+	 */
+	public function numberToBytes( $number, $order ) {
+		return PelConvert::longToBytes( $number, $order );
+	}
 }

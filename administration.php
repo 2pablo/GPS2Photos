@@ -103,7 +103,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 
 		// --- Register and Enqueue Modal Scripts ---
 		if ( ! wp_script_is( 'gps2photos-modal', 'registered' ) ) {
-			wp_register_script( 'gps2photos-modal', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-modal.js', array( 'jquery' ), '1.0.0', true );
+			wp_register_script( 'gps2photos-modal', GPS2PHOTOS_DIR_URL . '/js/gps2photos-modal.js', array( 'jquery' ), '1.0.0', true );
 			wp_localize_script(
 				'gps2photos-modal',
 				'gps2photos_ajax',
@@ -136,7 +136,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 
 		// Register and Enqueue Ajax for Azure Maps API Key.
 		if ( ! wp_script_is( 'gps2photos-map-api-key', 'registered' ) ) {
-			wp_register_script( 'gps2photos-map-api-key', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-ajax-map-api-key.js', array( 'jquery', 'gps2photos-modal' ), '1.0.0', true );
+			wp_register_script( 'gps2photos-map-api-key', GPS2PHOTOS_DIR_URL . '/js/gps2photos-ajax-map-api-key.js', array( 'jquery', 'gps2photos-modal' ), '1.0.0', true );
 			wp_localize_script(
 				'gps2photos-map-api-key',
 				'gps2photos_api_key_ajax',
@@ -149,7 +149,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		wp_enqueue_script( 'gps2photos-map-api-key' );
 
 		// Enqueue modal css.
-		wp_enqueue_style( 'gps2photos-modal-css', GPS_2_PHOTOS_DIR_URL . '/css/gps2photos-modal.css', array(), '1.0.0' );
+		wp_enqueue_style( 'gps2photos-modal-css', GPS2PHOTOS_DIR_URL . '/css/gps2photos-modal.css', array(), '1.0.0' );
 
 		// Register and Enqueue Azure Maps Scripts (with conflict check).
 		if ( ! wp_style_is( 'azure-maps-css', 'enqueued' ) ) {
@@ -163,10 +163,10 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			wp_enqueue_script( 'azure-maps-service-js', 'https://atlas.microsoft.com/sdk/javascript/service/2/atlas-service.min.js', array(), '2.0.0', false );
 		}
 		if ( ! wp_script_is( 'azure-maps-geolocation-js', 'enqueued' ) ) {
-			wp_enqueue_script( 'azure-maps-geolocation-js', GPS_2_PHOTOS_DIR_URL . '/js/geolocation-module/azure-maps-geolocation-control.min.js', array( 'azure-maps-js' ), '1.0.0', false );
+			wp_enqueue_script( 'azure-maps-geolocation-js', GPS2PHOTOS_DIR_URL . '/js/geolocation-module/azure-maps-geolocation-control.min.js', array( 'azure-maps-js' ), '1.0.0', false );
 		}
 		if ( ! wp_script_is( 'azure-maps-fullscreen-js', 'enqueued' ) ) {
-			wp_enqueue_script( 'azure-maps-fullscreen-js', GPS_2_PHOTOS_DIR_URL . '/js/fullscreen-module/azure-maps-fullscreen-control.min.js', array( 'azure-maps-js' ), '1.0.0', false );
+			wp_enqueue_script( 'azure-maps-fullscreen-js', GPS2PHOTOS_DIR_URL . '/js/fullscreen-module/azure-maps-fullscreen-control.min.js', array( 'azure-maps-js' ), '1.0.0', false );
 		}
 
 		add_action( 'admin_footer', 'gps2photos_add_hidden_modal' );
@@ -186,7 +186,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			),
 		);
 		if ( is_object( $screen ) && $screen->post_type === 'envira' ) {
-			wp_register_script( 'gps2photos-envira', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-envira.js', array( 'jquery', 'gps2photos-modal' ), '1.0.0', true );
+			wp_register_script( 'gps2photos-envira', GPS2PHOTOS_DIR_URL . '/js/gps2photos-envira.js', array( 'jquery', 'gps2photos-modal' ), '1.0.0', true );
 
 			// Pass the data to the script.
 			wp_enqueue_script( 'gps2photos-envira' );
@@ -196,7 +196,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 
 		// Enqueue for Foo Gallery edit screen.
 		if ( is_object( $screen ) && $screen->post_type === 'foogallery' ) {
-			wp_register_script( 'gps2photos-foo', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-foo.js', array( 'jquery', 'gps2photos-modal' ), '1.0.0', true );
+			wp_register_script( 'gps2photos-foo', GPS2PHOTOS_DIR_URL . '/js/gps2photos-foo.js', array( 'jquery', 'gps2photos-modal' ), '1.0.0', true );
 
 			// Pass the data to the script.
 			wp_localize_script( 'gps2photos-foo', 'gps2photos_foo', $localized_data );
@@ -206,7 +206,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 
 		// Enqueue for Modula Gallery edit screen.
 		if ( is_object( $screen ) && $screen->post_type === 'modula-gallery' ) {
-			wp_register_script( 'gps2photos-modula', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-modula.js', array( 'jquery', 'gps2photos-modal' ), '1.0.0', true );
+			wp_register_script( 'gps2photos-modula', GPS2PHOTOS_DIR_URL . '/js/gps2photos-modula.js', array( 'jquery', 'gps2photos-modal' ), '1.0.0', true );
 
 			// Pass the data to the script.
 			wp_localize_script( 'gps2photos-modula', 'gps2photos_modula', $localized_data );
@@ -218,7 +218,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 	// Only load the settings page scripts on our plugin's admin page.
 	if ( $hook === 'toplevel_page_gps-2-photos' ) {
 		// Enqueue admin styles css.
-		wp_enqueue_style( 'gps2photos_admin_styles', GPS_2_PHOTOS_DIR_URL . '/css/admin-style.css', array(), '1.0.0', 'all' );
+		wp_enqueue_style( 'gps2photos_admin_styles', GPS2PHOTOS_DIR_URL . '/css/admin-style.css', array(), '1.0.0', 'all' );
 		// Enqueue color picker scripts.
 		wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );
@@ -228,15 +228,15 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 		);
 
 		// Enqueue admin tabs script.
-		wp_enqueue_script( 'gps2photos-admin-tabs', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-admin-tabs.js', array( 'jquery' ), '1.0.0', true );
+		wp_enqueue_script( 'gps2photos-admin-tabs', GPS2PHOTOS_DIR_URL . '/js/gps2photos-admin-tabs.js', array( 'jquery' ), '1.0.0', true );
 
 		// Enqueue admin settings script.
-		wp_register_script( 'gps2photos-admin-settings', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-admin-settings.js', array(), '1.0.0', true );
+		wp_register_script( 'gps2photos-admin-settings', GPS2PHOTOS_DIR_URL . '/js/gps2photos-admin-settings.js', array(), '1.0.0', true );
 		wp_localize_script(
 			'gps2photos-admin-settings',
 			'gps2photos_admin_settings',
 			array(
-				'plugin_url' => GPS_2_PHOTOS_DIR_URL,
+				'plugin_url' => GPS2PHOTOS_DIR_URL,
 			)
 		);
 		wp_enqueue_script( 'gps2photos-admin-settings' );
@@ -246,7 +246,7 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 	if ( defined( 'NGG_PLUGIN_VERSION' ) && version_compare( NGG_PLUGIN_VERSION, '4.0', '>=' ) ) {
 		// We check for the generic NextGEN admin page or specific hooks if known.
 		if ( strpos( $hook, 'imagely' ) !== false ) {
-			wp_enqueue_script( 'gps2photos-nextgen-v4', GPS_2_PHOTOS_DIR_URL . '/js/gps2photos-nextgen-v4.js', array( 'jquery' ), '1.0.0', true );
+			wp_enqueue_script( 'gps2photos-nextgen-v4', GPS2PHOTOS_DIR_URL . '/js/gps2photos-nextgen-v4.js', array( 'jquery' ), '1.0.0', true );
 			wp_localize_script(
 				'gps2photos-nextgen-v4',
 				'gps2photos_nextgen_v4',
@@ -438,7 +438,7 @@ function gps2photos_options_page() {
 				<div class="inside">
 					<p><input type="checkbox" name="gps2photos_options[gps_media_library]" value="1" <?php checked( $options['gps_media_library'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Add GPS info to WP Media Library', 'gps-2-photos' ); ?></b>
 						<span class="gps2photos-tooltip-container">
-							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
+							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS2PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
 							<span class="gps2photos-tooltip-text">
 								<?php esc_html_e( 'The opening time of a very big WP Media Library in the grid view may be slightly better with this option disabled.', 'gps-2-photos' ); ?>
 							</span>
@@ -446,7 +446,7 @@ function gps2photos_options_page() {
 					</p>
 					<p><input type="checkbox" name="gps2photos_options[backup_existing_coordinates]" value="1" <?php checked( $options['backup_existing_coordinates'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'Backup Existing Coordinates	', 'gps-2-photos' ); ?></b>
 						<span class="gps2photos-tooltip-container">
-							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
+							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS2PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
 							<span class="gps2photos-tooltip-text">
 								<?php esc_html_e( 'GPS coordinates will be added to the User Comment Exif field as "Original GPS coordinates:Latitude,Longitude" if not already there. If present they can be restored.', 'gps-2-photos' ); ?>
 							</span>
@@ -454,7 +454,7 @@ function gps2photos_options_page() {
 					</p>					
 					<p><input type="checkbox" name="gps2photos_options[exif_error_handler]" value="1" <?php checked( $options['exif_error_handler'], 1 ); ?>>&ensp;<b><?php esc_html_e( 'EXIF error handler', 'gps-2-photos' ); ?></b>
 						<span class="gps2photos-tooltip-container">
-							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
+							<img class="gps2photos-tooltip-trigger" src='<?php echo esc_attr( GPS2PHOTOS_DIR_URL . '/img/information.png' ); ?>' alt="Info">
 							<span class="gps2photos-tooltip-text">
 								<?php esc_html_e( 'Some images may have incorrect EXIF format. When enabled, this option suppresses PHP warnings from the exif_read_data() function and logs them to the server error log for AJAX requests in WP Media Library grid view or the browser console. Enable only for debugging.', 'gps-2-photos' ); ?>
 							</span>
@@ -552,7 +552,7 @@ function gps2photos_options_page() {
 							<option value="flag" <?php echo ( $options['pin_icon_type'] === 'flag' ) ? 'selected' : ''; ?>>flag</option>
 							<option value="flag-triangle" <?php echo ( $options['pin_icon_type'] === 'flag-triangle' ) ? 'selected' : ''; ?>>flag-triangle</option>
 							<option value="pin" <?php echo ( $options['pin_icon_type'] === 'pin' ) ? 'selected' : ''; ?>>pin</option>
-						</select><img id="gps2image_pin_icon_image" style="margin-left:20px; margin-bottom:6px; vertical-align: bottom;" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/pin-types/' . $options['pin_icon_type'] . '.png' ); ?>' alt="icon type">
+						</select><img id="gps2image_pin_icon_image" style="margin-left:20px; margin-bottom:6px; vertical-align: bottom;" src='<?php echo esc_attr( GPS2PHOTOS_DIR_URL . '/img/pin-types/' . $options['pin_icon_type'] . '.png' ); ?>' alt="icon type">
 					</div>
 					<br />
 				</div>
@@ -579,14 +579,14 @@ function gps2photos_options_page() {
 							<option value="flag" <?php echo ( $options['search_pin_icon_type'] === 'flag' ) ? 'selected' : ''; ?>>flag</option>
 							<option value="flag-triangle" <?php echo ( $options['search_pin_icon_type'] === 'flag-triangle' ) ? 'selected' : ''; ?>>flag-triangle</option>
 							<option value="pin" <?php echo ( $options['search_pin_icon_type'] === 'pin' ) ? 'selected' : ''; ?>>pin</option>
-						</select><img id="gps2image_search_pin_icon_image" style="margin-left:20px; margin-bottom:6px; vertical-align: bottom;" src='<?php echo esc_attr( GPS_2_PHOTOS_DIR_URL . '/img/pin-types/' . $options['search_pin_icon_type'] . '.png' ); ?>' alt="icon type">
+						</select><img id="gps2image_search_pin_icon_image" style="margin-left:20px; margin-bottom:6px; vertical-align: bottom;" src='<?php echo esc_attr( GPS2PHOTOS_DIR_URL . '/img/pin-types/' . $options['search_pin_icon_type'] . '.png' ); ?>' alt="icon type">
 					</div>
 				</div>
 			</div>
 			<div id="gps2photos_maps_addon" class="postbox gps2photos_tab_content">
 				<div class="inside" style="max-width:1544px;">
 					<a href="http://geo2maps.pasart.net" target="_blank">
-						<img src="<?php echo esc_url( GPS_2_PHOTOS_DIR_URL . '/img/banner-1544x500.jpg' ); ?>" alt="Geo2Maps Banner" style="width:100%;" />
+						<img src="<?php echo esc_url( GPS2PHOTOS_DIR_URL . '/img/banner-1544x500.jpg' ); ?>" alt="Geo2Maps Banner" style="width:100%;" />
 					</a>
 					<h1 style="text-align:center;font-size:3em;">Geo2Maps</h1>
 					<p style="text-align:center;font-size:1.2em;">A free WordPress plugin to display geolocated photos from NextGEN Gallery on a map.</p>

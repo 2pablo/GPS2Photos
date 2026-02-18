@@ -47,51 +47,53 @@
  */
 namespace lsolesen\pel;
 
-class PelEntrySByte extends PelEntryNumber
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Make a new entry that can hold a signed byte.
-     *
-     * The method accept several integer arguments. The {@link getValue}
-     * method will always return an array except for when a single
-     * integer argument is given here.
-     *
-     * @param int $tag
-     *            the tag which this entry represents. This
-     *            should be one of the constants defined in {@link PelTag}
-     *            which has format {@link PelFormat::BYTE}.
-     * @param int $value...
-     *            the byte(s) that this entry will represent.
-     *            The argument passed must obey the same rules as the argument to
-     *            {@link setValue}, namely that it should be within range of a
-     *            signed byte, that is between -128 and 127 (inclusive). If not,
-     *            then a {@link PelOverflowException} will be thrown.
-     */
-    public function __construct($tag, $value = null)
-    {
-        $this->tag = $tag;
-        $this->min = - 128;
-        $this->max = 127;
-        $this->format = PelFormat::SBYTE;
+class PelEntrySByte extends PelEntryNumber {
 
-        $value = func_get_args();
-        array_shift($value);
-        $this->setValueArray($value);
-    }
 
-    /**
-     * Convert a number into bytes.
-     *
-     * @param int $number
-     *            the number that should be converted.
-     * @param boolean $order
-     *            one of {@link PelConvert::LITTLE_ENDIAN} and
-     *            {@link PelConvert::BIG_ENDIAN}, specifying the target byte order.
-     * @return string bytes representing the number given.
-     */
-    public function numberToBytes($number, $order)
-    {
-        return chr($number);
-    }
+	/**
+	 * Make a new entry that can hold a signed byte.
+	 *
+	 * The method accept several integer arguments. The {@link getValue}
+	 * method will always return an array except for when a single
+	 * integer argument is given here.
+	 *
+	 * @param int $tag
+	 *            the tag which this entry represents. This
+	 *            should be one of the constants defined in {@link PelTag}
+	 *            which has format {@link PelFormat::BYTE}.
+	 * @param int $value...
+	 *            the byte(s) that this entry will represent.
+	 *            The argument passed must obey the same rules as the argument to
+	 *            {@link setValue}, namely that it should be within range of a
+	 *            signed byte, that is between -128 and 127 (inclusive). If not,
+	 *            then a {@link PelOverflowException} will be thrown.
+	 */
+	public function __construct( $tag, $value = null ) {
+		$this->tag    = $tag;
+		$this->min    = - 128;
+		$this->max    = 127;
+		$this->format = PelFormat::SBYTE;
+
+		$value = func_get_args();
+		array_shift( $value );
+		$this->setValueArray( $value );
+	}
+
+	/**
+	 * Convert a number into bytes.
+	 *
+	 * @param int     $number
+	 *            the number that should be converted.
+	 * @param boolean $order
+	 *            one of {@link PelConvert::LITTLE_ENDIAN} and
+	 *            {@link PelConvert::BIG_ENDIAN}, specifying the target byte order.
+	 * @return string bytes representing the number given.
+	 */
+	public function numberToBytes( $number, $order ) {
+		return chr( $number );
+	}
 }

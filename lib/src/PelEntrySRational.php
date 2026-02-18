@@ -49,104 +49,105 @@
  */
 namespace lsolesen\pel;
 
-class PelEntrySRational extends PelEntrySLong
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Make a new entry that can hold a signed rational.
-     *
-     * @param int $tag
-     *            the tag which this entry represents. This should
-     *            be one of the constants defined in {@link PelTag}, e.g., {@link
-     *            PelTag::SHUTTER_SPEED_VALUE}, or any other tag which can have
-     *            format {@link PelFormat::SRATIONAL}.
-     * @param array $value
-     *            the rational(s) that this entry will
-     *            represent. The arguments passed must obey the same rules as the
-     *            argument to {@link setValue}, namely that each argument should be
-     *            an array with two entries, both of which must be within range of
-     *            a signed long (32 bit), that is between -2147483648 and
-     *            2147483647 (inclusive). If not, then a {@link
-     *            PelOverflowException} will be thrown.
-     */
-    public function __construct($tag, $value = null)
-    {
-        $this->tag = $tag;
-        $this->format = PelFormat::SRATIONAL;
-        $this->dimension = 2;
-        $this->min = - 2147483648;
-        $this->max = 2147483647;
+class PelEntrySRational extends PelEntrySLong {
 
-        $value = func_get_args();
-        array_shift($value);
-        $this->setValueArray($value);
-    }
 
-    /**
-     * Format a rational number.
-     *
-     * The rational will be returned as a string with a slash '/'
-     * between the numerator and denominator. Care is taken to display
-     * '-1/2' instead of the ugly but mathematically equivalent '1/-2'.
-     *
-     * @param array $number
-     *            the rational which will be formatted.
-     * @param boolean $brief
-     *            not used.
-     * @return string the rational formatted as a string suitable for
-     *         display.
-     */
-    public function formatNumber($number, $brief = false)
-    {
-        if ($number[1] < 0) {
-            /* Turn output like 1/-2 into -1/2. */
-            return (- $number[0]) . '/' . (- $number[1]);
-        } else {
-            return $number[0] . '/' . $number[1];
-        }
-    }
+	/**
+	 * Make a new entry that can hold a signed rational.
+	 *
+	 * @param int   $tag
+	 *            the tag which this entry represents. This should
+	 *            be one of the constants defined in {@link PelTag}, e.g., {@link
+	 *            PelTag::SHUTTER_SPEED_VALUE}, or any other tag which can have
+	 *            format {@link PelFormat::SRATIONAL}.
+	 * @param array $value
+	 *            the rational(s) that this entry will
+	 *            represent. The arguments passed must obey the same rules as the
+	 *            argument to {@link setValue}, namely that each argument should be
+	 *            an array with two entries, both of which must be within range of
+	 *            a signed long (32 bit), that is between -2147483648 and
+	 *            2147483647 (inclusive). If not, then a {@link
+	 *            PelOverflowException} will be thrown.
+	 */
+	public function __construct( $tag, $value = null ) {
+		$this->tag       = $tag;
+		$this->format    = PelFormat::SRATIONAL;
+		$this->dimension = 2;
+		$this->min       = - 2147483648;
+		$this->max       = 2147483647;
 
-    /**
-     * Get the value of an entry as text.
-     *
-     * The value will be returned in a format suitable for presentation,
-     * e.g., rationals will be returned as 'x/y', ASCII strings will be
-     * returned as themselves etc.
-     *
-     * @param boolean $brief
-     *            some values can be returned in a long or more
-     *            brief form, and this parameter controls that.
-     * @return string the value as text.
-     */
-    public function getText($brief = false)
-    {
-        if (isset($this->value[0])) {
-            $v = $this->value[0];
-        } else {
-            return parent::getText($brief);
-        }
+		$value = func_get_args();
+		array_shift( $value );
+		$this->setValueArray( $value );
+	}
 
-        switch ($this->tag) {
-            case PelTag::SHUTTER_SPEED_VALUE:
-                // CC (e->components, 1, v);
-                // if (!v_srat.denominator) return (NULL);
-                return Pel::fmt('%.0f/%.0f sec. (APEX: %d)', $v[0], $v[1], pow(sqrt(2), $v[0] / $v[1]));
+	/**
+	 * Format a rational number.
+	 *
+	 * The rational will be returned as a string with a slash '/'
+	 * between the numerator and denominator. Care is taken to display
+	 * '-1/2' instead of the ugly but mathematically equivalent '1/-2'.
+	 *
+	 * @param array   $number
+	 *            the rational which will be formatted.
+	 * @param boolean $brief
+	 *            not used.
+	 * @return string the rational formatted as a string suitable for
+	 *         display.
+	 */
+	public function formatNumber( $number, $brief = false ) {
+		if ( $number[1] < 0 ) {
+			/* Turn output like 1/-2 into -1/2. */
+			return ( - $number[0] ) . '/' . ( - $number[1] );
+		} else {
+			return $number[0] . '/' . $number[1];
+		}
+	}
 
-            case PelTag::BRIGHTNESS_VALUE:
-                // CC (e->components, 1, v);
-                //
-                // TODO: figure out the APEX thing, or remove this so that it is
-                // handled by the default clause at the bottom.
-                return sprintf('%d/%d', $v[0], $v[1]);
-            // FIXME: How do I calculate the APEX value?
+	/**
+	 * Get the value of an entry as text.
+	 *
+	 * The value will be returned in a format suitable for presentation,
+	 * e.g., rationals will be returned as 'x/y', ASCII strings will be
+	 * returned as themselves etc.
+	 *
+	 * @param boolean $brief
+	 *            some values can be returned in a long or more
+	 *            brief form, and this parameter controls that.
+	 * @return string the value as text.
+	 */
+	public function getText( $brief = false ) {
+		if ( isset( $this->value[0] ) ) {
+			$v = $this->value[0];
+		} else {
+			return parent::getText( $brief );
+		}
 
-            case PelTag::EXPOSURE_BIAS_VALUE:
-                // CC (e->components, 1, v);
-                // if (!v_srat.denominator) return (NULL);
-                return sprintf('%s%.01f', $v[0] * $v[1] > 0 ? '+' : '', $v[0] / $v[1]);
+		switch ( $this->tag ) {
+			case PelTag::SHUTTER_SPEED_VALUE:
+				// CC (e->components, 1, v);
+				// if (!v_srat.denominator) return (NULL);
+				return Pel::fmt( '%.0f/%.0f sec. (APEX: %d)', $v[0], $v[1], pow( sqrt( 2 ), $v[0] / $v[1] ) );
 
-            default:
-                return parent::getText($brief);
-        }
-    }
+			case PelTag::BRIGHTNESS_VALUE:
+				// CC (e->components, 1, v);
+				//
+				// TODO: figure out the APEX thing, or remove this so that it is
+				// handled by the default clause at the bottom.
+				return sprintf( '%d/%d', $v[0], $v[1] );
+			// FIXME: How do I calculate the APEX value?
+
+			case PelTag::EXPOSURE_BIAS_VALUE:
+				// CC (e->components, 1, v);
+				// if (!v_srat.denominator) return (NULL);
+				return sprintf( '%s%.01f', $v[0] * $v[1] > 0 ? '+' : '', $v[0] / $v[1] );
+
+			default:
+				return parent::getText( $brief );
+		}
+	}
 }

@@ -22,11 +22,15 @@
  * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
  * Boston, MA 02110-1301 USA
  *
- * AMENDED BY PAWEL BLOCK FOR GPS 2 PHOTOS WORDPRESS PLUGIN
+ * AMENDED BY PAWEL BLOCK FOR GPS 2 PHOTOS WordPress PLUGIN
  * FOR COMPATIBILITY WITH EXIF SPECIFICATION 2.3 and 3.0.
  */
 
 namespace lsolesen\pel;
+
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
 /**
  * Classes for dealing with Exif IFDs.

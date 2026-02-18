@@ -39,188 +39,189 @@
  * @license http://www.gnu.org/licenses/gpl.html GNU General Public
  *          License (GPL)
  * @package
- *
  */
 namespace lsolesen\pel;
 
-class PelFormat
-{
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly - requested by WordPress.
+}
 
-    /**
-     * Unsigned byte.
-     *
-     * Each component will be an unsigned 8-bit integer with a value
-     * between 0 and 255.
-     *
-     * Modelled with the {@link PelEntryByte} class.
-     */
-    const BYTE = 1;
+class PelFormat {
 
-    /**
-     * ASCII string.
-     *
-     * Each component will be an ASCII character.
-     *
-     * Modelled with the {@link PelEntryAscii} class.
-     */
-    const ASCII = 2;
 
-    /**
-     * Unsigned short.
-     *
-     * Each component will be an unsigned 16-bit integer with a value
-     * between 0 and 65535.
-     *
-     * Modelled with the {@link PelEntryShort} class.
-     */
-    const SHORT = 3;
+	/**
+	 * Unsigned byte.
+	 *
+	 * Each component will be an unsigned 8-bit integer with a value
+	 * between 0 and 255.
+	 *
+	 * Modelled with the {@link PelEntryByte} class.
+	 */
+	const BYTE = 1;
 
-    /**
-     * Unsigned long.
-     *
-     * Each component will be an unsigned 32-bit integer with a value
-     * between 0 and 4294967295.
-     *
-     * Modelled with the {@link PelEntryLong} class.
-     */
-    const LONG = 4;
+	/**
+	 * ASCII string.
+	 *
+	 * Each component will be an ASCII character.
+	 *
+	 * Modelled with the {@link PelEntryAscii} class.
+	 */
+	const ASCII = 2;
 
-    /**
-     * Unsigned rational number.
-     *
-     * Each component will consist of two unsigned 32-bit integers
-     * denoting the enumerator and denominator. Each integer will have
-     * a value between 0 and 4294967295.
-     *
-     * Modelled with the {@link PelEntryRational} class.
-     */
-    const RATIONAL = 5;
+	/**
+	 * Unsigned short.
+	 *
+	 * Each component will be an unsigned 16-bit integer with a value
+	 * between 0 and 65535.
+	 *
+	 * Modelled with the {@link PelEntryShort} class.
+	 */
+	const SHORT = 3;
 
-    /**
-     * Signed byte.
-     *
-     * Each component will be a signed 8-bit integer with a value
-     * between -128 and 127.
-     *
-     * Modelled with the {@link PelEntrySByte} class.
-     */
-    const SBYTE = 6;
+	/**
+	 * Unsigned long.
+	 *
+	 * Each component will be an unsigned 32-bit integer with a value
+	 * between 0 and 4294967295.
+	 *
+	 * Modelled with the {@link PelEntryLong} class.
+	 */
+	const LONG = 4;
 
-    /**
-     * Undefined byte.
-     *
-     * Each component will be a byte with no associated interpretation.
-     *
-     * Modelled with the {@link PelEntryUndefined} class.
-     */
-    const UNDEFINED = 7;
+	/**
+	 * Unsigned rational number.
+	 *
+	 * Each component will consist of two unsigned 32-bit integers
+	 * denoting the enumerator and denominator. Each integer will have
+	 * a value between 0 and 4294967295.
+	 *
+	 * Modelled with the {@link PelEntryRational} class.
+	 */
+	const RATIONAL = 5;
 
-    /**
-     * Signed short.
-     *
-     * Each component will be a signed 16-bit integer with a value
-     * between -32768 and 32767.
-     *
-     * Modelled with the {@link PelEntrySShort} class.
-     */
-    const SSHORT = 8;
+	/**
+	 * Signed byte.
+	 *
+	 * Each component will be a signed 8-bit integer with a value
+	 * between -128 and 127.
+	 *
+	 * Modelled with the {@link PelEntrySByte} class.
+	 */
+	const SBYTE = 6;
 
-    /**
-     * Signed long.
-     *
-     * Each component will be a signed 32-bit integer with a value
-     * between -2147483648 and 2147483647.
-     *
-     * Modelled with the {@link PelEntrySLong} class.
-     */
-    const SLONG = 9;
+	/**
+	 * Undefined byte.
+	 *
+	 * Each component will be a byte with no associated interpretation.
+	 *
+	 * Modelled with the {@link PelEntryUndefined} class.
+	 */
+	const UNDEFINED = 7;
 
-    /**
-     * Signed rational number.
-     *
-     * Each component will consist of two signed 32-bit integers
-     * denoting the enumerator and denominator. Each integer will have
-     * a value between -2147483648 and 2147483647.
-     *
-     * Modelled with the {@link PelEntrySRational} class.
-     */
-    const SRATIONAL = 10;
+	/**
+	 * Signed short.
+	 *
+	 * Each component will be a signed 16-bit integer with a value
+	 * between -32768 and 32767.
+	 *
+	 * Modelled with the {@link PelEntrySShort} class.
+	 */
+	const SSHORT = 8;
 
-    /**
-     * Floating point number.
-     *
-     * Entries with this format are not currently implemented.
-     */
-    const FLOAT = 11;
+	/**
+	 * Signed long.
+	 *
+	 * Each component will be a signed 32-bit integer with a value
+	 * between -2147483648 and 2147483647.
+	 *
+	 * Modelled with the {@link PelEntrySLong} class.
+	 */
+	const SLONG = 9;
 
-    /**
-     * Double precision floating point number.
-     *
-     * Entries with this format are not currently implemented.
-     */
-    const DOUBLE = 12;
+	/**
+	 * Signed rational number.
+	 *
+	 * Each component will consist of two signed 32-bit integers
+	 * denoting the enumerator and denominator. Each integer will have
+	 * a value between -2147483648 and 2147483647.
+	 *
+	 * Modelled with the {@link PelEntrySRational} class.
+	 */
+	const SRATIONAL = 10;
 
-    /**
-     * Values for format's short names
-     */
-    protected static $formatName = [
-        self::ASCII => 'Ascii',
-        self::BYTE => 'Byte',
-        self::SHORT => 'Short',
-        self::LONG => 'Long',
-        self::RATIONAL => 'Rational',
-        self::SBYTE => 'SByte',
-        self::SSHORT => 'SShort',
-        self::SLONG => 'SLong',
-        self::SRATIONAL => 'SRational',
-        self::FLOAT => 'Float',
-        self::DOUBLE => 'Double',
-        self::UNDEFINED => 'Undefined'
-    ];
+	/**
+	 * Floating point number.
+	 *
+	 * Entries with this format are not currently implemented.
+	 */
+	const FLOAT = 11;
 
-    protected static $formatLength = [
-        self::ASCII => 1,
-        self::BYTE => 1,
-        self::SHORT => 2,
-        self::LONG => 4,
-        self::RATIONAL => 8,
-        self::SBYTE => 1,
-        self::SSHORT => 2,
-        self::SLONG => 4,
-        self::SRATIONAL => 8,
-        self::FLOAT => 4,
-        self::DOUBLE => 8,
-        self::UNDEFINED => 1
-    ];
+	/**
+	 * Double precision floating point number.
+	 *
+	 * Entries with this format are not currently implemented.
+	 */
+	const DOUBLE = 12;
 
-    /**
-     * Returns the name of a format like 'Ascii' for the {@link ASCII} format
-     *
-     * @param integer $type
-     *            as defined in {@link PelFormat}
-     * @return string
-     */
-    public static function getName($type)
-    {
-        if (array_key_exists($type, self::$formatName)) {
-            return self::$formatName[$type];
-        }
-        throw new PelIllegalFormatException($type);
-    }
+	/**
+	 * Values for format's short names
+	 */
+	protected static $formatName = array(
+		self::ASCII     => 'Ascii',
+		self::BYTE      => 'Byte',
+		self::SHORT     => 'Short',
+		self::LONG      => 'Long',
+		self::RATIONAL  => 'Rational',
+		self::SBYTE     => 'SByte',
+		self::SSHORT    => 'SShort',
+		self::SLONG     => 'SLong',
+		self::SRATIONAL => 'SRational',
+		self::FLOAT     => 'Float',
+		self::DOUBLE    => 'Double',
+		self::UNDEFINED => 'Undefined',
+	);
 
-    /**
-     * Return the size of components in a given format in bytes needed to store one component with the
-     * given format.
-     *
-     * @param integer $type
-     *            as defined in {@link PelFormat}
-     * @return integer
-     */
-    public static function getSize($type)
-    {
-        if (array_key_exists($type, self::$formatLength)) {
-            return self::$formatLength[$type];
-        }
-        throw new PelIllegalFormatException($type);
-    }
+	protected static $formatLength = array(
+		self::ASCII     => 1,
+		self::BYTE      => 1,
+		self::SHORT     => 2,
+		self::LONG      => 4,
+		self::RATIONAL  => 8,
+		self::SBYTE     => 1,
+		self::SSHORT    => 2,
+		self::SLONG     => 4,
+		self::SRATIONAL => 8,
+		self::FLOAT     => 4,
+		self::DOUBLE    => 8,
+		self::UNDEFINED => 1,
+	);
+
+	/**
+	 * Returns the name of a format like 'Ascii' for the {@link ASCII} format
+	 *
+	 * @param integer $type
+	 *            as defined in {@link PelFormat}
+	 * @return string
+	 */
+	public static function getName( $type ) {
+		if ( array_key_exists( $type, self::$formatName ) ) {
+			return self::$formatName[ $type ];
+		}
+		throw new PelIllegalFormatException( $type );
+	}
+
+	/**
+	 * Return the size of components in a given format in bytes needed to store one component with the
+	 * given format.
+	 *
+	 * @param integer $type
+	 *            as defined in {@link PelFormat}
+	 * @return integer
+	 */
+	public static function getSize( $type ) {
+		if ( array_key_exists( $type, self::$formatLength ) ) {
+			return self::$formatLength[ $type ];
+		}
+		throw new PelIllegalFormatException( $type );
+	}
 }

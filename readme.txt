@@ -105,6 +105,6 @@ If you enable the "Backup Existing Coordinates" option in the plugin settings, e
 
 == Changelog ==
 
-= 1.0.0 - 2024-11-04 =
+= 1.0.0 - 2026-02-19 =
 
 *   Initial release.

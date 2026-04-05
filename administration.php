@@ -65,6 +65,7 @@ function gps2photos_options_init() {
 		'wp-admin',
 		'
 		#toplevel_page_' . GPS2PHOTOS_ADMIN_SLUG . ' .wp-menu-image img {
+			opacity: 1;
 			max-width: 20px !important;
 			padding-top: 8px;
 		}

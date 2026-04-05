@@ -356,7 +356,7 @@ function gps2photos_add_page() {
 		'manage_options',
 		GPS2PHOTOS_ADMIN_SLUG,
 		'gps2photos_options_page',
-		plugins_url( dirname( plugin_basename( __FILE__ ) ) . '/img/icon-128x128.png' ), // Optional WP icon: 'dashicons-location-alt'
+		plugins_url( dirname( plugin_basename( __FILE__ ) ) . '/img/icon-56x56.png' ), // Optional WP icon: 'dashicons-location-alt'
 	);
 }
 

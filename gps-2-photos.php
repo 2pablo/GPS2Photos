@@ -41,6 +41,9 @@ define( 'GPS2PHOTOS_DIR_URL', plugins_url( '', __FILE__ ) );
 // Defines the universal path to WordPress plugins folder.
 define( 'GPS2PHOTOS_PLUGINS_DIR_URL', plugins_url( '', basename( __DIR__ ) ) );
 
+// Defines admin page slug (can differ from folder/text-domain names).
+define( 'GPS2PHOTOS_ADMIN_SLUG', 'gps-2-photos' );
+
 if ( is_admin() ) {
 	/**
 	 * Includes only on the admin pages.

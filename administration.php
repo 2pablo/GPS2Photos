@@ -58,6 +58,17 @@ function gps2photos_options_init() {
 	add_action( 'wp_ajax_gps2photos_save_coordinates', 'gps2photos_save_coordinates_callback' );
 	add_action( 'wp_ajax_gps2photos_restore_from_backup', 'gps2photos_restore_from_backup_callback' );
 	add_action( 'wp_ajax_gps2photos_get_coordinates', 'gps2photos_get_coordinates_callback' );
+
+	// Style the WordPress menu icon.
+	wp_add_inline_style(
+		'wp-admin',
+		'
+		#toplevel_page_' . GPS2PHOTOS_ADMIN_SLUG . ' .wp-menu-image img {
+			max-width: 20px !important;
+			padding-top: 8px;
+		}
+		'
+	);
 }
 
 /**
@@ -340,7 +351,7 @@ function gps2photos_add_page() {
 		__( 'GPS 2 Photos', 'gps-2-photos' ),
 		__( 'GPS 2 Photos', 'gps-2-photos' ),
 		'manage_options',
-		'gps-2-photos',
+		GPS2PHOTOS_ADMIN_SLUG,
 		'gps2photos_options_page',
 		plugins_url( dirname( plugin_basename( __FILE__ ) ) . '/img/icon-128x128.png' ), // Optional WP icon: 'dashicons-location-alt'
 	);

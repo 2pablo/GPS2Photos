@@ -5,6 +5,7 @@
  * @package    GPS 2 Photos Add-on
  * @subpackage Administration
  * @since      1.0.0
+ * @since      1.0.1 Added admin page slug constant.
  *
  * @author     Pawel Block <pb@pasart.net>
  * @copyright  Copyright (c) 2025, Pawel Block

@@ -105,6 +105,12 @@ If you enable the "Backup Existing Coordinates" option in the plugin settings, e
 
 == Changelog ==
 
+= 1.0.1 - 2026-04-05 =
+
+* Update: Added bespoke admin manu icon.
+
+* Bugfix: Corrected code giving support to NextGEN version < 4.0.
+
 = 1.0.0 - 2026-02-19 =
 
 *   Initial release.

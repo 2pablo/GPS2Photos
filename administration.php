@@ -5,6 +5,7 @@
  * @package    GPS 2 Photo Add-on
  * @subpackage Administration
  * @since      1.0.0
+ * @since      1.0.1 Amended function gps2photos_plugin_admin_scripts().
  *
  * @author     Pawel Block <pb@pasart.net>
  * @copyright  Copyright (c) 2025, Pawel Block
@@ -21,7 +22,7 @@ add_action( 'admin_init', 'gps2photos_options_init' );
 /**
  * Init plugin options.
  *
- * @since 1.0.0
+ * @since 1.0.0 
  */
 function gps2photos_options_init() {
 	if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -80,6 +81,7 @@ add_action( 'admin_enqueue_scripts', 'gps2photos_plugin_admin_scripts' );
  * Ajax for Azure API Key
  *
  * @since 1.0.0
+ * @since 1.0.1 Moved into the function code for NextGEN Gallery <4.0 compatibility.
  *
  * @param string $hook The current admin page hook.
  */
@@ -258,13 +260,13 @@ function gps2photos_plugin_admin_scripts( $hook ) {
 			);
 		}
 	}
-}
-
-if ( defined( 'NGG_PLUGIN_VERSION' ) ) {
-	if ( version_compare( NGG_PLUGIN_VERSION, '4.0', '<' ) ) {
-		// Adds action link callback to the list of actions for images in NextGEN ver < 4.0.
-		add_filter( 'ngg_manage_images_row_actions', 'gps2photos_add_nextgen_action_callback', 10, 1 );
-	}
+	
+	if ( defined( 'NGG_PLUGIN_VERSION' ) ) {
+    	if ( version_compare( NGG_PLUGIN_VERSION, '4.0', '<' ) ) {
+    		// Adds action link callback to the list of actions for images in NextGEN ver < 4.0.
+    		add_filter( 'ngg_manage_images_row_actions', 'gps2photos_add_nextgen_action_callback', 10, 1 );
+    	}
+    }
 }
 
 /**
@@ -340,7 +342,7 @@ function gps2photos_add_page() {
 		'manage_options',
 		'gps-2-photos',
 		'gps2photos_options_page',
-		'dashicons-location-alt'
+		plugins_url( 'gps-2-photos' . '/img/icon-128x128.png' ), // Optional WP icon: 'dashicons-location-alt'
 	);
 }
 

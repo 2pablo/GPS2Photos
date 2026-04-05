@@ -22,7 +22,7 @@
  * Plugin Name: GPS 2 Photos
  * Plugin URI:  https://wordpress.org/plugins/gps-2-photos/
  * Description: GPS 2 Photo Add-on allows to add GPS coordinates to the photo EXIF data by selecting a location on a map.
- * Version:     1.0.0
+ * Version:     1.0.1
  * Author URI:  http://geo2maps.pasart.net
  * License:     GPLv2
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html

@@ -5,7 +5,7 @@
  * @package    GPS 2 Photo Add-on
  * @subpackage Administration
  * @since      1.0.0
- * @since      1.0.1 Amended function gps2photos_plugin_admin_scripts().
+ * @since      1.0.1 Amended function gps2photos_plugin_admin_scripts(), gps2photos_add_page(), gps2photos_options_init().
  *
  * @author     Pawel Block <pb@pasart.net>
  * @copyright  Copyright (c) 2025, Pawel Block
@@ -22,7 +22,8 @@ add_action( 'admin_init', 'gps2photos_options_init' );
 /**
  * Init plugin options.
  *
- * @since 1.0.0 
+ * @since 1.0.0
+ * @since 1.0.1 Added inline style for admin  page manu icon.
  */
 function gps2photos_options_init() {
 	if ( ! current_user_can( 'activate_plugins' ) ) {
@@ -345,6 +346,7 @@ add_action( 'admin_menu', 'gps2photos_add_page', 99 );
  * Adds admin settings page.
  *
  * @since 1.0.0
+ * @since 1.0.1 Added custom icon for the admin menu.
  */
 function gps2photos_add_page() {
 	add_menu_page(
